@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+* {
+    transition-duration: 0.2s;
+    -webkit-transition-duration: 0.2s;
+    -moz-transition-duration: 0.2s;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+#content-wrapper {
+    display: flex;
+    flex-flow: column;
+    height: 100vh;
+}
+
+nav {
+    flex: 0 1 auto;
+    min-height: 4em;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    /* padding: 0 1em 0 1em; */
+}
+
+nav div:first-of-type {
+    justify-content: flex-start;
+    padding: 0 0 0 2em;
+}
+
+nav div:last-of-type {
+    justify-content: flex-end;
+    padding: 0 2em 0 0;
+}
+
+nav div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 33vw;
+}
+
+nav h2 {
+    margin: 0;
+    font-family: "Roboto";
+    font-weight: 200;
+}
+
+nav #settings-button, nav #current-student-count {
+    margin: 0 0 0 0.75em;
+}
+
+nav #change-location-button {
+    margin: 0 0.75em 0 0;
+}
+
+nav #current-student-count {
+    font-family: "Roboto";
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px;
+    font-size: 1.25rem;
+}
+
+nav #settings-button, #change-location-button {
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+nav #settings-button:hover, #change-location-button:hover {
+    opacity: 50%;
+}
+
+#state-container {
+    width: 100vw;
+    height: auto;
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+}
+
+#teacher-view {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.styled-table {
+    text-align: center;
+    border-collapse: collapse;
+    margin: 50px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    width: 75%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.301);
+    border-radius: 10px;
+}
+
+.styled-table thead tr {
+    text-align: left;
+}
+
+.styled-table th:first-of-type {
+    border-radius: 10px 0 0 0;
+}
+
+.styled-table th:last-of-type {
+    border-radius: 0 10px 0 0;
+}
+
+.styled-table th {
+    text-align: center; 
+    font-size: 1.3rem;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 20px 30px;
+    transition-duration: 0s;
+    -webkit-transition-duration: 0s;
+    -moz-transition-duration: 0s;
+}
+
+.styled-table td {
+    font-size: 1.15rem;
+}
+
+.styled-table .remove-user-btn {
+    font-size: 1.5rem;   
+    cursor: pointer;
+}
+
+.styled-table .remove-user-btn:hover {
+    opacity: 50%;
+}
