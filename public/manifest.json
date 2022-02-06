@@ -1,6 +1,13 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "MTPS Pass System",
+  "name": "Monroe Township Pass System",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "192x191",
+      "type": "image/x-icon"
+    }
+  ],
   "start_url": ".",
   "display": "standalone"
 }
