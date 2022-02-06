@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+nav {
+    flex: 0 1 auto;
+    min-height: 4em;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+nav div:first-of-type {
+    justify-content: flex-start;
+    padding: 0 0 0 2em;
+}
+
+nav div:last-of-type {
+    justify-content: flex-end;
+    padding: 0 2em 0 0;
+}
+
+nav div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 33vw;
+}
+
+nav h2 {
+    margin: 0;
+    font-family: "Roboto";
+    font-weight: 200;
+}
+
+nav #settings-button, nav #current-student-count {
+    margin: 0 0 0 0.75em;
+}
+
+nav #change-location-button {
+    margin: 0 0.75em 0 0;
+}
+
+nav #current-student-count {
+    font-family: "Roboto";
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px;
+    font-size: 1.25rem;
+}
+
+nav #settings-button, #change-location-button {
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+nav #settings-button:hover, #change-location-button:hover {
+    opacity: 50%;
+}
