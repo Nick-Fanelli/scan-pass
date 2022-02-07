@@ -53,3 +53,81 @@
 .styled-table .remove-user-btn:hover {
     opacity: 50%;
 }
+
+#exchange-location-popup {
+    position: fixed;
+    background-color: #00000050;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;   
+}
+
+#exchange-location-popup .box {
+    position: relative;
+    width: 50%;
+    margin: 0 auto;
+    height: 70vh;
+    max-height: 70vh;
+    margin-top: calc(100vh - 85vh - 20px);
+    border-radius: 10px;
+    overflow: auto;
+}
+
+#exchange-location-popup .close-icon {
+    content: 'x';
+    cursor: pointer;
+    position: fixed;
+    right: calc(26% - 30px);
+    top: calc(100vh - 85vh - 33px);
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    line-height: 30px;
+    text-align: center;
+    font-size: 30px;
+    font-family: "Roboto";
+}
+
+#exchange-location-popup .header {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.301);
+}
+
+#exchange-location-popup .content {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px 0;
+}
+
+#exchange-location-popup .header h1 {
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+    font-family: "Roboto";
+    font-weight: bold;
+}
+
+#exchange-location-popup .selections {
+    width: 50%;
+    margin: 2em 0 0 0;
+    background-color: transparent;
+}
+
+#exchange-location-popup .selections ul {
+    font-family: "Roboto";
+    list-style: none;
+    font-size: 1.2rem;
+    padding: 0;
+    margin: 0;
+}
+
+#exchange-location-popup .selections ul li {
+    padding: 10px 0;
+    text-align: center;
+    cursor: pointer;
+}
+
+#exchange-location-popup .selections ul li:hover {
+    background: transparent !important;
+}

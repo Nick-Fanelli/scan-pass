@@ -15,7 +15,7 @@ function App() {
     return (
         <section id="content-wrapper" style={{backgroundColor: currentTheme.backgroundColor}}>
             {view}
-        </section> 
+        </section>
     );
 }
 

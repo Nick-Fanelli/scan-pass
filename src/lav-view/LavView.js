@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from 'react'
 
 import LavNav from "./LavNav"
 import Lav from "./Lav"
+import ExchangeLocationPopup from './ExchangeLocationPopup';
+
+import { UserLocation } from '../User';
 
 const ValidInputRegex = /[0-9]|Enter/gi;
 const ValidStudentIDRegex = /^[0-9]{5}$/
@@ -28,13 +31,8 @@ const useEventListener = (eventName, handler, element = window) => {
 export default function LavView({ currentTheme, setCurrentTheme, currentUser }) {
 
     const [students, setStudents] = useState([]);
-    const [lavLocation, setLavLocation] = useState("A100");
-
-    function addStudent(student) {
-        setStudents(prevStudents => {
-            return [...prevStudents, student]
-        });
-    }
+    const [lavLocation, setLavLocation] = useState(UserLocation.WHS.lavLocations[0]);
+    const [isExchangeLocationPopupOpen, setIsExchangeLocationPopupOpen] = useState(false);
 
     function processData(data, timestamp) {
         // Validate Student ID
@@ -84,8 +82,13 @@ export default function LavView({ currentTheme, setCurrentTheme, currentUser }) 
 
     return (
         <>
-            <LavNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} studentCount={students.length} lavLocation={lavLocation} />
+            <LavNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} studentCount={students.length} lavLocation={lavLocation} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} />
             <Lav theme={currentTheme} students={students} processData={processData} />
+            {
+                isExchangeLocationPopupOpen ? 
+                <ExchangeLocationPopup theme={currentTheme} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} schoolLocation={currentUser.userLocation} setLavLocation={setLavLocation} /> :
+                null
+            }
         </>
     );
 
