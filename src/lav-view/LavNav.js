@@ -1,4 +1,4 @@
-import './Nav.css'
+import './LavNav.css'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExchangeAlt, faCog } from "@fortawesome/free-solid-svg-icons"
