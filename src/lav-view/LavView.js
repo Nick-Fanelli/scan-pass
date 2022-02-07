@@ -25,9 +25,10 @@ const useEventListener = (eventName, handler, element = window) => {
 };
 
 
-export default function LavView({ currentTheme, setCurrentTheme, currentSchool, currentLav, currentUserName }) {
+export default function LavView({ currentTheme, setCurrentTheme, currentUser }) {
 
     const [students, setStudents] = useState([]);
+    const [lavLocation, setLavLocation] = useState("A100");
 
     function addStudent(student) {
         setStudents(prevStudents => {
@@ -83,8 +84,8 @@ export default function LavView({ currentTheme, setCurrentTheme, currentSchool, 
 
     return (
         <>
-            <LavNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentSchool={currentSchool} currentLav={currentLav} currentUserName={currentUserName} studentCount={students.length} />
-            <Lav theme={currentTheme} students={students} processData={processData} currentSchool={currentSchool} currentLav={currentLav} currentUserName={currentUserName} studentCount={students.length} />
+            <LavNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} studentCount={students.length} lavLocation={lavLocation} />
+            <Lav theme={currentTheme} students={students} processData={processData} />
         </>
     );
 
