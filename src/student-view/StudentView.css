@@ -1,0 +1,72 @@
+#student-view-content {
+    display: flex;
+    height: calc(100vh - 4em);
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
+}
+
+#student-view-content .col {
+    width: 50%;
+    height: 100%;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+}
+
+#student-view-content #current-pass {
+    width: 23em;
+    height: 30em;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    position: relative;
+}
+
+#student-view-content #current-pass #arrival-location-header {
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.401);
+    height: 91.5px;
+}
+
+#student-view-content #current-pass #movement-status {
+    background-color: rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.401);
+    height: 70px;
+}
+
+#student-view-content #current-pass h1 {
+    font-family: "Roboto";
+    font-weight: bold;
+    text-align: center;
+    color: #ffffff;
+}
+
+#student-view-content #current-pass #close-pass-button {
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    line-height: 30px;
+    font-size: 30px;
+    text-align: center;
+    font-family: "Roboto";
+    background-color: #ffffff;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.401);
+}
+
+#student-view-content #current-pass p {
+    color: #ffffff;
+    font-family: "Roboto";
+    font-weight: 100;
+    text-align: center;
+}
+
+#student-view-content #current-pass h1#arrival-location {
+    font-size: 2rem;
+}
