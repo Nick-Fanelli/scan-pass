@@ -22,13 +22,12 @@ function App() {
     }, [currentTheme]);
 
     // Set View
-    const view = currentUser != null ? <LavView currentTheme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} /> : null;
-
+    const teacherView = currentUser != null ? <LavView currentTheme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} /> : null;
     const studentView = <StudentView theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} />
 
     return (
         <section id="content-wrapper" style={{backgroundColor: currentTheme.backgroundColor}}>
-            {studentView}
+            {teacherView}
         </section>
     );
 }

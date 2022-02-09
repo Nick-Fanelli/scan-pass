@@ -2,39 +2,66 @@
     display: flex;
     height: calc(100vh - 4em);
     width: 100vw;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
 }
 
 #student-view-content .col {
-    width: 50%;
-    height: 100%;
-    display: flex; 
-    justify-content: center;
-    align-items: center;
+    width: 33vw;
 }
 
 #student-view-content #current-pass {
     width: 23em;
     height: 30em;
     border-radius: 10px;
+    margin: 0 0 0 3em;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
     position: relative;
 }
 
+#student-view-content #current-pass .box-shadow {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.401);
+}
+
+#student-view-content #current-pass .pass-info h1 {
+    font-size: 3rem;
+}
+
 #student-view-content #current-pass #arrival-location-header {
     background-color: rgba(0, 0, 0, 0.15);
     border-radius: 10px 10px 0 0;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.401);
     height: 91.5px;
 }
 
 #student-view-content #current-pass #movement-status {
     background-color: rgba(0, 0, 0, 0.15);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.401);
     height: 70px;
+}
+
+#student-view-content #current-pass #movement-status h1.transform-up {
+    transform: translateY(-60px);
+}
+
+#student-view-content #current-pass #movement-status h2 {
+    display: none;
+}
+
+#student-view-content #current-pass #movement-status.returning-status {
+    cursor: pointer;
+}
+
+#student-view-content #current-pass #movement-status.returning-status:hover {
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+#student-view-content #current-pass #movement-status h2.transform-up {
+    display: block;
+    transform: translateY(-50px);
+    text-align: center;
+    color: #ffffff;
+    font-family: "Roboto";
 }
 
 #student-view-content #current-pass h1 {
@@ -69,4 +96,33 @@
 
 #student-view-content #current-pass h1#arrival-location {
     font-size: 2rem;
+}
+
+#student-view-content #create-pass {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    align-items: center;
+}
+
+#student-view-content #create-pass .new-pass-btn {
+    width: 14em;
+    height: 14em;
+    margin: 1em 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#student-view-content #create-pass .new-pass-btn:hover * {
+    opacity: 100%;
+}
+
+#student-view-content #create-pass .new-pass-btn * {
+    width: 50%;
+    height: 50%;
+    opacity: 80%;
 }
