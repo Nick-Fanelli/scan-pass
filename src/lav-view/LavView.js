@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 
+import './LavView.css'
+
 import LavNav from "./LavNav"
 import Lav from "./Lav"
 import ExchangeLocationPopup from './ExchangeLocationPopup';
@@ -64,6 +66,16 @@ export default function LavView({ currentTheme, setCurrentTheme, currentUser }) 
         }
     }
 
+    function handleClearAllStudents() {
+        
+        let result = window.confirm("Are you sure you want to end all the current bathroom passes?");
+
+        if(result) {
+            setStudents([]);
+            // TODO: Update in database by ending all passes   
+        }
+    }
+
     // Key Press Handler
     const handler = ({ key }) => {
         if(key.match(ValidInputRegex)) {
@@ -89,6 +101,12 @@ export default function LavView({ currentTheme, setCurrentTheme, currentUser }) 
                 <ExchangeLocationPopup theme={currentTheme} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} schoolLocation={currentUser.userLocation} setLavLocation={setLavLocation} /> :
                 null
             }
+            <div id="button-controls">
+                <div className="button-wrapper">
+                    <button style={{backgroundColor: currentTheme.offset, color: currentTheme.text}}>Manually Add Student</button>
+                    <button style={{backgroundColor: currentTheme.offset, color: currentTheme.text}} onClick={handleClearAllStudents}>Clear All Students</button>
+                </div>
+            </div>
         </>
     );
 
