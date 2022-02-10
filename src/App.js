@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { User, UserLocation } from "./User"
 import { Theme, THEME_LOCAL_STORAGE_KEY } from "./Theme"
 
-import LavView from './lav-view/LavView'
 import StudentView from './student-view/StudentView'
+import TeacherView from './teacher-view/TeacherView'
 
 function App() {
     const [currentTheme, setCurrentTheme] = useState(Theme.LightTheme);
@@ -22,7 +22,7 @@ function App() {
     }, [currentTheme]);
 
     // Set View
-    const teacherView = currentUser != null ? <LavView currentTheme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} /> : null;
+    const teacherView = <TeacherView currentUser={currentUser} currentTheme={currentTheme} setCurrentTheme={setCurrentTheme} />
     const studentView = <StudentView theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} />
 
     return (

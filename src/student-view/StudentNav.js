@@ -8,7 +8,7 @@ export default function StudentNav({ theme, setCurrentTheme, currentUser }) {
 
     return (
 
-        <nav style={{backgroundColor: theme.offset}}>
+        <nav id="student-nav" style={{backgroundColor: theme.offset}}>
             <div>
                 <h2 style={{color: theme.text}}>{currentUser.userLocation.displayName}</h2>
             </div>

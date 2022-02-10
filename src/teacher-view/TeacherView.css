@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+#teacher-nav {
+    height: 4em;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2em;
+    align-items: center;
+}
+
+#teacher-nav h1 {
+    font-size: 1.5rem;
+    font-family: "Roboto";
+    font-weight: 100;
+    margin: 0;
+}
+
+#teacher-nav .nav-ending {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#teacher-nav #settings-button {
+    margin: 0 0 0 0.75em;
+}
+
+#teacher-nav #settings-button:hover {
+    opacity: 50%;
+}
+
+#teacher-view .content {
+    height: calc(100vh - 4em);
+    width: 100vw;
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
+}
+
+#teacher-view .content #controls {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: column;
+    height: 100%;
+    padding: 0 0 0 5vw;
+    cursor: pointer;
+}
+
+#teacher-view .content #controls .button-control {
+    height: 15em;
+    width: 15em;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+#teacher-view .content #controls .button-control:hover {
+    filter: brightness(90%);
+}
+
+#teacher-view .content #controls .button-control .fa-icon {
+    font-size: 4rem;
+}
+
+#teacher-view .content #controls .button-control h2 {
+    font-family: "Roboto";
+    font-weight: 200;
+    font-size: 2rem;
+    margin: 1em 0 0 0;
+}
+
+#teacher-nav #settings-button {
+    margin: 0 0 0 0.75em;
+}
+
+#teacher-nav #settings-button {
+    font-size: 1.5rem;
+    cursor: pointer;
+}

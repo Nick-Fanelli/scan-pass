@@ -1,14 +1,15 @@
 import './LavNav.css'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExchangeAlt, faCog } from "@fortawesome/free-solid-svg-icons"
-import { Theme } from '../Theme'
+import { faExchangeAlt, faCog, faAngleLeft } from "@fortawesome/free-solid-svg-icons"
+import { Theme } from '../../Theme'
 
-export default function LavNav({ theme, setCurrentTheme, currentUser, studentCount, lavLocation, setIsExchangeLocationPopupOpen }) {
+export default function LavNav({ theme, setCurrentTheme, currentUser, studentCount, lavLocation, setIsExchangeLocationPopupOpen, handleGoHome }) {
 
     return (
-        <nav style={{backgroundColor: theme.offset}}>
+        <nav id="lav-nav" style={{backgroundColor: theme.offset}}>
             <div>
+                <FontAwesomeIcon style={{color: theme.text}} icon={faAngleLeft} id="go-back-button" onClick={handleGoHome} />
                 <h2 style={{color: theme.text}}>{currentUser.userLocation.displayName}</h2>
             </div>
             <div>
