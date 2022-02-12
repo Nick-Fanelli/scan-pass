@@ -6,7 +6,7 @@ import LavNav from "./LavNav"
 import Lav from "./Lav"
 import ExchangeLocationPopup from './ExchangeLocationPopup';
 
-import { UserLocation } from '../../User';
+import { SchoolLocations } from '../../User';
 
 const ValidInputRegex = /[0-9]|Enter/gi;
 const ValidStudentIDRegex = /^[0-9]{5}$/
@@ -33,7 +33,7 @@ const useEventListener = (eventName, handler, element = window) => {
 export default function LavView({ currentUser, currentTheme, setCurrentTheme, handleGoHome }) {
 
     const [students, setStudents] = useState([]);
-    const [lavLocation, setLavLocation] = useState(UserLocation.WHS.lavLocations[0]);
+    const [lavLocation, setLavLocation] = useState(SchoolLocations.WHS.lavLocations[0]);
     const [isExchangeLocationPopupOpen, setIsExchangeLocationPopupOpen] = useState(false);
 
     function processData(data, timestamp) {
@@ -76,6 +76,13 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
         }
     }
 
+    function handleManuallyAddStudent() {
+        const idPrompt = window.prompt("Enter Student ID");
+
+        if(idPrompt)
+            processData(idPrompt, Date.now());
+    }
+
     // Key Press Handler
     const handler = ({ key }) => {
         if(key.match(ValidInputRegex)) {
@@ -103,7 +110,7 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
             }
             <div id="button-controls">
                 <div className="button-wrapper">
-                    <button style={{backgroundColor: currentTheme.offset, color: currentTheme.text}}>Manually Add Student</button>
+                    <button style={{backgroundColor: currentTheme.offset, color: currentTheme.text}} onClick={handleManuallyAddStudent}>Manually Add Student</button>
                     <button style={{backgroundColor: currentTheme.offset, color: currentTheme.text}} onClick={handleClearAllStudents}>Clear All Students</button>
                 </div>
             </div>

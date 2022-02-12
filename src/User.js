@@ -1,4 +1,4 @@
-export const UserLocation = {
+export const SchoolLocations = {
     WMS: {
         displayName: "Williamstown Middle School",
         lavLocations: [
@@ -18,9 +18,17 @@ export const UserLocation = {
     }
 }
 
+export const UserType = {
+    Admin: "Admin",
+    Teacher: "Teacher",
+    Student: "Student"
+}
+
 export class User {
 
-    constructor(email, name, userLocation) {
+    constructor(userType, userID, email, name, userLocation) {
+        this.userType = userType;
+        this.userID = userID;
         this.email = email;
         this.name = name;
         this.userLocation = userLocation;

@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRestroom, faDoorOpen } from "@fortawesome/free-solid-svg-icons"
+import { faRestroom, faDoorOpen, faWindowMinimize } from "@fortawesome/free-solid-svg-icons"
 
 import StudentNav from './StudentNav';
-import { Pass } from '../Pass';
+import { Pass, PassFactory } from '../Pass';
 
 import './StudentView.css'
 
 const PassStatus = {
     Departing: { displayName: "Departing", displayColor: "#FFA500" },
     AtLocation: { displayName: "At Location", displayColor: "#90ee90" },
-    Returning: { displayName: "Returning", displayColor: "#ff0000" }
+    Returning: { displayName: "Returning", displayColor: "#ff0000" },
+    Unknown: { displayName: null, displayColor: "#0390fc" }
 }
 
 export default function StudentView({ theme, setCurrentTheme, currentUser }) {
@@ -20,7 +21,7 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
     const [isTimerActive, setTimerActive] = useState(false);
 
     const [currentPass, setCurrentPass] = useState(null);
-    const [passStatus, setPassStatus] = useState(null);
+    const [passStatus, setPassStatus] = useState();
 
     function resetTimer() {
         setTimerActive(true);
@@ -68,13 +69,12 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
 
     function handleCreateBathroomPass() {
         // Create Pass
-        setCurrentPass(new Pass(
-            "Nick Fanelli",
-            "45563",
-            "C201",
+        setCurrentPass(PassFactory.CreatBathroomPass(
+            currentUser.userID,
+            currentUser.userID,
+            "A101",
             "12:00pm",
-            "C200 Lav",
-            "12:05pm"
+            "A100 Lav"
         ));
 
         // Set Status TODO: Make automatic
@@ -83,6 +83,23 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
         // Reset Timer
         resetTimer();
 
+    }
+
+    function handleCreateRoomPass() {
+
+        // Create Pass
+        setCurrentPass(PassFactory.CreateRoomPass(
+            currentUser.userID,
+            currentUser.userID,
+            "A101",
+            "12:00pm",
+            "A102"
+        ));
+
+        setPassStatus(PassStatus.Unknown);
+
+        // Reset timer
+        resetTimer();
     }
 
     let calculatedMinutes = Math.floor(seconds / 60);
@@ -125,7 +142,7 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
                     <div className="new-pass-btn" style={{backgroundColor: theme.offset}} onClick={handleCreateBathroomPass}>
                         <FontAwesomeIcon style={{color: theme.text}} icon={faRestroom} />
                     </div>
-                    <div className="new-pass-btn" style={{backgroundColor: theme.offset}}>
+                    <div className="new-pass-btn" style={{backgroundColor: theme.offset}} onClick={handleCreateRoomPass}>
                         <FontAwesomeIcon style={{color: theme.text}} icon={faDoorOpen} />
                     </div>
                 </div>

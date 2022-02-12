@@ -39,7 +39,7 @@
 
 #teacher-view .content #controls {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     flex-direction: column;
     height: 100%;
     padding: 0 0 0 5vw;
@@ -55,6 +55,7 @@
     align-items: center;
     flex-direction: column;
     cursor: pointer;
+    margin: 2em 0;
 }
 
 #teacher-view .content #controls .button-control:hover {
@@ -79,4 +80,20 @@
 #teacher-nav #settings-button {
     font-size: 1.5rem;
     cursor: pointer;
+}
+
+#teacher-view #your-passes .pass-container {
+    width: 30em;
+    margin: 0 4em 0 0;
+    border-radius: 10px;
+    height: 34em;   
+}
+
+#teacher-view #your-passes .pass-container h1 {
+    padding: 0.75em 0 0 0;
+    text-align: center;
+    font-size: 1.75rem;
+    font-family: "Roboto";
+    font-weight: 100;
+    margin: 0;
 }

@@ -28,7 +28,7 @@ export default function TeacherView({ currentUser, currentTheme: theme, setCurre
         <section id="teacher-view">
             
             <nav id="teacher-nav" style={{backgroundColor: theme.offset}}>
-                <h1 style={{color: theme.text}}>{currentUser.userLocation.displayName}</h1>
+                <h1 style={{color: theme.text}}>Teacher Portal</h1>
                 <div className="nav-ending">
                     <h1 style={{color: theme.text}}>{currentUser.name}</h1>
                     <FontAwesomeIcon id="settings-button" style={{color: theme.text}} icon={faCog} onClick={() => setCurrentTheme(theme === Theme.LightTheme ? Theme.DarkTheme : Theme.LightTheme)} />
@@ -47,7 +47,11 @@ export default function TeacherView({ currentUser, currentTheme: theme, setCurre
                     </div>
                 </div>
                 <div id="your-passes" className="col">
-
+                    <div className="pass-container" style={{backgroundColor: theme.offset}}>
+                        <div className="header">
+                            <h1 style={{color: theme.text}}>Your Passes</h1>
+                        </div>
+                    </div>
                 </div>
             </section>
 
