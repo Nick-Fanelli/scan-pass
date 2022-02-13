@@ -16,7 +16,7 @@ export default function ExchangeLocationPopup({ theme, setIsExchangeLocationPopu
             <div className="box" style={{backgroundColor: theme.backgroundColor, border: "1px solid" + theme.offset}}>
                 <span className="close-icon" onClick={handleClose} style={{backgroundColor: theme.backgroundColor, color: theme.text}}>x</span>
                 <div className="header" style={{backgroundColor: theme.offset}}>
-                    <h1 style={{color: theme.text}}>Select Location</h1>
+                    <h1 style={{color: theme.text}}>Select Lav Location</h1>
                 </div>
                 <div className="content">
                     <div className="selections" style={{backgroundColor: theme.offset}}>

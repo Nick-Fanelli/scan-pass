@@ -33,7 +33,7 @@ const useEventListener = (eventName, handler, element = window) => {
 export default function LavView({ currentUser, currentTheme, setCurrentTheme, handleGoHome }) {
 
     const [students, setStudents] = useState([]);
-    const [lavLocation, setLavLocation] = useState(SchoolLocations.WHS.lavLocations[0]);
+    const [lavLocation, setLavLocation] = useState(null);
     const [isExchangeLocationPopupOpen, setIsExchangeLocationPopupOpen] = useState(false);
 
     function processData(data, timestamp) {
@@ -101,19 +101,29 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
 
     return (
         <>
-            <LavNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} studentCount={students.length} lavLocation={lavLocation} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} handleGoHome={handleGoHome} />
-            <Lav theme={currentTheme} students={students} processData={processData} />
+
             {
-                isExchangeLocationPopupOpen ? 
+                isExchangeLocationPopupOpen || lavLocation == null ? 
                 <ExchangeLocationPopup theme={currentTheme} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} schoolLocation={currentUser.userLocation} setLavLocation={setLavLocation} /> :
                 null
             }
+
+            {
+            lavLocation != null ?
+
+            <>
+            <LavNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} studentCount={students.length} lavLocation={lavLocation} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} handleGoHome={handleGoHome} />
+            <Lav theme={currentTheme} students={students} processData={processData} />
             <div id="button-controls">
                 <div className="button-wrapper">
                     <button style={{backgroundColor: currentTheme.offset, color: currentTheme.text}} onClick={handleManuallyAddStudent}>Manually Add Student</button>
                     <button style={{backgroundColor: currentTheme.offset, color: currentTheme.text}} onClick={handleClearAllStudents}>Clear All Students</button>
                 </div>
             </div>
+            </>
+
+            : null
+            }
         </>
     );
 
