@@ -26,9 +26,9 @@ function App() {
     // Set View
     const loginView = <LoginView setCurrentUser={setCurrentUser} />
     const teacherView = <TeacherView currentUser={currentUser} currentTheme={currentTheme} setCurrentTheme={setCurrentTheme} />
-    const studentView = <StudentView theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} />
+    const studentView = <StudentView theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} />    
 
-    let currentView = null;
+    let currentView = loginView;
     if(currentUser) {
         switch(currentUser.userType) {
             case UserType.Admin:
@@ -42,8 +42,6 @@ function App() {
             default:
                 break;
         }
-    } else {
-        currentView = loginView;
     }
 
     return (
