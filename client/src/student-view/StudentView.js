@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRestroom, faDoorOpen, faWindowMinimize } from "@fortawesome/free-solid-svg-icons"
+import { faRestroom, faDoorOpen } from "@fortawesome/free-solid-svg-icons"
 
 import StudentNav from './StudentNav';
-import { Pass, PassFactory } from '../Pass';
+import { PassFactory } from '../Pass';
 
 import './StudentView.css'
 

@@ -1,7 +1,7 @@
 import './StudentNav.css'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExchangeAlt, faCog } from "@fortawesome/free-solid-svg-icons"
+import { faCog } from "@fortawesome/free-solid-svg-icons"
 import { Theme } from '../Theme'
 
 export default function StudentNav({ theme, setCurrentTheme, currentUser }) {
