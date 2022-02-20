@@ -19,6 +19,7 @@ export const SchoolLocations = {
 }
 
 export const UserType = {
+    DistrictAdmin: "DistrictAdmin",
     Admin: "Admin",
     Teacher: "Teacher",
     Student: "Student"
@@ -26,10 +27,9 @@ export const UserType = {
 
 export class User {
 
-    constructor(userType, userID, email, name, userLocation) {
+    constructor(userDatabaseID, userType, name, userLocation) {
+        this.userDatabaseID = userDatabaseID;
         this.userType = userType;
-        this.userID = userID;
-        this.email = email;
         this.name = name;
         this.userLocation = userLocation;
     }
