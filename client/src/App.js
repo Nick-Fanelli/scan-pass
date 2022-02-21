@@ -5,6 +5,7 @@ import { Theme, THEME_LOCAL_STORAGE_KEY } from "./Theme"
 
 import LoginView from './LoginView'
 
+import DistrictAdminView from './district-admin-view/DistrictAdminView';
 import StudentView from './student-view/StudentView';
 import TeacherView from './teacher-view/TeacherView';
 
@@ -24,6 +25,7 @@ function App() {
     }, [currentTheme]);
 
     // Set View
+    const districtAdminView = <DistrictAdminView currentUser={currentUser} currentTheme={currentTheme} setCurrentTheme={setCurrentTheme} />
     const teacherView = <TeacherView currentUser={currentUser} currentTheme={currentTheme} setCurrentTheme={setCurrentTheme} />
     const studentView = <StudentView theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} />    
 
@@ -31,6 +33,9 @@ function App() {
     if(currentUser) {
         switch(currentUser.userType) {
             case UserType.Admin:
+                break;
+            case UserType.DistrictAdmin:
+                currentView = districtAdminView;
                 break;
             case UserType.Student:
                 currentView = studentView;

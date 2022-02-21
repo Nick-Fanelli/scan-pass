@@ -1,0 +1,91 @@
+#district-admin-view {
+    display: flex;
+}
+
+#district-admin-view #sidebar {
+    width: 20em;
+    height: 100vh;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.201);
+    position: fixed;
+    top: 0;
+    left: -16em;
+}
+
+#district-admin-view #sidebar:hover {
+    left: 0;
+}
+
+#district-admin-view #sidebar-offset {
+    width: 4em;
+    height: 100vh;
+}
+
+#district-admin-view .content {
+    width: calc(100vw - 4em);
+    height: 100vh;
+}
+
+#district-admin-view #sidebar .controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1em;
+}
+
+#district-admin-view #sidebar h1 {
+    font-weight: 100;
+    margin: 0;
+}
+
+#district-admin-view #sidebar ul {
+    list-style: none;
+    font-family: "Roboto";
+    font-size: 1.5rem;
+    font-weight: 100;
+    padding: 0;
+}
+
+#district-admin-view #sidebar ul li {
+    cursor: pointer;
+    margin: 0;
+    padding: 0.75em 0;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    border-radius: 0 10px 10px 0;
+}
+
+#district-admin-view #sidebar ul .divider {
+    height: 1px;
+    width: 94%;
+    margin: 0.5em 0 0.5em 3%;
+    opacity: 25%;
+}
+
+#district-admin-view #sidebar ul li p {
+    filter: brightness(120%);
+    margin: 0;
+}
+
+#district-admin-view #sidebar ul li.active {
+    filter: brightness(80%);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.201);
+}
+
+#district-admin-view #sidebar ul li:hover {
+    filter: brightness(80%);
+}
+
+#district-admin-view #sidebar ul li .icon {
+    margin: 0 1em 0 1em;
+}
+
+#district-admin-view #settings-button  {
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+#district-admin-view #settings-button:hover {
+    opacity: 50%;
+}

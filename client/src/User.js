@@ -22,7 +22,7 @@ export const UserType = {
     DistrictAdmin: "DistrictAdmin",
     Admin: "Admin",
     Teacher: "Teacher",
-    Student: "Student"
+    Student: "Student",
 }
 
 export class User {
