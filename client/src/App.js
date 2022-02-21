@@ -50,9 +50,12 @@ function App() {
 
     return (
 
-        <section id="content-wrapper" style={{backgroundColor: currentTheme.backgroundColor}}>
+        <>
+        <section id="background" style={{backgroundColor: currentTheme.backgroundColor}}></section>
+        <section id="content-wrapper">
             {currentView}
         </section>
+        </>
     );
 }
 

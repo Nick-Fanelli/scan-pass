@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 
 import { server } from '../../ServerAPI';
 
@@ -13,28 +13,29 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
 
     const schoolSelectRef = useRef(null);
 
-    function syncWithDatabase() {
+    const syncWithDatabase = useCallback(() => {
         server.get('/school-locations/get-all/' + currentUser.databaseAuth).then((result) => {
             if(!result) {
                 console.error("Load School Locations: Fail");
                 return;
             }
 
-            setSchoolLocations(result.data);
+            // Sort Room Data
+            let schoolLocationsCopy = result.data;
+
+            schoolLocationsCopy.forEach((school) => {
+                school.bathroomLocations.sort();
+                school.roomLocations.sort();
+            });
+
+            setSchoolLocations([...schoolLocationsCopy]);
         });
-    }
+    }, [currentUser.databaseAuth]);
 
     // Load School Locations
     useEffect(() => {
-        server.get('/school-locations/get-all/' + currentUser.databaseAuth).then((result) => {
-            if(!result) {
-                console.error("Load School Locations: Fail");
-                return;
-            }
-
-            setSchoolLocations(result.data);
-        });
-    }, [currentUser.databaseAuth]);
+        syncWithDatabase();
+    }, [currentUser.databaseAuth, syncWithDatabase]);
 
     function handleUpdateRooms() {
         setCurrentSchoolLocationIndex(schoolSelectRef.current.selectedIndex);
@@ -78,6 +79,13 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
                         schoolLocations[currentSchoolLocationIndex].bathroomLocations.map((bathroom) => {
                             return <Room key={bathroom} currentUser={currentUser} currentTheme={currentTheme} room={bathroom} 
                             schoolLocationID={schoolLocations[currentSchoolLocationIndex]} syncWithDatabase={syncWithDatabase} isBathroom={true} /> 
+                        })
+                    }
+                    <div className="divider" style={{backgroundColor: currentTheme.text}}></div>
+                    {
+                        schoolLocations[currentSchoolLocationIndex].roomLocations.map((room) => {
+                            return <Room key={room} currentUser={currentUser} currentTheme={currentTheme} room={room} 
+                            schoolLocationID={schoolLocations[currentSchoolLocationIndex]} syncWithDatabase={syncWithDatabase} isBathroom={false} /> 
                         })
                     }
                 </ul>

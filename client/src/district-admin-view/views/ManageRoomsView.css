@@ -7,7 +7,7 @@
 
 #manage-rooms-view #room-list {
     width: 75%;
-    margin: 2em 0 0 0;
+    margin: 2em 0 2em 0;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.301);
     border-radius: 10px;
 }
@@ -54,6 +54,11 @@
     margin: 0;
 }
 
+#manage-rooms-view #room-list #rooms .divider {
+    width: 100%;
+    height: 1px;
+}
+
 #manage-rooms-view #room-list #rooms li:last-of-type {
     border-radius: 0 0 10px 10px;
 }
@@ -64,7 +69,19 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
 
+#manage-rooms-view #room-list #rooms li:first-of-type {
+    border-top: none !important;
+}
+
+#manage-rooms-view #room-list #rooms li:last-of-type {
+    border-bottom: none !important;
+}
+
+#manage-rooms-view #room-list #rooms li div {
+    display: flex;
+    align-items: center;
 }
 
 #manage-rooms-view #room-list #rooms li:hover {
@@ -78,15 +95,24 @@
     margin: 0 0 0 2em;
 }
 
-#manage-rooms-view #room-list #rooms li .controls {
-    margin: 0 2em 0 0;
+#manage-rooms-view #room-list #rooms li * {
+    width: 33%;
 }
 
-#manage-rooms-view #room-list #rooms li .controls .icon {
+#manage-rooms-view #room-list #rooms li .controls {
+    display: flex;
+    justify-content: flex-end;
+}
+
+#manage-rooms-view #room-list #rooms li .indicator-icon {
+    font-size: 1.5rem;
+}
+
+#manage-rooms-view #room-list #rooms li .icon {
     font-size: 1.15rem;
     cursor: pointer;
 }
 
-#manage-rooms-view #room-list #rooms li .controls .icon:nth-child(2) {
-    margin: 0 0 0 2em;
+#manage-rooms-view #room-list #rooms li .controls .icon:hover {
+    opacity: 50%;
 }

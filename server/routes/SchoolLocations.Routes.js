@@ -131,4 +131,48 @@ router.route('/delete-bathroom/:auth').post(async (req, res) => {
     res.status(200).send(); // OK
 });
 
+
+router.route('/delete-room/:auth').post(async (req, res) => {
+
+    const auth = req.params.auth;
+    const userAuth = await VerifyUserFromDatabaseID(auth);
+
+    if(!userAuth) {
+        res.status(401).send("Unauthorized Google Account"); // Unauthorized
+        return;
+    }
+
+    if(userAuth.userType !== "DistrictAdmin") {
+        res.status(403).send("Unauthorized Google Account"); // Forbidden
+        return;
+    }
+
+    // Get the params
+    const schoolLocationID = req.body.schoolLocationID;
+    const roomLocation = req.body.roomLocation;
+
+    if(!schoolLocationID || !roomLocation) {
+        res.status(400).send("Missing Body Args"); // Bad request
+        return;
+    }
+
+    const schoolLocation = await SchoolLocation.findById(schoolLocationID);
+
+    if(!schoolLocation) {
+        res.status(400).send("Could not find school location with requested ID!"); // Bad Request
+        return;
+    }
+
+    const index = schoolLocation.roomLocations.indexOf(roomLocation);
+
+    if(index <= -1) {
+        res.status(400).send("Could not find room location with requested ID!"); // Bad Request
+        return;
+    }
+
+    schoolLocation.roomLocations.splice(index, 1);
+    schoolLocation.save();
+    res.status(200).send(); // OK
+});
+
 module.exports = router;
