@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
-import { User, SchoolLocations, UserType } from "./User";
+import { UserType } from "./User";
 import { Theme, THEME_LOCAL_STORAGE_KEY } from "./Theme"
-
-import { server } from './ServerAPI';
 
 import LoginView from './LoginView'
 
@@ -24,19 +22,6 @@ function App() {
     useEffect(() => {
         localStorage.setItem(THEME_LOCAL_STORAGE_KEY, JSON.stringify(currentTheme));
     }, [currentTheme]);
-
-    // On User Change
-    // useEffect(() => {
-
-    //     if(!currentUser)
-    //         return;
-
-    //     // Get all school locations
-    //     const schoolLocations = server.get('/school-locations/get/' + currentUser.databaseAuth).then((result) => {
-    //         console.log(result);
-    //     });
-
-    // }, [currentUser])
 
     // Set View
     const teacherView = <TeacherView currentUser={currentUser} currentTheme={currentTheme} setCurrentTheme={setCurrentTheme} />

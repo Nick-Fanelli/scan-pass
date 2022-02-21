@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 export default function ExchangeLocationPopup({ theme, setIsExchangeLocationPopupOpen, lavLocations, setLavLocation }) {
     function handleClose() {
         setIsExchangeLocationPopupOpen(false);

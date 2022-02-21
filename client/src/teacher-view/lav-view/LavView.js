@@ -37,7 +37,7 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
 
     const [students, setStudents] = useState([]);
     const [lavLocation, setLavLocation] = useState(null);
-    const [isExchangeLocationPopupOpen, setIsExchangeLocationPopupOpen] = useState(false);
+    const [isExchangeLocationPopupOpen, setIsExchangeLocationPopupOpen] = useState(true);
 
     useEffect(() => {
         server.get('/school-locations/get/' + currentUser.databaseAuth).then((result) => {
@@ -50,6 +50,13 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
         if(lavLocations)
             setIsLoaded(true);
     }, [lavLocations]);
+
+    // Check for exit
+    useEffect(() => {
+        if(!isExchangeLocationPopupOpen && !lavLocation) {
+            handleGoHome();
+        }
+    }, [isExchangeLocationPopupOpen, lavLocation, handleGoHome]);
 
     function processData(data, timestamp) {
         // Validate Student ID
