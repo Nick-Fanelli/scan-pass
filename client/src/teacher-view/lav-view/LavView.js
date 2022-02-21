@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
 
+import { server } from '../../ServerAPI';
+
 import './LavView.css'
 
 import LavNav from "./LavNav"
 import Lav from "./Lav"
 import ExchangeLocationPopup from './ExchangeLocationPopup';
-
-import { SchoolLocations } from '../../User';
 
 const ValidInputRegex = /[0-9]|Enter/gi;
 const ValidStudentIDRegex = /^[0-9]{5}$/
@@ -32,9 +32,24 @@ const useEventListener = (eventName, handler, element = window) => {
 
 export default function LavView({ currentUser, currentTheme, setCurrentTheme, handleGoHome }) {
 
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [lavLocations, setLavLocations] = useState(null);
+
     const [students, setStudents] = useState([]);
     const [lavLocation, setLavLocation] = useState(null);
     const [isExchangeLocationPopupOpen, setIsExchangeLocationPopupOpen] = useState(false);
+
+    useEffect(() => {
+        server.get('/school-locations/get/' + currentUser.databaseAuth).then((result) => {
+            setLavLocations(result.data.bathroomLocations);
+        });
+    }, [currentUser.databaseAuth]);
+
+    // Is Loaded
+    useEffect(() => {
+        if(lavLocations)
+            setIsLoaded(true);
+    }, [lavLocations]);
 
     function processData(data, timestamp) {
         // Validate Student ID
@@ -99,32 +114,34 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
     
     useEventListener("keydown", handler);
 
-    return (
-        <>
-
-            {
-                isExchangeLocationPopupOpen || lavLocation == null ? 
-                <ExchangeLocationPopup theme={currentTheme} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} schoolLocation={currentUser.userLocation} setLavLocation={setLavLocation} /> :
-                null
-            }
-
-            {
-            lavLocation != null ?
-
+    if(isLoaded) {
+        return (
             <>
-            <LavNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} studentCount={students.length} lavLocation={lavLocation} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} handleGoHome={handleGoHome} />
-            <Lav theme={currentTheme} students={students} processData={processData} />
-            <div id="button-controls">
-                <div className="button-wrapper">
-                    <button style={{backgroundColor: currentTheme.offset, color: currentTheme.text}} onClick={handleManuallyAddStudent}>Manually Add Student</button>
-                    <button style={{backgroundColor: currentTheme.offset, color: currentTheme.text}} onClick={handleClearAllStudents}>Clear All Students</button>
+                {
+                    isExchangeLocationPopupOpen || lavLocation == null ? 
+                    <ExchangeLocationPopup theme={currentTheme} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} lavLocations={lavLocations} setLavLocation={setLavLocation} /> :
+                    null
+                }
+
+                {
+                lavLocation != null ?
+
+                <>
+                <LavNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} studentCount={students.length} lavLocation={lavLocation} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} handleGoHome={handleGoHome} />
+                <Lav theme={currentTheme} students={students} processData={processData} />
+                <div id="button-controls">
+                    <div className="button-wrapper">
+                        <button style={{backgroundColor: currentTheme.offset, color: currentTheme.text}} onClick={handleManuallyAddStudent}>Manually Add Student</button>
+                        <button style={{backgroundColor: currentTheme.offset, color: currentTheme.text}} onClick={handleClearAllStudents}>Clear All Students</button>
+                    </div>
                 </div>
-            </div>
+                </>
+
+                : null
+                }
             </>
-
-            : null
-            }
-        </>
-    );
-
+        );
+    } else {
+        return null; // TODO: Loading Screen
+    }
 }

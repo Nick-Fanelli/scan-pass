@@ -36,13 +36,13 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
         // Verify from database
         try {
             // Verify User
-            const response = await axios.post('http://localhost:5000/api/users/verify', {
+            const response = await server.post('/users/verify', {
                 workspaceUserID: workspaceUserID,
                 googleID: googleID
             });
 
             setCurrentUser(new User(
-                response.data.id,
+                response.data._id,
                 response.data.userType,
                 username,
                 SchoolLocations.WHS

@@ -1,5 +1,6 @@
-export default function ExchangeLocationPopup({ theme, setIsExchangeLocationPopupOpen, schoolLocation, setLavLocation }) {
+import { useEffect } from "react";
 
+export default function ExchangeLocationPopup({ theme, setIsExchangeLocationPopupOpen, lavLocations, setLavLocation }) {
     function handleClose() {
         setIsExchangeLocationPopupOpen(false);
     }
@@ -7,7 +8,7 @@ export default function ExchangeLocationPopup({ theme, setIsExchangeLocationPopu
     function handleLavChange(e) {
         const lavLocationIndex = e.target.getAttribute("location");
         
-        setLavLocation(schoolLocation.lavLocations[lavLocationIndex]);
+        setLavLocation(lavLocations[lavLocationIndex]);
         setIsExchangeLocationPopupOpen(false);
     }
 
@@ -22,11 +23,11 @@ export default function ExchangeLocationPopup({ theme, setIsExchangeLocationPopu
                     <div className="selections" style={{backgroundColor: theme.offset}}>
                         <ul>
                             {
-                                schoolLocation.lavLocations.map(location => {
+                                lavLocations.map(location => {
                                     return <li style={{
                                         color: theme.text, 
                                         backgroundColor: theme.backgroundColor
-                                    }} key={location} location={schoolLocation.lavLocations.indexOf(location)} onClick={(e) => handleLavChange(e)}>{location}</li>
+                                    }} key={location} location={lavLocations.indexOf(location)} onClick={(e) => handleLavChange(e)}>{location}</li>
                                 })
                             }
                         </ul>

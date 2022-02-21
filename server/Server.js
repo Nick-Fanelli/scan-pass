@@ -10,13 +10,12 @@ const port = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cors());
 
-// Import Models
-const User = require('./models/User.Model');
-
 // Bind Routes
 const UserRoutes = require('./routes/User.Routes');
+const SchoolLocationRoutes = require('./routes/SchoolLocations.Routes');
 
 app.use('/api/users', UserRoutes);
+app.use('/api/school-locations', SchoolLocationRoutes);
 
 // Connect to MongoDB Database
 const uri = process.env.ATLAS_URI;

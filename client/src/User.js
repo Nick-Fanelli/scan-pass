@@ -27,8 +27,8 @@ export const UserType = {
 
 export class User {
 
-    constructor(userDatabaseID, userType, name, userLocation) {
-        this.userDatabaseID = userDatabaseID;
+    constructor(databaseAuth, userType, name, userLocation) {
+        this.databaseAuth = databaseAuth;
         this.userType = userType;
         this.name = name;
         this.userLocation = userLocation;

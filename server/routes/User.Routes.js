@@ -20,7 +20,7 @@ router.route('/verify').post((req, res) => {
                 if(userGoogleID === googleID) { // Valid
                     res.send(user);
                 } else {
-                    res.status(403).send(); // Forbidden
+                    res.status(401).send("Your googleID does not match with database (contact your admin)"); // Unauthorized
                 }
             } else { // If Google ID has never been verified, verify it...
                 user.googleID = googleID;
