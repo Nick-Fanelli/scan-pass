@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartLine, faIdBadge, faDoorClosed, faCog } from '@fortawesome/free-solid-svg-icons';
+import { faChartLine, faIdBadge, faDoorClosed, faCog, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import { Theme } from '../Theme';
 
@@ -12,12 +12,13 @@ import DAManageRoomsView from './views/ManageRoomsView'
 const View = {
     Overview: "Overview",
     HallMonitor: "Hall Monitor",
-    Rooms: "Rooms"
+    Rooms: "Rooms",
+    Users: "Users"
 }
 
 export default function DistrictAdminView({ currentUser, currentTheme, setCurrentTheme }) {
 
-    const [currentView, setCurrentView] = useState(View.Rooms);
+    const [currentView, setCurrentView] = useState(View.Overview);
     const manageRoomsView = <DAManageRoomsView currentUser={currentUser} currentTheme={currentTheme} />
     
     let contentView = null;
@@ -48,6 +49,9 @@ export default function DistrictAdminView({ currentUser, currentTheme, setCurren
                     <div className="divider" style={{backgroundColor: currentTheme.text}}></div>
                     <li style={{backgroundColor: currentTheme.offset}} className={currentView === View.Rooms ? "active" : null} onClick={() => setCurrentView(View.Rooms)}>
                         <p>Rooms<FontAwesomeIcon className="icon" icon={faDoorClosed} /></p>
+                    </li>
+                    <li style={{backgroundColor: currentTheme.offset}} className={currentView === View.Users ? "active" : null} onClick={() => setCurrentView(View.Users)}>
+                        <p>Users<FontAwesomeIcon className="icon" icon={faUser} /></p>
                     </li>
                 </ul>
             </div>

@@ -14,7 +14,7 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
 
     const [isLoading, setIsLoading] = useState(true);
 
-    const handleOnLoginSuccess = useCallback(async (data) => {
+    const handleOnLoginSuccess = useCallback((data) => {
         // Pull Data from Google User
         const googleID = data.googleId;
         const username = data.profileObj.name;
@@ -28,28 +28,21 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
             return;
         }
 
-        // Verify from database
-        try {
-            // Verify User
-            const response = await server.post('/users/verify', {
-                workspaceUserID: workspaceUserID,
-                googleID: googleID
-            });
-
-            // FIXME: If google id is session saved and not in db it goes to blank screen
-
+        server.post('/users/verify', {
+            workspaceUserID: workspaceUserID,
+            googleID: googleID
+        }).then((response) => {
             setCurrentUser(new User(
                 googleID,
                 response.data.userType,
                 username,
                 SchoolLocations.WHS
             ));
-
-        } catch(err) {
-            console.error(err);
+        }).catch((error) => {
+            console.error(error);
             setIsLoading(false);
             return;
-        }
+        });
 
         // Save to session storage
         sessionStorage.setItem(GOOGLE_DATA_SESSION_STORAGE_ID, JSON.stringify(data));
