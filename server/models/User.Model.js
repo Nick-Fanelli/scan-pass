@@ -10,7 +10,8 @@ const userSchema = new Schema({
     },
     googleID: {
         type: String,
-        required: false
+        required: false,
+        unique: true
     },
     userType: { // Student, Teacher, Admin, or DistrictAdmin
         type: String,

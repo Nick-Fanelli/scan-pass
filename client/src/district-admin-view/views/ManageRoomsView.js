@@ -14,7 +14,7 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
     const schoolSelectRef = useRef(null);
 
     const syncWithDatabase = useCallback(() => {
-        server.get('/school-locations/get-all/' + currentUser.databaseAuth).then((result) => {
+        server.get('/school-locations/get-all/' + currentUser.googleID).then((result) => {
             if(!result) {
                 console.error("Load School Locations: Fail");
                 return;
@@ -47,7 +47,7 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
         // TODO: Make sure that 'room' is allowed
 
         // Update Database
-        server.post('/school-locations/add-bathroom/' + currentUser.databaseAuth, {
+        server.post('/school-locations/add-bathroom/' + currentUser.googleID, {
             schoolLocationID: schoolLocations[currentSchoolLocationIndex]._id,
             bathroomLocation: room
         }).then(() => {

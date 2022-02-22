@@ -31,7 +31,7 @@ router.route('/verify').post((req, res) => {
 
         }
         
-    })
+    });
 
 });
 

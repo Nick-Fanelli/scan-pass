@@ -21,7 +21,7 @@ export default function Room({ currentUser, currentTheme, room, schoolLocationID
         setIsBeingDeleted(true);
         
         if(isBathroom) { // Delete Bathroom
-            server.post('/school-locations/delete-bathroom/' + currentUser.databaseAuth, {
+            server.post('/school-locations/delete-bathroom/' + currentUser.googleID, {
                 schoolLocationID: schoolLocationID,
                 bathroomLocation: room
             }).then(() => {
@@ -30,7 +30,7 @@ export default function Room({ currentUser, currentTheme, room, schoolLocationID
                 setIsBeingDeleted(false);
             });
         } else { // Delete Room
-            server.post('/school-locations/delete-room/' + currentUser.databaseAuth, {
+            server.post('/school-locations/delete-room/' + currentUser.googleID, {
                 schoolLocationID: schoolLocationID,
                 roomLocation: room
             }).then(() => {

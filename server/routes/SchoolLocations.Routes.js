@@ -1,67 +1,30 @@
 const router = require('express').Router();
 const SchoolLocation = require('../models/SchoolLocation.Model');
-const User = require('../models/User.Model');
-const VerifyUserFromDatabaseID = require('../utils/VerifyUser');
+const { AuthLevel, authorize } = require('../middleware/AuthorizationMiddleware'); 
 
-router.route('/get/:auth').get(async (req, res) => {
+router.route('/get/:googleID').get(authorize(AuthLevel.Student), async (req, res) => {
+    const userLocation = req.body.user.schoolLocation;
 
-    const auth = req.params.auth;
-
-    const userAuth = await VerifyUserFromDatabaseID(auth);
-    
-    if(userAuth) { // Verified
-        const userLocation = userAuth.schoolLocation;
-
-        if(!userLocation) {
-            res.status(500).send("Unable to identify user location (must be set by administrator)");
-            return;
-        }
-
-        const schoolLocationData = await SchoolLocation.findById(userLocation);
-
-        res.send(schoolLocationData);
-    } else { // Not Verified
-        res.status(401).send("Unauthorized Google Account"); // Unauthorized
-    }
-});
-
-router.route('/get-all/:auth').get(async (req, res) => {
-    
-    const auth = req.params.auth;
-
-    const userAuth = await VerifyUserFromDatabaseID(auth);
-
-    if(userAuth) { // Verified
-
-        if(userAuth.userType === "DistrictAdmin") { // DistrictAdmin
-            const schoolLocationData = await SchoolLocation.find();
-
-            res.send(schoolLocationData);
-        } else { // Forbidden
-            res.status(403).send("Unauthorized Google Account"); // Forbidden
-        }
-        
-    } else { // Not Verified
-        res.status(401).send("Unauthorized Google Account"); // Unauthorized
-    }
-
-});
-
-router.route('/add-bathroom/:auth').post(async (req, res) => {
-
-    const auth = req.params.auth;
-    const userAuth = await VerifyUserFromDatabaseID(auth);
-
-    if(!userAuth) {
-        res.status(401).send("Unauthorized Google Account"); // Unauthorized
+    if(!userLocation) {
+        res.status(500).send("Unable to identify user location (must be set by administrator)");
         return;
     }
 
-    if(userAuth.userType !== "DistrictAdmin") {
-        res.status(403).send("Unauthorized Google Account"); // Forbidden
-        return;
+    const schoolLocationData = await SchoolLocation.findById(userLocation);
+
+    if(!schoolLocationData) {
+        res.status(400).send("Could not find school location with requested ID!"); // Bad Request
     }
 
+    res.send(schoolLocationData);
+});
+
+router.route('/get-all/:googleID').get(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
+    const schoolLocationData = await SchoolLocation.find();
+    res.send(schoolLocationData);
+});
+
+router.route('/add-bathroom/:googleID').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
     // Get the params
     const schoolLocationID = req.body.schoolLocationID;
     const bathroomLocation = req.body.bathroomLocation;
@@ -88,21 +51,7 @@ router.route('/add-bathroom/:auth').post(async (req, res) => {
     res.status(200).send();
 });
 
-router.route('/delete-bathroom/:auth').post(async (req, res) => {
-
-    const auth = req.params.auth;
-    const userAuth = await VerifyUserFromDatabaseID(auth);
-
-    if(!userAuth) {
-        res.status(401).send("Unauthorized Google Account"); // Unauthorized
-        return;
-    }
-
-    if(userAuth.userType !== "DistrictAdmin") {
-        res.status(403).send("Unauthorized Google Account"); // Forbidden
-        return;
-    }
-
+router.route('/delete-bathroom/:googleID').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
     // Get the params
     const schoolLocationID = req.body.schoolLocationID;
     const bathroomLocation = req.body.bathroomLocation;
@@ -132,21 +81,7 @@ router.route('/delete-bathroom/:auth').post(async (req, res) => {
 });
 
 
-router.route('/delete-room/:auth').post(async (req, res) => {
-
-    const auth = req.params.auth;
-    const userAuth = await VerifyUserFromDatabaseID(auth);
-
-    if(!userAuth) {
-        res.status(401).send("Unauthorized Google Account"); // Unauthorized
-        return;
-    }
-
-    if(userAuth.userType !== "DistrictAdmin") {
-        res.status(403).send("Unauthorized Google Account"); // Forbidden
-        return;
-    }
-
+router.route('/delete-room/:googleID').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
     // Get the params
     const schoolLocationID = req.body.schoolLocationID;
     const roomLocation = req.body.roomLocation;

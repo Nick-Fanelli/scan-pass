@@ -36,8 +36,10 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
                 googleID: googleID
             });
 
+            // FIXME: If google id is session saved and not in db it goes to blank screen
+
             setCurrentUser(new User(
-                response.data._id,
+                googleID,
                 response.data.userType,
                 username,
                 SchoolLocations.WHS
