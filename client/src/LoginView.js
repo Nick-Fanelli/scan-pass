@@ -1,11 +1,15 @@
-import axios from 'axios';
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 
 import GoogleLogin from 'react-google-login'
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFingerprint } from '@fortawesome/free-solid-svg-icons';
 
 import { SchoolLocations, User } from './User';
 
 import { server } from './ServerAPI';
+
+import './LoginView.css'
 
 const GOOGLE_DATA_SESSION_STORAGE_ID = "monroetwp-pass-system.sessionstorage.googleData";
 
@@ -61,15 +65,27 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
     }
 
     return (
-        <div>
-            <GoogleLogin 
-                clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-                buttonText="Login"
-                onSuccess={handleOnLoginSuccess}
-                onFailure={handleOnLoginFailure}
-                cookiePolicy={'single_host_origin'}
-            />
-        </div> 
+        <section id="login-view">
+            <section id="hero">
+                <div style={{color: currentTheme.text}}>
+                    <h1>Make Digital Hall Passes Easier!</h1>
+                    <p>Scan pass was designed with ease of use in mind by taking advantage of a barcode system.</p>
+                </div>
+                <div id="buttons">
+                    <GoogleLogin
+                        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+                        buttonText="Login"
+                        onSuccess={handleOnLoginSuccess}
+                        onFailure={handleOnLoginFailure}
+                        cookiePolicy={'single_host_origin'}
+                        render={renderProps => (
+                            <button onClick={renderProps.onClick} style={{color: currentTheme.text, backgroundColor: currentTheme.offset}}>Login</button>
+                        )}
+                    />
+                    <button style={{color: currentTheme.text, backgroundColor: currentTheme.offset}}>Help Me</button>
+                </div>
+            </section>
+        </section>
     );
 
 }

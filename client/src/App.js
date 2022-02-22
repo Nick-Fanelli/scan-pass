@@ -51,10 +51,10 @@ function App() {
     return (
 
         <>
-        <section id="background" style={{backgroundColor: currentTheme.backgroundColor}}></section>
-        <section id="content-wrapper">
-            {currentView}
-        </section>
+            <section id="background" style={{backgroundColor: currentTheme.backgroundColor}}></section>
+            <section id="content-wrapper">
+                {currentView}
+            </section>
         </>
     );
 }
