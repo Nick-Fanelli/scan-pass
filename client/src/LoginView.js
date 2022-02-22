@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import GoogleLogin from 'react-google-login'
 
@@ -12,6 +12,8 @@ const GOOGLE_DATA_SESSION_STORAGE_ID = "monroetwp-pass-system.sessionstorage.goo
 
 export default function LoginView({ currentTheme, setCurrentUser }) {
 
+    const [isLoading, setIsLoading] = useState(true);
+
     const handleOnLoginSuccess = useCallback(async (data) => {
         // Pull Data from Google User
         const googleID = data.googleId;
@@ -22,6 +24,7 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
         // Make sure GoogleID isn't null
         if(!googleID) {
             console.error("Couldn't locate a Google ID???");
+            setIsLoading(false);
             return;
         }
 
@@ -42,12 +45,14 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
 
         } catch(err) {
             console.error(err);
+            setIsLoading(false);
             return;
         }
 
         // Save to session storage
         sessionStorage.setItem(GOOGLE_DATA_SESSION_STORAGE_ID, JSON.stringify(data));
-    }, [setCurrentUser]);
+        setIsLoading(false);
+    }, [setCurrentUser, setIsLoading]);
 
     // Pull local storage google id
     useEffect(() => {
@@ -55,11 +60,16 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
 
         if(sessionSavedGoogleData) {
             handleOnLoginSuccess(JSON.parse(sessionSavedGoogleData));
+        } else {
+            setIsLoading(false);
         }
     }, [handleOnLoginSuccess]);
 
     function handleOnLoginFailure() {
     }
+
+    if(isLoading)
+        return null;
 
     return (
         <section id="login-view">
