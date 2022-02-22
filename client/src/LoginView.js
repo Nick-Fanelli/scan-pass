@@ -2,9 +2,6 @@ import React, { useCallback, useEffect } from 'react'
 
 import GoogleLogin from 'react-google-login'
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFingerprint } from '@fortawesome/free-solid-svg-icons';
-
 import { SchoolLocations, User } from './User';
 
 import { server } from './ServerAPI';
@@ -15,16 +12,7 @@ const GOOGLE_DATA_SESSION_STORAGE_ID = "monroetwp-pass-system.sessionstorage.goo
 
 export default function LoginView({ currentTheme, setCurrentUser }) {
 
-    // Pull local storage google id
-    useEffect(() => {
-        const sessionSavedGoogleData = sessionStorage.getItem(GOOGLE_DATA_SESSION_STORAGE_ID);
-
-        if(sessionSavedGoogleData) {
-            handleOnLoginSuccess(JSON.parse(sessionSavedGoogleData));
-        }
-    }, []);
-
-    async function handleOnLoginSuccess(data) {
+    const handleOnLoginSuccess = useCallback(async (data) => {
         // Pull Data from Google User
         const googleID = data.googleId;
         const username = data.profileObj.name;
@@ -59,7 +47,16 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
 
         // Save to session storage
         sessionStorage.setItem(GOOGLE_DATA_SESSION_STORAGE_ID, JSON.stringify(data));
-    }
+    }, [setCurrentUser]);
+
+    // Pull local storage google id
+    useEffect(() => {
+        const sessionSavedGoogleData = sessionStorage.getItem(GOOGLE_DATA_SESSION_STORAGE_ID);
+
+        if(sessionSavedGoogleData) {
+            handleOnLoginSuccess(JSON.parse(sessionSavedGoogleData));
+        }
+    }, [handleOnLoginSuccess]);
 
     function handleOnLoginFailure() {
     }
