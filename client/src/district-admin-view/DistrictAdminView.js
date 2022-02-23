@@ -7,7 +7,8 @@ import { Theme } from '../Theme';
 
 import './DistrictAdminView.css'
 
-import DAManageRoomsView from './views/ManageRoomsView'
+import ManageRoomsView from './views/ManageRoomsView'
+import ManageUsersView from './views/ManageUsersView';
 
 const View = {
     Overview: "Overview",
@@ -18,14 +19,19 @@ const View = {
 
 export default function DistrictAdminView({ currentUser, currentTheme, setCurrentTheme }) {
 
-    const [currentView, setCurrentView] = useState(View.Overview);
-    const manageRoomsView = <DAManageRoomsView currentUser={currentUser} currentTheme={currentTheme} />
-    
+    const [currentView, setCurrentView] = useState(View.Users);
+
+    const manageRoomsView = <ManageRoomsView currentUser={currentUser} currentTheme={currentTheme} />
+    const manageUsersView = <ManageUsersView currentUser={currentUser} currentTheme={currentTheme} />
+
     let contentView = null;
     switch(currentView) {
         case View.Rooms:
             contentView = manageRoomsView;
             break; 
+        case View.Users:
+            contentView = manageUsersView;
+            break;
         default:
             break;
     }

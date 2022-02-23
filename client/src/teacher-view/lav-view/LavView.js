@@ -43,7 +43,7 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
         server.get('/school-locations/get/' + currentUser.googleID).then((result) => {
             setLavLocations(result.data.bathroomLocations);
         });
-    }, [currentUser.databaseAuth]);
+    }, [currentUser.googleID]);
 
     // Is Loaded
     useEffect(() => {

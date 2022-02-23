@@ -11,7 +11,10 @@ const userSchema = new Schema({
     googleID: {
         type: String,
         required: false,
-        unique: true
+    },
+    userName: {
+        type: String,
+        required: false
     },
     userType: { // Student, Teacher, Admin, or DistrictAdmin
         type: String,

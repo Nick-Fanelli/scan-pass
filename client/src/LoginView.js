@@ -30,7 +30,8 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
 
         server.post('/users/verify', {
             workspaceUserID: workspaceUserID,
-            googleID: googleID
+            googleID: googleID,
+            userName: username
         }).then((response) => {
             setCurrentUser(new User(
                 googleID,
