@@ -17,6 +17,11 @@ export default function UserItem({ currentUser, user, syncWithDatabase }) {
     }
 
     function handleDeleteUser() {
+        const result = window.confirm("Are you sure you want to delete this user?");
+
+        if(!result)
+            return;
+        
         server.post('/users/delete-user/' + currentUser.googleID, {
             userID: user._id
         }).then(() => {
