@@ -2,6 +2,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPencilAlt, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { UserType } from "../../User";
 
+import { server } from "../../ServerAPI";
+
 export default function UserItem({ currentUser, user, syncWithDatabase }) {
 
     // Display User Type
@@ -15,7 +17,11 @@ export default function UserItem({ currentUser, user, syncWithDatabase }) {
     }
 
     function handleDeleteUser() {
-
+        server.post('/users/delete-user/' + currentUser.googleID, {
+            userID: user._id
+        }).then(() => {
+            syncWithDatabase();
+        })
     }
 
     return (

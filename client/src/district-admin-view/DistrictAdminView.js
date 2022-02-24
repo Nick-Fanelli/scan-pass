@@ -19,7 +19,7 @@ const View = {
 
 export default function DistrictAdminView({ currentUser, currentTheme, setCurrentTheme }) {
 
-    const [currentView, setCurrentView] = useState(View.Rooms);
+    const [currentView, setCurrentView] = useState(View.Users);
 
     const manageRoomsView = <ManageRoomsView currentUser={currentUser} currentTheme={currentTheme} />
     const manageUsersView = <ManageUsersView currentUser={currentUser} currentTheme={currentTheme} />

@@ -49,12 +49,26 @@ router.route('/get-all/:googleID').get(authorize(AuthLevel.DistrictAdmin), async
     res.send(userData);
 });
 
+router.route('/delete-user/:googleID').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
+
+    const userID = req.body.userID;
+
+    const targetUser = await User.findById(userID);
+
+    if(targetUser.userType !== AuthLevel.DistrictAdmin) {
+       targetUser.delete();
+       res.status(200).send();
+    } else {
+        res.status(403).send(); // Forbidden
+    }
+});
+
 // router.route('/addme').get(async(req, res) => {
 //     const user = new User({
-//         userID: "mspano",
+//         userID: "sample",
 //         googleID: "",
-//         userName: "Mike Spano",
-//         userType: "DistrictAdmin",
+//         userName: "John Doe",
+//         userType: "Student",
 //         schoolLocation: "null"
 //     })
 
