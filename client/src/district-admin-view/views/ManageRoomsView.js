@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 
 import { server } from '../../ServerAPI';
 
+import AddRoomPopup from './AddRoomPopup';
 import Room from './Room'
 
 import './ManageRoomsView.css'
@@ -10,6 +11,8 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
 
     const [schoolLocations, setSchoolLocations] = useState(null);
     const [currentSchoolLocationIndex, setCurrentSchoolLocationIndex] = useState(0);
+
+    const [shouldShowAddRoomPopup, setShouldShowAddRoomPopup] = useState(false);
 
     const schoolSelectRef = useRef(null);
 
@@ -42,19 +45,7 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
     }
 
     function handleAddRoom() {
-        const room = window.prompt("Enter Bathroom Name");
-
-        // TODO: Make sure that 'room' is allowed
-
-        // Update Database
-        server.post('/school-locations/add-bathroom/' + currentUser.googleID, {
-            schoolLocationID: schoolLocations[currentSchoolLocationIndex]._id,
-            bathroomLocation: room
-        }).then(() => {
-            syncWithDatabase();
-        }).catch((err) => {
-            console.error(err);
-        });
+        setShouldShowAddRoomPopup(true);
     }
 
     // Make sure we have school locations
@@ -62,6 +53,12 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
         return null;
 
     return (
+        <>
+        {
+            shouldShowAddRoomPopup ?
+            <AddRoomPopup currentTheme={currentTheme} currentUser={currentUser} setShouldShowAddRoomPopup={setShouldShowAddRoomPopup} schoolLocationID={schoolLocations[currentSchoolLocationIndex]._id} syncWithDatabase={syncWithDatabase} />
+            :null
+        }
         <section id="manage-rooms-view">
             <div id="room-list">
                 <div id="header" style={{backgroundColor: currentTheme.offset}}>
@@ -93,6 +90,7 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
             </div>
 
         </section>
+        </>
     )
 
 }

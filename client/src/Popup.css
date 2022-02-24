@@ -1,0 +1,44 @@
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup .box {
+    width: 50vw;
+    min-width: 50em;
+    height: auto;
+    position: relative;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.501);
+}
+
+.popup .box .close-icon {
+    content: 'x';
+    cursor: pointer;
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    line-height: 30px;
+    text-align: center;
+    font-size: 30px;
+    font-family: "Roboto";
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.501);
+}
+
+.popup .box h1 {
+    text-align: center;
+    font-family: "Roboto";
+    font-weight: 100;
+    font-size: 2rem;
+    margin: 1em 0 1.25em 0;
+}

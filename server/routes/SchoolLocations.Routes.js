@@ -80,6 +80,32 @@ router.route('/delete-bathroom/:googleID').post(authorize(AuthLevel.DistrictAdmi
     res.status(200).send(); // OK
 });
 
+router.route('/add-room/:googleID').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
+    // Get the params
+    const schoolLocationID = req.body.schoolLocationID;
+    const roomLocation = req.body.roomLocation;
+
+    if(!schoolLocationID || !roomLocation) {
+        res.status(400).send("Missing Body Args"); // Bad request
+        return;
+    }
+
+    const schoolLocation = await SchoolLocation.findById(schoolLocationID);
+
+    if(!schoolLocation) {
+        res.status(400).send("Could not find school location with requested ID!"); // Bad Request
+        return;
+    }
+
+    if(schoolLocation.roomLocations.includes(roomLocation)) {
+        res.status(400).send("Naming Collision"); // Bad Request
+        return;
+    }
+
+    schoolLocation.roomLocations.push(roomLocation);
+    schoolLocation.save();
+    res.status(200).send();
+});
 
 router.route('/delete-room/:googleID').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
     // Get the params
