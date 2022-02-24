@@ -40,10 +40,6 @@ export default function Room({ currentUser, currentTheme, room, schoolLocationID
             });
         }
     }
-
-    function handleEditRoom() {
-        console.log("Edit");
-    }
     
     return (
         <li style={{
@@ -54,7 +50,6 @@ export default function Room({ currentUser, currentTheme, room, schoolLocationID
             <h3 style={{color: currentTheme.text}}>{room}</h3>
             <FontAwesomeIcon icon={isBathroom ? faRestroom : faDoorClosed} className="indicator-icon" style={{color: currentTheme.text}} />
             <div className="controls">
-                <FontAwesomeIcon icon={faPencilAlt} className="icon" style={{color: currentTheme.text}} onClick={handleEditRoom} />
                 <FontAwesomeIcon icon={faTrash} className="icon" style={{color: currentTheme.text}} onClick={handleDeleteRoom} />
             </div>
         </li>
