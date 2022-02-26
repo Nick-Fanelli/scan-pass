@@ -22,6 +22,9 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
         syncWithDatabase(); // Sync with Database
     }, [syncWithDatabase]);
 
+    function handleImportUserData() {
+
+    }
 
     let districtAdminUserElements = [];
     let adminUserElements = [];
@@ -37,19 +40,21 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
                 }
             }
 
+            const userElement = <UserItem key={user._id} currentTheme={currentTheme} currentUser={currentUser} user={user} syncWithDatabase={syncWithDatabase} />;
+
             switch(user.userType) {
                 case UserType.DistrictAdmin:
-                    districtAdminUserElements.push(<UserItem key={user._id} currentUser={currentUser} user={user} syncWithDatabase={syncWithDatabase} />);
+                    districtAdminUserElements.push(userElement);
                     break;
                 case UserType.Admin:
-                    adminUserElements.push(<UserItem key={user._id} currentUser={currentUser} user={user} syncWithDatabase={syncWithDatabase} />);
+                    adminUserElements.push(userElement);
                     break;
                 case UserType.Teacher:
-                    teacherUserElements.push(<UserItem key={user._id} currentUser={currentUser} user={user} syncWithDatabase={syncWithDatabase} />);
+                    teacherUserElements.push(userElement);
                     break;
                 case UserType.Student:
                 default:
-                    studentUserElements.push(<UserItem key={user._id} currentUser={currentUser} user={user} syncWithDatabase={syncWithDatabase} />);
+                    studentUserElements.push(userElement);
                     break;
             }
 
@@ -60,10 +65,11 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
         <section id="manage-users-view">
             <div id="users-list">
                 <div id="header" style={{backgroundColor: currentTheme.offset}}>
-                    <h1>Users</h1>
+                    <h1 style={{color: currentTheme.text}}>Users</h1>
                     <div>
-                        <input type="text" name="SearchInput" id="search" placeholder='Search...' onChange={(e) => setSearchText(e.target.value.toLowerCase())} />
-                        <button id="add-btn">Add</button>
+                        <input type="text" name="SearchInput" id="search" placeholder='Search...' style={{color: currentTheme.text}} onChange={(e) => setSearchText(e.target.value.toLowerCase())} />
+                        <button id="add-btn"style={{color: currentTheme.text, backgroundColor: currentTheme.offset}} >Add</button>
+                        <button id="import-btn" style={{color: currentTheme.text, backgroundColor: currentTheme.offset}} onClick={handleImportUserData}>Import</button>
                     </div>
                 </div>
                 <ul id="users">

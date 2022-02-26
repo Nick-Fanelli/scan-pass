@@ -4,7 +4,7 @@ import { UserType } from "../../User";
 
 import { server } from "../../ServerAPI";
 
-export default function UserItem({ currentUser, user, syncWithDatabase }) {
+export default function UserItem({ currentTheme, currentUser, user, syncWithDatabase }) {
 
     // Display User Type
     let userTypeDisplayName = user.userType;
@@ -31,14 +31,14 @@ export default function UserItem({ currentUser, user, syncWithDatabase }) {
 
     return (
         <li>
-            <h1>{user.userName}</h1>
-            <h1 className="user-type">{userTypeDisplayName}</h1>
+            <h1 style={{color: currentTheme.text}}>{user.userName}</h1>
+            <h1 className="user-type" style={{color: currentTheme.text}}>{userTypeDisplayName}</h1>
             <div className="icons">
             {
                 user.userType !== UserType.DistrictAdmin ?
                 <>
-                    <FontAwesomeIcon className="icon" icon={faPencilAlt} onClick={handleEditUser} />
-                    <FontAwesomeIcon className="icon" icon={faTrash} onClick={handleDeleteUser} />                
+                    <FontAwesomeIcon className="icon" icon={faPencilAlt} style={{color: currentTheme.text}} onClick={handleEditUser} />
+                    <FontAwesomeIcon className="icon" icon={faTrash} style={{color: currentTheme.text}} onClick={handleDeleteUser} />                
                 </>
                 :null
             }

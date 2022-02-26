@@ -15,6 +15,8 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
     const [isLoading, setIsLoading] = useState(true);
 
     const handleOnLoginSuccess = useCallback((data) => {
+        console.log(data);
+
         // Pull Data from Google User
         const googleID = data.googleId;
         const username = data.profileObj.name;
