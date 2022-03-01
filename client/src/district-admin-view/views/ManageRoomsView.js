@@ -17,7 +17,9 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
     const schoolSelectRef = useRef(null);
 
     const syncWithDatabase = useCallback(() => {
-        server.get('/school-locations/get-all/' + currentUser.googleID).then((result) => {
+        server.get('/school-locations/get-all', {
+            headers: { authorization: currentUser.accessToken }
+        }).then((result) => {
             if(!result) {
                 console.error("Load School Locations: Fail");
                 return;

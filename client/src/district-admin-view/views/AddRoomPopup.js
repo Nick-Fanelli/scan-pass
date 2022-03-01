@@ -35,9 +35,13 @@ export default function AddRoomPopup({ currentTheme, currentUser, setShouldShowA
         }
 
         if(isBathroom) {
-            server.post('/school-locations/add-bathroom/' + currentUser.googleID, {
+            server.post('/school-locations/add-bathroom', {
                 schoolLocationID: schoolLocationID,
                 bathroomLocation: roomName
+            }, {
+                headers: {
+                    authorization: currentUser.accessToken
+                }
             }).then(() => {
                 syncWithDatabase();
                 handleClose();
@@ -46,9 +50,13 @@ export default function AddRoomPopup({ currentTheme, currentUser, setShouldShowA
                 handleClose();
             });
         } else {
-            server.post('/school-locations/add-room/' + currentUser.googleID, {
+            server.post('/school-locations/add-room', {
                 schoolLocationID: schoolLocationID,
                 roomLocation: roomName
+            }, {
+                headers: {
+                    authorization: currentUser.accessToken
+                }
             }).then(() => {
                 syncWithDatabase();
                 handleClose();

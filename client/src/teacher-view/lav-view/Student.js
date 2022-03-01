@@ -20,6 +20,7 @@ export default function Student({ theme, student, processData }) {
     return (
         <tr>
             <td>{student.name}</td>
+            <td></td>
             <td className="id">{student.id}</td>
             <td>{displayableTimestamp}</td>
             <td className="remove-user-btn" onClick={(e) => { processData(student.id) }}>

@@ -9,6 +9,7 @@ export default function Lav({ theme, students, processData }) {
                 <thead>
                     <tr style={{backgroundColor: theme.offset}}>
                         <th style={{color: theme.text}}>Name</th>
+                        <th style={{color: theme.text}}>Status</th>
                         <th style={{color: theme.text}}>Student ID</th>
                         <th style={{color: theme.text}}>Sign-In Time</th>
                         <th style={{color: theme.text}}></th>

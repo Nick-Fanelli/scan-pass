@@ -1,3 +1,8 @@
+const { OAuth2Client } = require('google-auth-library');
+const googleAuthClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+const jwt = require('jsonwebtoken');
+
 const User = require('../models/User.Model');
 
 const AuthLevel = {
@@ -10,27 +15,26 @@ const AuthLevel = {
 const authorize = (permissionLevel) => {
     return (req, res, next) => {
 
-        const googleID = req.params.googleID;
+        const authToken = req.headers['authorization'];
 
-        User.find().then((users) => {
+        if(authToken == null) return res.sendStatus(401); // Unauthorized
 
-            const foundUser = users.find(user => user.googleID === googleID);
+        jwt.verify(authToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+            if(err) return res.sendStatus(403);
 
-            if(!foundUser) {
-                res.status(401).send(); // Unauthorized
-                return;
-            }
+            User.findById(user._id).then((result) => {
 
-            if(!permissionLevel.includes(foundUser.userType)) {
-                res.status(403).send(); // Forbidden
-                return;
-            }
+                if(!permissionLevel.includes(result.userType)) {
+                    return res.sendStatus(403); // Forbidden
+                }
 
-            req.body.user = foundUser;
-            next();
+                req.user = result;
+                next();
+
+            });
         });
     }
 };
 
 
-module.exports = { AuthLevel, authorize };
+module.exports = { AuthLevel, authorize, googleAuthClient };

@@ -10,18 +10,19 @@ const port = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cors());
 
-// Bind Routes
+// Get Route Routers
 const UserRoutes = require('./routes/User.Routes');
 const SchoolLocationRoutes = require('./routes/SchoolLocations.Routes');
+const PassRoutes = require('./routes/Pass.Routes');
 
+// Bind Routes Middleware
 app.use('/api/users', UserRoutes);
 app.use('/api/school-locations', SchoolLocationRoutes);
+app.use('/api/pass/', PassRoutes);
 
 // Connect to MongoDB Database
 const uri = process.env.ATLAS_URI;
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
-const userRoutes = require('./routes/User.Routes');
 
 const connection = mongoose.connection;
 connection.once('open', () => {

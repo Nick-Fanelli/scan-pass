@@ -27,8 +27,8 @@ export const UserType = {
 
 export class User {
 
-    constructor(googleID, userType, name, userLocation) {
-        this.googleID = googleID;
+    constructor(accessToken, userType, name, userLocation) {
+        this.accessToken = accessToken;
         this.userType = userType;
         this.name = name;
         this.userLocation = userLocation;

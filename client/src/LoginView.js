@@ -12,16 +12,13 @@ const GOOGLE_DATA_SESSION_STORAGE_ID = "monroetwp-pass-system.sessionstorage.goo
 
 export default function LoginView({ currentTheme, setCurrentUser }) {
 
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleOnLoginSuccess = useCallback((data) => {
-        console.log(data);
-
+    const handleOnLoginSuccess = useCallback((response) => {
         // Pull Data from Google User
-        const googleID = data.googleId;
-        const username = data.profileObj.name;
-        const email = data.profileObj.email;
-        const workspaceUserID = email.split("@")[0];
+        const googleID = response.googleId;
+        const username = response.profileObj.name;
+        const email = response.profileObj.email;
 
         // Make sure GoogleID isn't null
         if(!googleID) {
@@ -30,14 +27,14 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
             return;
         }
 
-        server.post('/users/verify', {
-            workspaceUserID: workspaceUserID,
-            googleID: googleID,
-            userName: username
+        server.post('/users/login', {
+            tokenId: response.tokenId
         }).then((response) => {
+            const { accessToken, user } = response.data;
+            
             setCurrentUser(new User(
-                googleID,
-                response.data.userType,
+                accessToken,
+                user.userType,
                 username,
                 SchoolLocations.WHS
             ));
@@ -47,21 +44,21 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
             return;
         });
 
-        // Save to session storage
-        sessionStorage.setItem(GOOGLE_DATA_SESSION_STORAGE_ID, JSON.stringify(data));
-        setIsLoading(false);
+        // // Save to session storage
+        // sessionStorage.setItem(GOOGLE_DATA_SESSION_STORAGE_ID, JSON.stringify(data));
+        // setIsLoading(false);
     }, [setCurrentUser, setIsLoading]);
 
-    // Pull local storage google id
-    useEffect(() => {
-        const sessionSavedGoogleData = sessionStorage.getItem(GOOGLE_DATA_SESSION_STORAGE_ID);
+    // // Pull local storage google id
+    // useEffect(() => {
+    //     const sessionSavedGoogleData = sessionStorage.getItem(GOOGLE_DATA_SESSION_STORAGE_ID);
 
-        if(sessionSavedGoogleData) {
-            handleOnLoginSuccess(JSON.parse(sessionSavedGoogleData));
-        } else {
-            setIsLoading(false);
-        }
-    }, [handleOnLoginSuccess]);
+    //     if(sessionSavedGoogleData) {
+    //         handleOnLoginSuccess(JSON.parse(sessionSavedGoogleData));
+    //     } else {
+    //         setIsLoading(false);
+    //     }
+    // }, [handleOnLoginSuccess]);
 
     function handleOnLoginFailure() {
     }

@@ -40,7 +40,12 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
     const [isExchangeLocationPopupOpen, setIsExchangeLocationPopupOpen] = useState(true);
 
     useEffect(() => {
-        server.get('/school-locations/get/' + currentUser.googleID).then((result) => {
+        server.get('/school-locations/get', {
+            headers: {
+                'authorization': currentUser.accessToken
+            }
+        }).then((result) => {
+            console.log(result);
             setLavLocations(result.data.bathroomLocations);
         });
     }, [currentUser.googleID]);

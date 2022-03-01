@@ -1,55 +1,48 @@
 const router = require('express').Router();
 const User = require('../models/User.Model');
 
-const { AuthLevel, authorize } = require('../middleware/AuthorizationMiddleware');
+const jwt = require('jsonwebtoken');
 
-// Verify User
-router.route('/verify').post((req, res) => {
+const { AuthLevel, authorize, googleAuthClient } = require('../middleware/AuthorizationMiddleware');
 
-    const userID = req.body.workspaceUserID;
-    const googleID = req.body.googleID;
-    const userName = req.body.userName;
+// Login
+router.route('/login').post((req, res) => {
+   const { tokenId } = req.body;
 
-    User.findOne({
-        "userID": userID
-    }).then((user) => {
-
-        // Verify user exists
-        if(user) {
-            const userGoogleID = user.googleID;
-
-            // Verify Google ID
-            if(userGoogleID) {
-                if(userGoogleID === googleID) { // Valid
-
-                    // Save Username Data
-                    if(user.userName !== userName) {
-                        user.userName = userName;
-                        user.save();
-                    }
-
-                    res.send(user);
-                } else {
-                    res.status(401).send("Your googleID does not match with database (contact your admin)"); // Unauthorized
-                }
-            } else { // If Google ID has never been verified, verify it...
-                user.googleID = googleID;
-                user.save();
-
-                res.send(user);
-            }
-
-        }
+   googleAuthClient.verifyIdToken({idToken: tokenId, audience: process.env.GOOGLE_CLIENT_ID}).then(response => {
+        const { email_verified, name, email } = response.payload;
         
-    });
+        const workspaceUserID = email.split("@")[0];
+        
+        if(email_verified) {
+            User.findOne({
+                "userID": workspaceUserID
+            }).exec((err, user) => {
+                if(err) {
+                    return res.status(400).json({
+                        error: "Something went wrong with google login..."
+                    });
+                } else {
+                    if(user) {
+                        const accessToken = jwt.sign({ _id: user._id }, process.env.ACCESS_TOKEN_SECRET);
+                        res.json({accessToken: accessToken, user: user});
+                    } else {
+                        return res.status(401).json({
+                            error: "Your account doesn't exist!"
+                        });
+                    }
+                }
+            })
+        }
+   });
 });
 
-router.route('/get-all/:googleID').get(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
+router.route('/get-all').get(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
     const userData = await User.find();
     res.send(userData);
 });
 
-router.route('/delete-user/:googleID').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
+router.route('/delete-user').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
 
     const userID = req.body.userID;
 

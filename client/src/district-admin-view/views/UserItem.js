@@ -22,8 +22,10 @@ export default function UserItem({ currentTheme, currentUser, user, syncWithData
         if(!result)
             return;
         
-        server.post('/users/delete-user/' + currentUser.googleID, {
+        server.post('/users/delete-user', {
             userID: user._id
+        }, {
+            headers: { authorization: currentUser.accessToken }
         }).then(() => {
             syncWithDatabase();
         })

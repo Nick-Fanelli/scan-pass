@@ -13,7 +13,9 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
 
     const syncWithDatabase = useCallback(() => {
         // Load all users from database
-        server.get('/users/get-all/' + currentUser.googleID).then((result) => {
+        server.get('/users/get-all', {
+            headers: { authorization: currentUser.accessToken }
+        }).then((result) => {
             setUsersList(result.data);
         });
     }, [currentUser.googleID]);
