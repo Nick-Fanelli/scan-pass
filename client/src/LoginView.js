@@ -8,63 +8,49 @@ import { server } from './ServerAPI';
 
 import './LoginView.css'
 
-const GOOGLE_DATA_SESSION_STORAGE_ID = "monroetwp-pass-system.sessionstorage.googleData";
+const USER_ACCESS_TOKEN_SESSION_STORAGE_ID = "monroetwp-pass-system.sessionstorage.accessToken";
 
 export default function LoginView({ currentTheme, setCurrentUser }) {
 
-    const [isLoading, setIsLoading] = useState(false);
+    function loadUser(accessToken) {
+        server.get('/users/get-self', {
+            headers: { authorization: accessToken }
+        }).then((result) => {
+            setCurrentUser(new User(
+                accessToken,
+                result.data.userType,
+                result.data.username,
+                SchoolLocations.WHS
+            ));
+
+            
+            // Save to session storage
+            sessionStorage.setItem(USER_ACCESS_TOKEN_SESSION_STORAGE_ID, JSON.stringify(accessToken));
+        }).catch(() => {
+            sessionStorage.removeItem(USER_ACCESS_TOKEN_SESSION_STORAGE_ID);
+        });
+    }
 
     const handleOnLoginSuccess = useCallback((response) => {
-        // Pull Data from Google User
-        const googleID = response.googleId;
-        const username = response.profileObj.name;
-        const email = response.profileObj.email;
-
-        // Make sure GoogleID isn't null
-        if(!googleID) {
-            console.error("Couldn't locate a Google ID???");
-            setIsLoading(false);
-            return;
-        }
-
         server.post('/users/login', {
             tokenId: response.tokenId
         }).then((response) => {
-            const { accessToken, user } = response.data;
-            
-            setCurrentUser(new User(
-                accessToken,
-                user.userType,
-                username,
-                SchoolLocations.WHS
-            ));
-        }).catch((error) => {
-            console.error(error);
-            setIsLoading(false);
-            return;
+            const { accessToken } = response.data;
+            loadUser(accessToken);
         });
+    }, [setCurrentUser]);
 
-        // // Save to session storage
-        // sessionStorage.setItem(GOOGLE_DATA_SESSION_STORAGE_ID, JSON.stringify(data));
-        // setIsLoading(false);
-    }, [setCurrentUser, setIsLoading]);
+    // Pull local storage google id
+    useEffect(() => {
+        const sessionSavedGoogleData = sessionStorage.getItem(USER_ACCESS_TOKEN_SESSION_STORAGE_ID);
 
-    // // Pull local storage google id
-    // useEffect(() => {
-    //     const sessionSavedGoogleData = sessionStorage.getItem(GOOGLE_DATA_SESSION_STORAGE_ID);
-
-    //     if(sessionSavedGoogleData) {
-    //         handleOnLoginSuccess(JSON.parse(sessionSavedGoogleData));
-    //     } else {
-    //         setIsLoading(false);
-    //     }
-    // }, [handleOnLoginSuccess]);
+        if(sessionSavedGoogleData) {
+            loadUser(JSON.parse(sessionSavedGoogleData));
+        }
+    }, [handleOnLoginSuccess]);
 
     function handleOnLoginFailure() {
     }
-
-    if(isLoading)
-        return null;
 
     return (
         <section id="login-view">

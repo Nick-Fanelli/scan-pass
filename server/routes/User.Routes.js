@@ -24,7 +24,7 @@ router.route('/login').post((req, res) => {
                     });
                 } else {
                     if(user) {
-                        const accessToken = jwt.sign({ _id: user._id }, process.env.ACCESS_TOKEN_SECRET);
+                        const accessToken = jwt.sign({ _id: user._id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '8hr' });
                         res.json({accessToken: accessToken, user: user});
                     } else {
                         return res.status(401).json({
@@ -35,6 +35,20 @@ router.route('/login').post((req, res) => {
             })
         }
    });
+});
+
+router.route('/get-self').get(async(req, res) => {
+    const authToken = req.headers['authorization'];
+
+    if(authToken == null) return res.sendStatus(401); // Unauthorized
+
+    jwt.verify(authToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if(err) return res.sendStatus(403); // Forbidden
+
+        User.findById(user._id).then((result) => {
+            return res.json(result);
+        });
+    });
 });
 
 router.route('/get-all').get(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
