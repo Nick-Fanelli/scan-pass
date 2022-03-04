@@ -1,0 +1,47 @@
+#import-csv-popup p {
+    font-family: "Roboto";
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+#import-csv-popup .file-chooser {
+    display: flex;
+    justify-content: center;
+    margin: 3em 0;
+}
+
+#import-csv-popup .file-chooser input {
+    font-family: "Roboto";
+    font-size: 1.2rem;
+    text-align: center;
+    display: flex;
+}
+
+#import-csv-popup .file-chooser input::-webkit-file-upload-button {
+    visibility: hidden;
+}
+
+#import-csv-popup .file-chooser input::before {
+    content: 'Select File';
+    text-align: center;
+    font-family: "Roboto";
+    font-weight: 100;
+    font-size: 1.2rem;
+    display: inline-block;
+    background: linear-gradient(top, #f9f9f9, #e3e3e3);
+    border: 1px solid #999;
+    border-radius: 3px;
+    padding: 5px 8px;
+    outline: none;
+    white-space: nowrap;
+    cursor: pointer;
+    text-shadow: 1px 1px #fff;
+}
+
+#import-csv-popup .file-chooser input:hover::before {
+    border-color: black;
+}
+
+#import-csv-popup .file-chooser input:active::before {
+    background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+  }

@@ -3,7 +3,6 @@ import '../../Popup.css'
 import { useRef } from 'react';
 
 import { server } from '../../ServerAPI';
-import { faHandshakeSlash } from '@fortawesome/free-solid-svg-icons';
 
 export default function AddRoomPopup({ currentTheme, currentUser, setShouldShowAddRoomPopup, schoolLocationID, syncWithDatabase }) {
 

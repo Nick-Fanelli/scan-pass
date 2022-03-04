@@ -19,7 +19,7 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
             setCurrentUser(new User(
                 accessToken,
                 result.data.userType,
-                result.data.username,
+                result.data.userName,
                 SchoolLocations.WHS
             ));
 
