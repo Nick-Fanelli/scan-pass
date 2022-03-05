@@ -48,7 +48,7 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
             console.log(result);
             setLavLocations(result.data.bathroomLocations);
         });
-    }, [currentUser.googleID]);
+    }, [currentUser.accessToken]);
 
     // Is Loaded
     useEffect(() => {

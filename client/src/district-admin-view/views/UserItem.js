@@ -4,16 +4,12 @@ import { UserType } from "../../User";
 
 import { server } from "../../ServerAPI";
 
-export default function UserItem({ currentTheme, currentUser, user, syncWithDatabase }) {
+export default function UserItem({ currentTheme, currentUser, user, syncWithDatabase, handleEditUser }) {
 
     // Display User Type
     let userTypeDisplayName = user.userType;
     if(user.userType === "DistrictAdmin") {
         userTypeDisplayName = "District Admin";
-    }
-
-    function handleEditUser() {
-
     }
 
     function handleDeleteUser() {
@@ -39,7 +35,7 @@ export default function UserItem({ currentTheme, currentUser, user, syncWithData
             {
                 user.userType !== UserType.DistrictAdmin ?
                 <>
-                    <FontAwesomeIcon className="icon" icon={faPencilAlt} style={{color: currentTheme.text}} onClick={handleEditUser} />
+                    <FontAwesomeIcon className="icon" icon={faPencilAlt} style={{color: currentTheme.text}} onClick={() => handleEditUser(user)} />
                     <FontAwesomeIcon className="icon" icon={faTrash} style={{color: currentTheme.text}} onClick={handleDeleteUser} />                
                 </>
                 :null

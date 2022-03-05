@@ -3,13 +3,18 @@ import './ManageUsersView.css'
 
 import { server } from '../../ServerAPI';
 
+import EditUserPopup from './EditUserPopup';
 import UserItem from './UserItem'
+
 import { UserType } from '../../User';
 
 export default function ManageUsersView({ currentUser, currentTheme }) {
     
     const [usersList, setUsersList] = useState(null);
     const [searchText, setSearchText] = useState("");
+
+    const [isEditUserPopupVisible, setIsEditUserPopupVisible] = useState(false);
+    const [currentEditableUser, setCurrentEditableUser] = useState(null);
 
     const syncWithDatabase = useCallback(() => {
         // Load all users from database
@@ -18,15 +23,24 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
         }).then((result) => {
             setUsersList(result.data);
         });
-    }, [currentUser.googleID]);
+    }, [currentUser.accessToken]);
 
     useEffect(() => {
         syncWithDatabase(); // Sync with Database
     }, [syncWithDatabase]);
 
     function handleImportUserData() {
-
     }
+    
+    function handleAddUser() {
+        setCurrentEditableUser(null);
+        setIsEditUserPopupVisible(true);
+    }
+
+    function handleEditUser(user) {
+        setCurrentEditableUser(user);
+        setIsEditUserPopupVisible(true);
+    }  
 
     let districtAdminUserElements = [];
     let adminUserElements = [];
@@ -42,7 +56,7 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
                 }
             }
 
-            const userElement = <UserItem key={user._id} currentTheme={currentTheme} currentUser={currentUser} user={user} syncWithDatabase={syncWithDatabase} />;
+            const userElement = <UserItem key={user._id} currentTheme={currentTheme} currentUser={currentUser} user={user} syncWithDatabase={syncWithDatabase} handleEditUser={handleEditUser} />;
 
             switch(user.userType) {
                 case UserType.DistrictAdmin:
@@ -64,13 +78,19 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
     }
 
     return (
+        <>
+        {
+            isEditUserPopupVisible ?
+            <EditUserPopup currentTheme={currentTheme} currentUser={currentUser} setIsEditUserPopupVisible={setIsEditUserPopupVisible} targetUser={currentEditableUser} syncWithDatabase={syncWithDatabase} />
+            : null
+        }
         <section id="manage-users-view">
             <div id="users-list">
                 <div id="header" style={{backgroundColor: currentTheme.offset}}>
                     <h1 style={{color: currentTheme.text}}>Users</h1>
                     <div>
                         <input type="text" name="SearchInput" id="search" placeholder='Search...' style={{color: currentTheme.text}} onChange={(e) => setSearchText(e.target.value.toLowerCase())} />
-                        <button id="add-btn"style={{color: currentTheme.text, backgroundColor: currentTheme.offset}} >Add</button>
+                        <button id="add-btn"style={{color: currentTheme.text, backgroundColor: currentTheme.offset}} onClick={handleAddUser}>Add</button>
                         <button id="import-btn" style={{color: currentTheme.text, backgroundColor: currentTheme.offset}} onClick={handleImportUserData}>Import</button>
                     </div>
                 </div>
@@ -85,5 +105,6 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
                 </ul>
             </div>
         </section>
+        </>
     );
 }

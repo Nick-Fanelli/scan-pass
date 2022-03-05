@@ -1,0 +1,41 @@
+#edit-user-popup {
+    font-family: "Roboto";
+}
+
+#edit-user-popup .input {
+    margin: 2em 0 2em 2em;
+    display: flex;
+    justify-content: space-between;
+    width: 60%;
+}
+
+#edit-user-popup .input label {
+    font-size: 1.25rem;
+    margin: 0 1.5em 0 0;
+}
+
+#edit-user-popup .input input {
+    font-size: 1.25rem;
+}
+
+#edit-user-popup .input select {
+    font-size: 1.25rem;
+}
+
+#edit-user-popup button {
+    float: right;
+    margin: 1em 2em;
+    font-size: 1.2rem;
+    font-family: "Roboto";
+    font-weight: 100;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.501);
+    padding: 0.4em 2em;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+#edit-user-popup button:hover {
+    filter: brightness(90%);
+}

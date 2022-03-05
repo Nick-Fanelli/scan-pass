@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { faTrash, faPencilAlt, faRestroom, faDoorClosed } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faRestroom, faDoorClosed } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { server } from "../../ServerAPI";

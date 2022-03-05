@@ -70,6 +70,39 @@ router.route('/delete-user').post(authorize(AuthLevel.DistrictAdmin), async (req
     }
 });
 
+// Add User
+router.route('/add').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
+    const { userName, userID, userType, userLocation } = req.body;
+
+    const newUser = new User({
+        userID: userID,
+        userName: userName,
+        userType: userType,
+        schoolLocation: userLocation
+    });
+
+    newUser.save();
+
+    res.sendStatus(200);
+});
+
+// Edit User
+router.route('/edit/:dbID').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
+
+    const { dbID } = req.params;
+    const { userName, userID, userType, userLocation } = req.body;
+
+    const user = await User.findById(dbID);
+    user.userName = userName;
+    user.userID = userID;
+    user.userType = userType;
+    user.schoolLocation = userLocation;
+
+    user.save();
+
+    res.sendStatus(200);
+});
+
 // router.route('/addme').get(async(req, res) => {
 //     const user = new User({
 //         userID: "sample",

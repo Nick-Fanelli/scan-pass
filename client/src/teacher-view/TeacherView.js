@@ -16,7 +16,7 @@ const TeacherViewState = {
 
 export default function TeacherView({ currentUser, currentTheme: theme, setCurrentTheme }) {
 
-    const [currentState, setCurrentState] = useState(TeacherViewState.LavView);
+    const [currentState, setCurrentState] = useState(TeacherViewState.HomePage);
 
     function handleGoHome() {
         setCurrentState(TeacherViewState.HomePage);

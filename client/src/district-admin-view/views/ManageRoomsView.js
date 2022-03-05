@@ -37,7 +37,7 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
 
             setSchoolLocations([...schoolLocationsCopy]);
         });
-    }, [currentUser.googleID]);
+    }, [currentUser.accessToken]);
 
     // Load School Locations
     useEffect(() => {

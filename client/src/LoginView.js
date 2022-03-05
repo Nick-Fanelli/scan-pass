@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect } from 'react'
 
 import GoogleLogin from 'react-google-login'
 
@@ -12,7 +12,7 @@ const USER_ACCESS_TOKEN_SESSION_STORAGE_ID = "monroetwp-pass-system.sessionstora
 
 export default function LoginView({ currentTheme, setCurrentUser }) {
 
-    function loadUser(accessToken) {
+    const loadUser = useCallback((accessToken) => {
         server.get('/users/get-self', {
             headers: { authorization: accessToken }
         }).then((result) => {
@@ -29,7 +29,7 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
         }).catch(() => {
             sessionStorage.removeItem(USER_ACCESS_TOKEN_SESSION_STORAGE_ID);
         });
-    }
+    }, [setCurrentUser]);
 
     const handleOnLoginSuccess = useCallback((response) => {
         server.post('/users/login', {
@@ -38,7 +38,7 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
             const { accessToken } = response.data;
             loadUser(accessToken);
         });
-    }, [setCurrentUser]);
+    }, [loadUser]);
 
     // Pull local storage google id
     useEffect(() => {
@@ -47,7 +47,7 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
         if(sessionSavedGoogleData) {
             loadUser(JSON.parse(sessionSavedGoogleData));
         }
-    }, [handleOnLoginSuccess]);
+    }, [handleOnLoginSuccess, loadUser]);
 
     function handleOnLoginFailure() {
     }
