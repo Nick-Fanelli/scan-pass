@@ -20,7 +20,7 @@ const authorize = (permissionLevel) => {
         if(authToken == null) return res.sendStatus(401); // Unauthorized
 
         jwt.verify(authToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-            if(err) return res.sendStatus(403);
+            if(err) return res.sendStatus(401); // Unauthorized
 
             User.findById(user._id).then((result) => {
 

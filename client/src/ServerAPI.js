@@ -8,6 +8,9 @@ export const server = axios.create({
 
 // Refresh on Error
 server.interceptors.response.use((response) => response, (error) => {
-    if(error.response.status === 403)
+    if(error.response.status === 401) {
+        console.error("Unauthorized Access Token! Refreshing the page!");
+        console.error(error);
         window.location.reload();
+    }
 });

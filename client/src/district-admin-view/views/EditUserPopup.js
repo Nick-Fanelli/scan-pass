@@ -99,7 +99,6 @@ export default function EditUserPopup({ currentTheme, currentUser, setIsEditUser
                             <option value="Student">Student</option>
                             <option value="Teacher">Teacher</option>
                             <option value="Admin">Admin</option>
-                            <option value="District Admin">District Admin</option>
                         </select>
                     </div>
 

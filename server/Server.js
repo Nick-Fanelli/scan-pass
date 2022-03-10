@@ -18,7 +18,7 @@ const PassRoutes = require('./routes/Pass.Routes');
 // Bind Routes Middleware
 app.use('/api/users', UserRoutes);
 app.use('/api/school-locations', SchoolLocationRoutes);
-app.use('/api/pass/', PassRoutes);
+app.use('/api/passes/', PassRoutes);
 
 // Connect to MongoDB Database
 const uri = process.env.ATLAS_URI;

@@ -1,88 +1,104 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRestroom, faDoorOpen } from "@fortawesome/free-solid-svg-icons"
 
 import StudentNav from './StudentNav';
+import CreateBathroomPass from './CreateBathroomPassPopup';
 import { PassFactory } from '../Pass';
+
+import { server } from '../ServerAPI';
 
 import './StudentView.css'
 
 const PassStatus = {
-    Departing: { displayName: "Departing", displayColor: "#FFA500" },
+    Departing: { displayName: "Departing", displayColor: "#0390fc" },
     AtLocation: { displayName: "At Location", displayColor: "#90ee90" },
-    Returning: { displayName: "Returning", displayColor: "#ff0000" },
-    Unknown: { displayName: null, displayColor: "#0390fc" }
+    Returning: { displayName: "Returning", displayColor: "#ff0000" }
 }
 
 export default function StudentView({ theme, setCurrentTheme, currentUser }) {
 
     const [seconds, setSeconds] = useState(0);
-    const [isTimerActive, setTimerActive] = useState(false);
+
+    const [isCreateBathroomPassPopupVisible, setIsCreateBathroomPassPopupVisible] = useState(false);
 
     const [currentPass, setCurrentPass] = useState(null);
-    const [passStatus, setPassStatus] = useState();
+    const [passStatus, setPassStatus] = useState(null);
 
-    function resetTimer() {
-        setTimerActive(true);
-        setSeconds(0);
-    }
+    const refreshUpdate = useCallback(() => {
+        // server.get('/passes/get-self-pertaining', {
+        //     headers: { authorization: currentUser.accessToken }
+        // }).then(res => {
+        //     const passes = res.data;
+        // });
+
+        server.get('/users/get-self', {
+            headers: { authorization: currentUser.accessToken }
+        }).then(res => {
+            if(res.data.currentPass) {
+                let currentPassId = res.data.currentPass;
+                
+                server.get('/passes/get/' + currentPassId, {
+                    headers: { authorization: currentUser.accessToken }
+                }).then(res => {
+                    const pass = res.data;
+                    if(!pass) {
+                        console.error("Huh, weird error with retrieving the pass from the database...");
+                        return;
+                    }
+                
+                    if(!pass.arrivalTimestamp) {
+                        if(passStatus !== PassStatus.Departing)
+                            setPassStatus(PassStatus.Departing);
+                    } else {
+                        if(passStatus !== PassStatus.AtLocation)
+                            setPassStatus(null);
+                    }
+
+                    if(!currentPass || currentPass._id !== pass._id)
+                        setCurrentPass(pass);
+                }).catch(error => { // If the pass doesn't exist
+                    server.post('/users/set-current-pass', {
+                        passID: null
+                    }, {
+                        headers: { authorization: currentUser.accessToken }
+                    });
+
+                    server.post('/users/purge-bathroom-passes', {}, {
+                        headers: { authorization: currentUser.accessToken }
+                    });
+
+                    setPassStatus(null);
+                    setCurrentPass(null);
+                })
+
+            } else {
+                if(passStatus !== null)
+                    setPassStatus(null);
+            }
+        });
+    }, [currentUser.accessToken, passStatus, setPassStatus, setCurrentPass, currentPass]);
 
     useEffect(() => {
         let interval = null;
 
-        if(isTimerActive) {
-            interval = setInterval(() => {
-                setSeconds(seconds => seconds + 1);
-            }, 1000); // Wait 1000ms
-        } else if(!isTimerActive && seconds !== 0) {
-            clearInterval(interval);
-        }
+        interval = setInterval(refreshUpdate, 2000); // Wait 2000ms
+        refreshUpdate();
 
         return () => clearInterval(interval);
-    }, [isTimerActive, seconds]);
-
-    function handlePassShift() {
-        if(passStatus === PassStatus.Departing) {
-            setPassStatus(PassStatus.AtLocation);
-            resetTimer();
-        } else if(passStatus === PassStatus.AtLocation) {
-            setPassStatus(PassStatus.Returning);
-            resetTimer();
-        } else if(passStatus === PassStatus.Returning) {
-            setPassStatus(null); // End Pass Status
-            setCurrentPass(null); // End Pass
-            setTimerActive(false); // Stop Timer
-        }
-
-        // TODO: Update the database
-    }
+    }, [refreshUpdate, seconds]);
 
     function handleEndPass() {
-        // End pass
-        setCurrentPass(null);
-        setPassStatus(null);
-        setTimerActive(false);
-
-        // TODO: Update the database
+        server.post('/users/purge-bathroom-passes', {}, {
+            headers: { authorization: currentUser.accessToken }
+        }).then(() => {
+            refreshUpdate();
+        })
     }
 
     function handleCreateBathroomPass() {
-        // Create Pass
-        setCurrentPass(PassFactory.CreatBathroomPass(
-            currentUser.userID,
-            currentUser.userID,
-            "A101",
-            "12:00pm",
-            "A100 Lav"
-        ));
-
-        // Set Status TODO: Make automatic
-        setPassStatus(PassStatus.Departing);
-
-        // Reset Timer
-        resetTimer();
-
+        setIsCreateBathroomPassPopupVisible(true);
     }
 
     function handleCreateRoomPass() {
@@ -96,10 +112,9 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
             "A102"
         ));
 
-        setPassStatus(PassStatus.Unknown);
+        setPassStatus(null);
 
         // Reset timer
-        resetTimer();
     }
 
     let calculatedMinutes = Math.floor(seconds / 60);
@@ -110,6 +125,11 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
 
     return (
         <>
+            {
+                isCreateBathroomPassPopupVisible ?
+                <CreateBathroomPass currentTheme={theme} currentUser={currentUser} setIsCreateBathroomPassPopupVisible={setIsCreateBathroomPassPopupVisible} refreshUpdate={refreshUpdate} />
+                : null
+            }
             <StudentNav theme={theme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} />
             <div id="student-view-content"  className="col">
                 <div id="current-pass" style={{backgroundColor: passStatus ? passStatus.displayColor : theme.offset}}>
@@ -128,12 +148,12 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
                     </div>
                     <div className="pass-info">
                         {
-                            isTimerActive ? 
-                            <h1>{calculatedMinutes}:{calculatedSeconds}</h1> :
-                            null
+                            currentPass !== null ?
+                            <h1>{calculatedMinutes}:{calculatedSeconds}</h1>
+                            : null
                         }
                     </div>
-                    <div id="movement-status" className={(currentPass ? "box-shadow" : "") + " " + (passStatus === PassStatus.Returning ? "returning-status" : "")} onClick={(e) => handlePassShift()}>
+                    <div id="movement-status" className={(currentPass ? "box-shadow" : "") + " " + (passStatus === PassStatus.Returning ? "returning-status" : "")}>
                         <h1 className={passStatus === PassStatus.Returning ? "transform-up" : null}>{passStatus ? passStatus.displayName : null}</h1>
                         <h2 className={passStatus === PassStatus.Returning ? "transform-up" : null}>END PASS</h2>
                     </div>

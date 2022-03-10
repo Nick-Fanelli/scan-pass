@@ -11,7 +11,7 @@ const passSchema = new Schema({
         required: true,
     },
     departureLocation: { // Database ID
-        type: Schema.Types.ObjectId,
+        type: String,
         required: false
     },
     departureTimestamp: { // JS Timestamp
@@ -19,10 +19,10 @@ const passSchema = new Schema({
         required: false
     },
     arrivalLocation: { // Database ID
-        type: Schema.Types.ObjectId,
+        type: String,
         required: false
     },
-    arrivalLocation: {
+    arrivalTimestamp: {
         type: String,
         required: false
     }

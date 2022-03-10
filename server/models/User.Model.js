@@ -19,6 +19,10 @@ const userSchema = new Schema({
     schoolLocation: { // WHS or WMS
         type: String,
         required: true
+    },
+    currentPass: {
+        type: Schema.Types.ObjectId,
+        require: false
     }
 }, { timestamps: true }); // Auto assign timestamps
 

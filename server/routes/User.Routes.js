@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const User = require('../models/User.Model');
+const Pass = require('../models/Pass.Model');
 
 const jwt = require('jsonwebtoken');
 
@@ -74,6 +75,9 @@ router.route('/delete-user').post(authorize(AuthLevel.DistrictAdmin), async (req
 router.route('/add').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
     const { userName, userID, userType, userLocation } = req.body;
 
+    if(userType === AuthLevel.DistrictAdmin)
+        return res.sendStatus(403); // Forbidden
+
     const newUser = new User({
         userID: userID,
         userName: userName,
@@ -92,6 +96,9 @@ router.route('/edit/:dbID').post(authorize(AuthLevel.DistrictAdmin), async (req,
     const { dbID } = req.params;
     const { userName, userID, userType, userLocation } = req.body;
 
+    if(userType === AuthLevel.DistrictAdmin)
+        return res.sendStatus(403); // Forbidden
+
     const user = await User.findById(dbID);
     user.userName = userName;
     user.userID = userID;
@@ -103,18 +110,29 @@ router.route('/edit/:dbID').post(authorize(AuthLevel.DistrictAdmin), async (req,
     res.sendStatus(200);
 });
 
-// router.route('/addme').get(async(req, res) => {
-//     const user = new User({
-//         userID: "sample",
-//         googleID: "",
-//         userName: "John Doe",
-//         userType: "Student",
-//         schoolLocation: "null"
-//     })
+// Set Current Pass
+router.route('/set-current-pass').post(authorize(AuthLevel.Student), async (req, res) => {
+    const user = req.user;
 
-//     user.save();
+    const { passID } = req.body;
 
-//     res.send("Success")
-// });
+    user.currentPass = passID;
+    user.save();
+
+    res.sendStatus(200);
+});
+
+router.route('/purge-bathroom-passes').post(authorize(AuthLevel.Student), async (req, res) => {
+    
+    const user = req.user;
+
+    const passes = await Pass.find({
+        studentID: user._id
+    });
+
+    passes.forEach(pass => { pass.delete() });
+
+    res.sendStatus(200);
+});
 
 module.exports = router;
