@@ -84,37 +84,37 @@ export default function EditUserPopup({ currentTheme, currentUser, setIsEditUser
                 
                 <div className="inputs">
                     <div className='input'>
-                        <label htmlFor="">Name</label>
-                        <input type="text" name="name" id="name-input" placeholder='eg. John Doe' ref={userNameRef} onChange={handleIsDisabled} defaultValue={targetUser === null ? null : targetUser.userName} />
+                        <label htmlFor="" style={{color: currentTheme.text}}>Name</label>
+                        <input style={{color: currentTheme.text}} type="text" name="name" id="name-input" placeholder='eg. John Doe' ref={userNameRef} onChange={handleIsDisabled} defaultValue={targetUser === null ? null : targetUser.userName} />
                     </div>
 
                     <div className='input'>
-                        <label htmlFor="">User ID</label>
-                        <input type="text" name="name" id="name-input" placeholder="eg. 40000 or jdoe" ref={userIDRef} onChange={handleIsDisabled} defaultValue={targetUser === null ? null : targetUser.userID} />
+                        <label htmlFor="" style={{color: currentTheme.text}}>User ID</label>
+                        <input style={{color: currentTheme.text}} type="text" name="name" id="name-input" placeholder="eg. 40000 or jdoe" ref={userIDRef} onChange={handleIsDisabled} defaultValue={targetUser === null ? null : targetUser.userID} />
                     </div>
 
                     <div className='input'>
-                        <label htmlFor="">User Type</label>
-                        <select name="" id="" ref={userTypeRef} defaultValue={targetUser === null ? "Student" : targetUser.userType} >
-                            <option value="Student">Student</option>
-                            <option value="Teacher">Teacher</option>
-                            <option value="Admin">Admin</option>
+                        <label htmlFor="" style={{color: currentTheme.text}}>User Type</label>
+                        <select style={{color: currentTheme.text}} name="" id="" ref={userTypeRef} defaultValue={targetUser === null ? "Student" : targetUser.userType} >
+                            <option value="Student" style={{backgroundColor: currentTheme.backgroundColor}}>Student</option>
+                            <option value="Teacher" style={{backgroundColor: currentTheme.backgroundColor}}>Teacher</option>
+                            <option value="Admin" style={{backgroundColor: currentTheme.backgroundColor}}>Admin</option>
                         </select>
                     </div>
 
                     <div className="input">
-                        <label htmlFor="">School Location</label>
-                        <select name="" id="" ref={userLocationRef} defaultValue={targetUser === null ? "null" : targetUser.schoolLocation} >
-                            <option value="null">None</option>
+                        <label htmlFor="" style={{color: currentTheme.text}}>School Location</label>
+                        <select style={{color: currentTheme.text}} name="" id="" ref={userLocationRef} defaultValue={targetUser === null ? "null" : targetUser.schoolLocation} >
+                            <option value="null" style={{backgroundColor: currentTheme.backgroundColor}}>None</option>
                             {
                                 schoolLocations.map((schoolLocation) => {
-                                    return <option key={schoolLocation._id} value={schoolLocation._id} >{schoolLocation.name}</option>
+                                    return <option key={schoolLocation._id} value={schoolLocation._id} style={{backgroundColor: currentTheme.backgroundColor}}>{schoolLocation.name}</option>
                                 })
                             }
                         </select>
                     </div>
                 </div>
-                <button disabled={isButtonDisabled} onClick={handleSubmit}>{targetUser == null ? "Add" : "Update"}</button>
+                <button style={{color: currentTheme.text}} disabled={isButtonDisabled} onClick={handleSubmit}>{targetUser == null ? "Add" : "Update"}</button>
             </div>
         </div>
     );

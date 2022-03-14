@@ -71,9 +71,9 @@ export default function CreateBathroomPass({ currentTheme, currentUser, setIsCre
         <div id="create-bathroom-pass-popup" className="popup">
             <div className="box" style={{backgroundColor: currentTheme.backgroundColor}}>
                 <span className="close-icon" onClick={handleClose} style={{backgroundColor: currentTheme.backgroundColor, color: currentTheme.text}}>x</span>
-                <h1>{selectedDepartureLocation === null ? "Where Are You Now?" : "What Bathroom Are You Going To?"}</h1>
+                <h1 style={{color: currentTheme.text}}>{selectedDepartureLocation === null ? "Where Are You Now?" : "What Bathroom Are You Going To?"}</h1>
                 <div className="center-wrapper">
-                    <input type="text" placeholder='Search...' id="search" onChange={(e) => setSearchContent(e.target.value.toLowerCase())}/>
+                    <input style={{color: currentTheme.text}} type="text" placeholder='Search...' id="search" onChange={(e) => setSearchContent(e.target.value.toLowerCase())}/>
                     <div id="bathrooms-list-wrapper">
                         {
                             selectedDepartureLocation === null ?
@@ -86,7 +86,7 @@ export default function CreateBathroomPass({ currentTheme, currentUser, setIsCre
                                             }
                                         }
 
-                                        return <li style={{backgroundColor: currentTheme.backgroundColor}} key={room}
+                                        return <li style={{backgroundColor: currentTheme.backgroundColor, color: currentTheme.text}} key={room}
                                         onClick={() => { setSelectedDepartureLocation(room); setSearchContent(""); }}>{room}</li>;
                                     })
                                 }
@@ -101,7 +101,7 @@ export default function CreateBathroomPass({ currentTheme, currentUser, setIsCre
                                             }
                                         }
 
-                                        return <li style={{backgroundColor: currentTheme.backgroundColor}} key={bathroom}
+                                        return <li style={{backgroundColor: currentTheme.backgroundColor, color: currentTheme.text}} key={bathroom}
                                         onClick={() => { createPass(bathroom); } }>{bathroom}</li> 
                                     })
                                 }

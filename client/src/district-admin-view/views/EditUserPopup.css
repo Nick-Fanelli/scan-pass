@@ -16,10 +16,20 @@
 
 #edit-user-popup .input input {
     font-size: 1.25rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.501);
+    padding: 0.25em 0.5em;
 }
 
 #edit-user-popup .input select {
     font-size: 1.25rem;
+    background-color: transparent;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.501);
+    padding: 0.25em 0.5em;
 }
 
 #edit-user-popup button {
