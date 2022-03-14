@@ -90,6 +90,21 @@ router.route('/add').post(authorize(AuthLevel.DistrictAdmin), async (req, res) =
     res.sendStatus(200);
 });
 
+// Lookup User
+router.route('/lookup-user/:userID').get(authorize(AuthLevel.Teacher), async (req, res) => {
+
+    const user = req.user;
+    const requesterLocation = user.schoolLocation;
+    
+    const targetUserDbID = req.params.userID;
+    const targetUser = await User.findById(targetUserDbID);
+
+    if(targetUser === null)
+        return res.sendStatus(400); // Bad Client Request
+
+    res.send(targetUser);
+});
+
 // Edit User
 router.route('/edit/:dbID').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
 

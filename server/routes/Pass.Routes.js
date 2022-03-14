@@ -16,6 +16,7 @@ router.route('/create-bathroom-pass').post(authorize(AuthLevel.Student), async (
     }
 
     const pass = new Pass({
+        schoolLocation: currentUser.schoolLocation,
         issuerID: currentUser._id,
         studentID: finalStudentID,
         departureLocation: departureLocation,

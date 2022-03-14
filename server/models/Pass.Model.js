@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const passSchema = new Schema({
+    schoolLocation: {
+        type: Schema.Types.ObjectId,
+        required: true
+    },
     issuerID: { // Database ID
         type: Schema.Types.ObjectId,
         required: true

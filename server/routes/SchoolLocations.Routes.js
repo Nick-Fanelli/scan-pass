@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const SchoolLocation = require('../models/SchoolLocation.Model');
+const Pass = require('../models/Pass.Model');
 const { AuthLevel, authorize } = require('../middleware/AuthorizationMiddleware'); 
 
 router.route('/get').get(authorize(AuthLevel.Student), async (req, res) => {
@@ -22,6 +23,23 @@ router.route('/get').get(authorize(AuthLevel.Student), async (req, res) => {
 router.route('/get-all').get(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
     const schoolLocationData = await SchoolLocation.find();
     res.send(schoolLocationData);
+});
+
+router.route('/get-bathroom-passes/:bathroom').get(authorize(AuthLevel.Student), async(req, res) => {
+    
+    const user = req.user;
+
+    const arrivalLocation = req.params.bathroom;
+
+    const userLocation = user.schoolLocation;
+
+    const passes = await Pass.find({
+        schoolLocation: userLocation,
+        arrivalLocation: arrivalLocation
+    });
+
+    res.send(passes);
+
 });
 
 router.route('/add-bathroom').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {

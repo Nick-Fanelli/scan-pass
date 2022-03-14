@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react'
 
 import { server } from '../../ServerAPI';
 
@@ -29,26 +29,64 @@ const useEventListener = (eventName, handler, element = window) => {
     }, [eventName, element]);
 };
 
-
 export default function LavView({ currentUser, currentTheme, setCurrentTheme, handleGoHome }) {
+
+    const refreshInterval = useRef();
 
     const [isLoaded, setIsLoaded] = useState(false);
     const [lavLocations, setLavLocations] = useState(null);
+
+    const [activePasses, setActivePasses] = useState([]);
+    const prevActivePasses = useRef();
 
     const [students, setStudents] = useState([]);
     const [lavLocation, setLavLocation] = useState(null);
     const [isExchangeLocationPopupOpen, setIsExchangeLocationPopupOpen] = useState(true);
 
+    const refreshUpdate = useCallback(() => {
+        async function run() {
+            if(!lavLocation) return;
+
+            server.get('/school-locations/get-bathroom-passes/' + lavLocation, {
+                headers: { authorization: currentUser.accessToken }
+            }).then(res => {
+                let newActivePasses = res.data;
+
+                if(JSON.stringify(newActivePasses) !== prevActivePasses.current) {
+                    console.log("Update Passes From Database...");
+                    setActivePasses(newActivePasses);
+                }
+            });
+        }
+
+        return run();
+    }, [lavLocation, currentUser.accessToken, prevActivePasses]);
+ 
+    // Update Prev Active Passes
     useEffect(() => {
-        server.get('/school-locations/get', {
-            headers: {
-                'authorization': currentUser.accessToken
-            }
-        }).then((result) => {
-            console.log(result);
-            setLavLocations(result.data.bathroomLocations);
-        });
-    }, [currentUser.accessToken]);
+        prevActivePasses.current = JSON.stringify(activePasses);
+    }, [activePasses])
+
+    useEffect(() => {
+        async function call() {
+            
+            server.get('/school-locations/get', {
+                headers: {
+                    'authorization': currentUser.accessToken
+                }
+            }).then((result) => {
+                setLavLocations(result.data.bathroomLocations);
+
+                clearInterval(refreshInterval.current); // Clear the current interval
+                refreshInterval.current = setInterval(refreshUpdate, 2000); // Set new refresh interval of 2000ms
+                refreshUpdate();
+
+            }); 
+
+        }
+
+        return call();
+    }, [currentUser.accessToken, refreshUpdate, refreshInterval]);
 
     // Is Loaded
     useEffect(() => {
@@ -126,6 +164,13 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
     
     useEventListener("keydown", handler);
 
+    // On Component Unmount
+    useLayoutEffect(() => {
+        return () => {
+            clearInterval(refreshInterval.current); // Clear Interval
+        }
+    }, [refreshInterval]);
+
     if(isLoaded) {
         return (
             <>
@@ -139,8 +184,8 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
                 lavLocation != null ?
 
                 <>
-                <LavNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} studentCount={students.length} lavLocation={lavLocation} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} handleGoHome={handleGoHome} />
-                <Lav theme={currentTheme} students={students} processData={processData} />
+                <LavNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} studentCount={activePasses.length} lavLocation={lavLocation} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} handleGoHome={handleGoHome} />
+                <Lav theme={currentTheme} currentUser={currentUser} students={students} processData={processData} activePasses={activePasses} />
                 <div id="button-controls">
                     <div className="button-wrapper">
                         <button style={{backgroundColor: currentTheme.offset, color: currentTheme.text}} onClick={handleManuallyAddStudent}>Manually Add Student</button>

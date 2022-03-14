@@ -1,29 +1,56 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons"
+import { useEffect, useState } from 'react';
+import { server } from '../../ServerAPI';
 
-export default function Student({ theme, student, processData }) {
+export default function Student({ currentUser, theme, pass, processData }) {
 
-    const timestamp = new Date(student.loginTimestamp);
+    const [userData, setUserData] = useState(null);
 
-    let hours = timestamp.getHours();
-    let minutes = timestamp.getMinutes();
+    // Load User Data
+    useEffect(() => {
+        server.get('/users/lookup-user/' + pass.studentID, {
+            headers: { authorization: currentUser.accessToken }
+        }).then(res => {
+            setUserData({
+                userName: res.data.userName,
+                studentID: res.data.userID
+            });
+        });
+    }, [pass.studentID, currentUser.accessToken, setUserData]);
 
-    const ampm = hours >= 12 ? "pm" : "am";
+    if(userData == null)
+        return null;
 
-    hours = hours % 12;
-    hours = hours ? hours : 12;
+    let passStatus = "Arriving";
 
-    minutes = minutes < 10 ? ("0" + minutes) : minutes;
+    if(pass.arrivalTimestamp !== null) {
+        passStatus = "At Location";
 
-    const displayableTimestamp = hours + ":" + minutes + ampm;
+        const timestamp = new Date(Number.parseInt(pass.arrivalTimestamp));
+
+        let hours = timestamp.getHours();
+        let minutes = timestamp.getMinutes();
+
+        const ampm = hours >= 12 ? "pm" : "am";
+
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+
+        minutes = minutes < 10 ? ("0" + minutes) : minutes;
+
+        var displayableTimestamp = hours + ":" + minutes + ampm;
+    } else {
+        displayableTimestamp = "N/A";
+    }
 
     return (
         <tr>
-            <td>{student.name}</td>
-            <td></td>
-            <td className="id">{student.id}</td>
+            <td>{userData.userName}</td>
+            <td>{passStatus}</td>
+            <td className="id">{userData.studentID}</td>
             <td>{displayableTimestamp}</td>
-            <td className="remove-user-btn" onClick={(e) => { processData(student.id) }}>
+            <td className="remove-user-btn" onClick={(e) => { processData(pass._id) }}>
                 <FontAwesomeIcon style={{color: theme.text}} icon={faTimesCircle} id="change-location-button" />
             </td>
         </tr> 

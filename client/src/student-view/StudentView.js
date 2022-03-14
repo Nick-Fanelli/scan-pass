@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRestroom, faDoorOpen } from "@fortawesome/free-solid-svg-icons"
@@ -19,6 +19,8 @@ const PassStatus = {
 
 export default function StudentView({ theme, setCurrentTheme, currentUser }) {
 
+    const refreshInterval = useRef();
+
     const [seconds, setSeconds] = useState(0);
 
     const [isCreateBathroomPassPopupVisible, setIsCreateBathroomPassPopupVisible] = useState(false);
@@ -27,12 +29,6 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
     const [passStatus, setPassStatus] = useState(null);
 
     const refreshUpdate = useCallback(() => {
-        // server.get('/passes/get-self-pertaining', {
-        //     headers: { authorization: currentUser.accessToken }
-        // }).then(res => {
-        //     const passes = res.data;
-        // });
-
         server.get('/users/get-self', {
             headers: { authorization: currentUser.accessToken }
         }).then(res => {
@@ -81,13 +77,12 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
     }, [currentUser.accessToken, passStatus, setPassStatus, setCurrentPass, currentPass]);
 
     useEffect(() => {
-        let interval = null;
+        
+        clearInterval(refreshInterval.current); // Clear refresh interval
+        refreshInterval.current = setInterval(refreshUpdate, 2000); // Set refresh interval to 2000ms
 
-        interval = setInterval(refreshUpdate, 2000); // Wait 2000ms
         refreshUpdate();
-
-        return () => clearInterval(interval);
-    }, [refreshUpdate, seconds]);
+    }, [refreshUpdate, seconds, refreshInterval]);
 
     function handleEndPass() {
         server.post('/users/purge-bathroom-passes', {}, {
@@ -116,6 +111,13 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
 
         // Reset timer
     }
+
+    // On Component Unmount
+    useLayoutEffect(() => {
+        return () => {
+            clearInterval(refreshInterval.current);
+        }
+    }, [refreshInterval])
 
     let calculatedMinutes = Math.floor(seconds / 60);
     let calculatedSeconds = seconds - calculatedMinutes * 60;

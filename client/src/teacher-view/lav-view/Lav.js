@@ -2,7 +2,7 @@ import './Lav.css'
 
 import Student from './Student'
 
-export default function Lav({ theme, students, processData }) {
+export default function Lav({ theme, currentUser, processData, activePasses }) {
     return (
         <section id="lav-view">
             <table id="active-student-table" className="styled-table">
@@ -18,8 +18,8 @@ export default function Lav({ theme, students, processData }) {
 
                 <tbody style={{color: theme.text}}>
                     {
-                        students.map(student => {
-                            return <Student key={student.id} theme={theme} student={student} processData={processData} />
+                        activePasses.map(pass => {
+                            return <Student key={pass._id} theme={theme} pass={pass} currentUser={currentUser} processData={processData} />
                         })
                     }
                 </tbody>
