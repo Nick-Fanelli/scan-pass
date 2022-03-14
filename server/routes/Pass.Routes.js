@@ -55,4 +55,17 @@ router.route('/get/:id').get(authorize(AuthLevel.Student), async (req, res) => {
     return res.send(pass);
 });
 
+router.route('/set-arrival-timestamp/:passID').post(authorize(AuthLevel.Student), async (req, res) => {
+    
+    const passID = req.params.passID; 
+    const { arrivalTimestamp } = req.body;
+
+    const pass = await Pass.findById(passID);
+    pass.arrivalTimestamp = arrivalTimestamp;
+
+    pass.save();
+
+    res.sendStatus(200);
+})
+
 module.exports = router;

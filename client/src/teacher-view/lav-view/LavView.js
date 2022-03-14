@@ -101,33 +101,49 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
         }
     }, [isExchangeLocationPopupOpen, lavLocation, handleGoHome]);
 
-    function processData(data, timestamp) {
+    async function processData(data, timestamp) {
         // Validate Student ID
         if(!data.match(ValidStudentIDRegex)) {
             console.error(`${data} is not a valid student ID number!`);
             return;
         }
 
-        let studentArrayLocation = null;
+        const user = await server.get('/users/lookup-student-by-student-id/' + data, {
+            headers: { authorization: currentUser.accessToken }
+        });
 
-        // Loop through list of current students
-        for(let i = 0; i < students.length; i++) {
-            let student = students[i];
-
-            if(student.id === data) {
-                studentArrayLocation = i;
-                break;
-            }
+        if(!user) {
+            console.error("Received Null User");
+            return;
         }
 
-        if(studentArrayLocation == null) { // Add Student
-            setStudents([...students, { id: data, name: "First Last", loginTimestamp: timestamp}]);
-            // TODO: Record in database
-        } else { // Remove Student
-            const prevStudents = students;
-            prevStudents.splice(studentArrayLocation, 1);
-            setStudents([...prevStudents]);
-            // TODO: Record in database
+        const result = activePasses.filter(pass => pass.targetID === user.userID);
+    
+        if(!result) {
+            console.error("Invalid Student ID");
+            return;
+        }
+        
+        if(result.length > 1) {
+            console.error("Result > 1???");
+            return;
+        }
+
+        let targetPass = result[0];
+    
+        if(targetPass.arrivalTimestamp === null) {
+            // Set Arrival Location
+            server.post("/passes/set-arrival-timestamp/" + targetPass._id,
+            {
+                arrivalTimestamp: timestamp
+            },
+            {
+                headers: { authorization: currentUser.accessToken }
+            }).then(() => {
+                refreshUpdate();
+            });
+        } else {
+            console.log("End Pass")
         }
     }
 
@@ -137,7 +153,7 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
 
         if(result) {
             setStudents([]);
-            // TODO: Update in database by ending all passes   
+            // TODO: Update in database by ending all passes
         }
     }
 

@@ -91,7 +91,7 @@ router.route('/add').post(authorize(AuthLevel.DistrictAdmin), async (req, res) =
 });
 
 // Lookup User
-router.route('/lookup-user/:userID').get(authorize(AuthLevel.Teacher), async (req, res) => {
+router.route('/lookup-student/:userID').get(authorize(AuthLevel.Teacher), async (req, res) => {
 
     const user = req.user;
     const requesterLocation = user.schoolLocation;
@@ -102,7 +102,27 @@ router.route('/lookup-user/:userID').get(authorize(AuthLevel.Teacher), async (re
     if(targetUser === null)
         return res.sendStatus(400); // Bad Client Request
 
+    if((user.userType !== AuthLevel.Admin || user.userType !== AuthLevel.DistrictAdmin) && targetUser.schoolLocation !== requesterLocation)
+        return res.sendStatus(403); // Forbidden
+        
     res.send(targetUser);
+});
+
+// Lookup Student by Student ID
+router.route('/lookup-student-by-student-id/:userID').get(authorize(AuthLevel.Teacher), async (req, res) => {
+    // const user = req.user;
+    // const requesterLocation = user.schoolLocation;
+
+    const targetStudentID = req.params.userID;
+    const targetStudent = await User.find({ userID: targetStudentID });
+
+    if(targetStudent === null)
+        return res.sendStatus(400); // Bad Client Request
+
+    if(targetStudent.length > 1)
+        return res.status(500).send(`Internal Server Error: Multiple Users Point To The Same User ID of: '${targetStudentID}'`);
+
+    res.send(targetStudent[0]);
 });
 
 // Edit User

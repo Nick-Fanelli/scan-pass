@@ -9,7 +9,7 @@ export default function Student({ currentUser, theme, pass, processData }) {
 
     // Load User Data
     useEffect(() => {
-        server.get('/users/lookup-user/' + pass.studentID, {
+        server.get('/users/lookup-student/' + pass.studentID, {
             headers: { authorization: currentUser.accessToken }
         }).then(res => {
             setUserData({
@@ -44,13 +44,15 @@ export default function Student({ currentUser, theme, pass, processData }) {
         displayableTimestamp = "N/A";
     }
 
+    const colorStyle = {backgroundColor: (passStatus === "Arriving" ? "#ff000070" : "#00ff0070")};
+
     return (
-        <tr>
+        <tr style={colorStyle} className="student-row">
             <td>{userData.userName}</td>
             <td>{passStatus}</td>
             <td className="id">{userData.studentID}</td>
             <td>{displayableTimestamp}</td>
-            <td className="remove-user-btn" onClick={(e) => { processData(pass._id) }}>
+            <td className="remove-user-btn" onClick={() => { processData(pass._id) }}>
                 <FontAwesomeIcon style={{color: theme.text}} icon={faTimesCircle} id="change-location-button" />
             </td>
         </tr> 

@@ -49,12 +49,12 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
                             setPassStatus(PassStatus.Departing);
                     } else {
                         if(passStatus !== PassStatus.AtLocation)
-                            setPassStatus(null);
+                            setPassStatus(PassStatus.AtLocation);
                     }
 
                     if(!currentPass || currentPass._id !== pass._id)
                         setCurrentPass(pass);
-                }).catch(error => { // If the pass doesn't exist
+                }).catch(() => { // If the pass doesn't exist
                     server.post('/users/set-current-pass', {
                         passID: null
                     }, {
