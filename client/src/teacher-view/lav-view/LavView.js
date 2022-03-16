@@ -143,7 +143,13 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
                 refreshUpdate();
             });
         } else {
-            console.log("End Pass")
+            server.post('/passes/end-pass/' + targetPass._id, {
+
+            }, {
+                headers: { authorization: currentUser.accessToken }
+            }).then(() => {
+                refreshUpdate();
+            });
         }
     }
 

@@ -55,6 +55,8 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
                     if(!currentPass || currentPass._id !== pass._id)
                         setCurrentPass(pass);
                 }).catch(() => { // If the pass doesn't exist
+                    console.error("Users Current Pass Doesn't Exist");
+
                     server.post('/users/set-current-pass', {
                         passID: null
                     }, {
@@ -70,8 +72,10 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
                 })
 
             } else {
-                if(passStatus !== null)
+                if(passStatus !== null) {
                     setPassStatus(null);
+                    setCurrentPass(null);
+                }
             }
         });
     }, [currentUser.accessToken, passStatus, setPassStatus, setCurrentPass, currentPass]);
@@ -85,11 +89,11 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
     }, [refreshUpdate, seconds, refreshInterval]);
 
     function handleEndPass() {
-        server.post('/users/purge-bathroom-passes', {}, {
+        server.post('/passes/end-pass/' + currentPass._id, {}, {
             headers: { authorization: currentUser.accessToken }
         }).then(() => {
             refreshUpdate();
-        })
+        });
     }
 
     function handleCreateBathroomPass() {

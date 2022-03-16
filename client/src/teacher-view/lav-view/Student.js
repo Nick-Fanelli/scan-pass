@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimesCircle } from "@fortawesome/free-solid-svg-icons"
+import { faTimesCircle, faArrowAltCircleDown } from "@fortawesome/free-solid-svg-icons"
 import { useEffect, useState } from 'react';
 import { server } from '../../ServerAPI';
 
@@ -24,7 +24,7 @@ export default function Student({ currentUser, theme, pass, processData }) {
 
     let passStatus = "Arriving";
 
-    if(pass.arrivalTimestamp !== null) {
+    if(pass.arrivalTimestamp) {
         passStatus = "At Location";
 
         const timestamp = new Date(Number.parseInt(pass.arrivalTimestamp));
@@ -52,9 +52,9 @@ export default function Student({ currentUser, theme, pass, processData }) {
             <td>{passStatus}</td>
             <td className="id">{userData.studentID}</td>
             <td>{displayableTimestamp}</td>
-            <td className="remove-user-btn" onClick={() => { processData(pass._id) }}>
-                <FontAwesomeIcon style={{color: theme.text}} icon={faTimesCircle} id="change-location-button" />
+            <td className="remove-user-btn" onClick={() => { processData(userData.studentID, Date.now()) }}>
+                <FontAwesomeIcon style={{color: theme.text}} icon={passStatus === "Arriving" ? faArrowAltCircleDown : faTimesCircle} id="change-location-button" />
             </td>
         </tr> 
-    )
+    );
 }

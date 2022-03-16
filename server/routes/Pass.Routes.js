@@ -1,6 +1,9 @@
 const router = require('express').Router();
 const Pass = require('../models/Pass.Model');
+const User = require('../models/User.Model');
 const { AuthLevel, authorize } = require('../middleware/AuthorizationMiddleware');
+
+const { archivePass } = require('../HistoricPass');
 
 router.route('/create-bathroom-pass').post(authorize(AuthLevel.Student), async (req, res) => {
 
@@ -60,12 +63,63 @@ router.route('/set-arrival-timestamp/:passID').post(authorize(AuthLevel.Student)
     const passID = req.params.passID; 
     const { arrivalTimestamp } = req.body;
 
-    const pass = await Pass.findById(passID);
+    let pass = await Pass.findById(passID);
+
+    // Make sure pass exists
+    if(!pass)
+        return res.sendStatus(400); // Client Error
+
     pass.arrivalTimestamp = arrivalTimestamp;
 
     pass.save();
 
     res.sendStatus(200);
-})
+});
+
+router.route('/end-pass/:passID').post(authorize(AuthLevel.Student), async (req, res) => {
+
+    const user = req.user;
+
+    const passID = req.params.passID;
+
+    let pass = await Pass.findById(passID);
+    
+    // Make sure pass exists
+    if(!pass)
+        return res.sendStatus(400); // Client Error
+
+    // Verify User
+    if(user.userType === AuthLevel.Student) {
+        if(pass.studentID !== user._id) {
+            return res.sendStatus(403); // Forbidden
+        }
+    }
+
+    const targetUser = User.findById(pass.studentID);
+    if(!targetUser) return res.sendStatus(500); // Server Error
+
+    const result = await archivePass(user, pass);
+
+    if(result !== 200) {
+        return res.sendStatus(result);
+    }
+    
+    // Remove from user's current pass if applicable
+    if(user.currentPass === pass._id) {
+        user.currentPass = null;
+        user.save();
+    }
+
+    // Unassign as current pass if applicable
+    if(user.currentPass.toString() === passID.toString()) {
+        user.currentPass = null;
+        await user.save();
+    }
+
+    // Delete Current Pass
+    pass.delete();
+
+    res.sendStatus(200); // OK
+});
 
 module.exports = router;
