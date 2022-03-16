@@ -25,83 +25,10 @@ router.route('/get-all').get(authorize(AuthLevel.DistrictAdmin), async (req, res
     res.send(schoolLocationData);
 });
 
-router.route('/get-bathroom-passes/:bathroom').get(authorize(AuthLevel.Student), async(req, res) => {
-    
-    const user = req.user;
-
-    const arrivalLocation = req.params.bathroom;
-
-    const userLocation = user.schoolLocation;
-
-    const passes = await Pass.find({
-        schoolLocation: userLocation,
-        arrivalLocation: arrivalLocation
-    });
-
-    res.send(passes);
-
-});
-
-router.route('/add-bathroom').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
-    // Get the params
-    const schoolLocationID = req.body.schoolLocationID;
-    const bathroomLocation = req.body.bathroomLocation;
-
-    if(!schoolLocationID || !bathroomLocation) {
-        res.status(400).send("Missing Body Args"); // Bad request
-        return;
-    }
-
-    const schoolLocation = await SchoolLocation.findById(schoolLocationID);
-
-    if(!schoolLocation) {
-        res.status(400).send("Could not find school location with requested ID!"); // Bad Request
-        return;
-    }
-
-    if(schoolLocation.bathroomLocations.includes(bathroomLocation)) {
-        res.status(400).send("Naming Collision"); // Bad Request
-        return;
-    }
-
-    schoolLocation.bathroomLocations.push(bathroomLocation);
-    schoolLocation.save();
-    res.status(200).send();
-});
-
-router.route('/delete-bathroom').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
-    // Get the params
-    const schoolLocationID = req.body.schoolLocationID;
-    const bathroomLocation = req.body.bathroomLocation;
-
-    if(!schoolLocationID || !bathroomLocation) {
-        res.status(400).send("Missing Body Args"); // Bad request
-        return;
-    }
-
-    const schoolLocation = await SchoolLocation.findById(schoolLocationID);
-
-    if(!schoolLocation) {
-        res.status(400).send("Could not find school location with requested ID!"); // Bad Request
-        return;
-    }
-
-    const index = schoolLocation.bathroomLocations.indexOf(bathroomLocation);
-
-    if(index <= -1) {
-        res.status(400).send("Could not find bathroom location with requested ID!"); // Bad Request
-        return;
-    }
-
-    schoolLocation.bathroomLocations.splice(index, 1);
-    schoolLocation.save();
-    res.status(200).send(); // OK
-});
-
 router.route('/add-room').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
     // Get the params
     const schoolLocationID = req.body.schoolLocationID;
-    const roomLocation = req.body.roomLocation;
+    const { roomLocation, isBathroom } = req.body;
 
     if(!schoolLocationID || !roomLocation) {
         res.status(400).send("Missing Body Args"); // Bad request
@@ -120,7 +47,7 @@ router.route('/add-room').post(authorize(AuthLevel.DistrictAdmin), async (req, r
         return;
     }
 
-    schoolLocation.roomLocations.push(roomLocation);
+    schoolLocation.roomLocations.push({roomLocation: roomLocation, isBathroom: isBathroom});
     schoolLocation.save();
     res.status(200).send();
 });

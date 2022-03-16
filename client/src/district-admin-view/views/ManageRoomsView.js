@@ -31,7 +31,6 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
             let schoolLocationsCopy = result.data;
 
             schoolLocationsCopy.forEach((school) => {
-                school.bathroomLocations.sort();
                 school.roomLocations.sort();
             });
 
@@ -123,12 +122,12 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
                     </div>
                 </div>
                 <ul id="rooms">
-                    {
+                    {/* {
                         schoolLocations[currentSchoolLocationIndex].bathroomLocations.map((bathroom) => {
                             return <Room key={bathroom} currentUser={currentUser} currentTheme={currentTheme} room={bathroom} 
                             schoolLocationID={schoolLocations[currentSchoolLocationIndex]} syncWithDatabase={syncWithDatabase} isBathroom={true} /> 
                         })
-                    }
+                    } */}
                     <div className="divider" style={{backgroundColor: currentTheme.text}}></div>
                     {
                         schoolLocations[currentSchoolLocationIndex].roomLocations.map((room) => {

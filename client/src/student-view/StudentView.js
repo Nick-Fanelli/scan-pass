@@ -88,6 +88,8 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
     }, [refreshUpdate, seconds, refreshInterval]);
 
     function handleEndPass() {
+        // const passCopy = currentPass;
+        
         server.post('/passes/end-pass/' + currentPass._id, {}, {
             headers: { authorization: currentUser.accessToken }
         }).then(() => {

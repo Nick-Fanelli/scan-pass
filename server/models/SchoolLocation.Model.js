@@ -7,8 +7,7 @@ const schoolLocationSchema = new Schema({
         required: true,
         unique: true
     },
-    roomLocations: [String],
-    bathroomLocations: [String]
+    roomLocations: [Object]
 });
 
 const SchoolLocation = mongoose.model("SchoolLocation", schoolLocationSchema);
