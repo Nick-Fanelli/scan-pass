@@ -5,7 +5,6 @@ import { faRestroom, faDoorOpen } from "@fortawesome/free-solid-svg-icons"
 
 import StudentNav from './StudentNav';
 import CreateBathroomPass from './CreateBathroomPassPopup';
-import { PassFactory } from '../Pass';
 
 import { server } from '../ServerAPI';
 
@@ -101,18 +100,6 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
     }
 
     function handleCreateRoomPass() {
-
-        // Create Pass
-        setCurrentPass(PassFactory.CreateRoomPass(
-            currentUser.userID,
-            currentUser.userID,
-            "A101",
-            "12:00pm",
-            "A102"
-        ));
-
-        setPassStatus(null);
-
         // Reset timer
     }
 
