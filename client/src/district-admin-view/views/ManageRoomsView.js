@@ -31,7 +31,17 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
             let schoolLocationsCopy = result.data;
 
             schoolLocationsCopy.forEach((school) => {
-                school.roomLocations.sort();
+                let bathrooms = [];
+                let rooms = [];
+
+                school.roomLocations.forEach((room) => {
+                    room.isBathroom ? bathrooms.push(room) : rooms.push(room);
+                });
+
+                bathrooms.sort((a, b) => (a.roomLocation > b.roomLocation) ? 1 : -1);
+                rooms.sort((a, b) => (a.roomLocation > b.roomLocation) ? 1 : -1);
+
+                school.roomLocations = [...bathrooms.concat(rooms)];
             });
 
             setSchoolLocations([...schoolLocationsCopy]);
@@ -64,21 +74,13 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
             const roomName = entry[0];
             const isBathroom = entry[1] === "true" ? true : false;
 
-            if(isBathroom) {
-                server.post('/school-locations/add-bathroom', {
-                    schoolLocationID: currentSchoolLocation,
-                    bathroomLocation: roomName
-                }, {
-                    headers: { authorization: currentUser.accessToken }
-                });
-            } else {
-                server.post('/school-locations/add-room', {
-                    schoolLocationID: currentSchoolLocation,
-                    roomLocation: roomName
-                }, {
-                    headers: { authorization: currentUser.accessToken }
-                });
-            }
+            server.post('/school-locations/add-room', {
+                schoolLocationID: currentSchoolLocation,
+                roomLocation: roomName,
+                isBathroom: isBathroom
+            }, {
+                headers: { authorization: currentUser.accessToken }
+            });
 
         });
 
@@ -98,7 +100,7 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
         <>
         {
             shouldShowImportCSVPopup ?
-            <ImportCSVPopup currentTheme={currentTheme} currentUser={currentUser} importFormat={"Room Location (String), Is Bathroom (boolean)"} setShouldShowImportCSVPopup={setShouldShowImportCSVPopup} enterCallback={handleImportCSVData} />
+            <ImportCSVPopup currentTheme={currentTheme} importFormat={"Room Location (String), Is Bathroom (boolean)"} setShouldShowImportCSVPopup={setShouldShowImportCSVPopup} enterCallback={handleImportCSVData} />
             : null
         }
         {
@@ -122,17 +124,11 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
                     </div>
                 </div>
                 <ul id="rooms">
-                    {/* {
-                        schoolLocations[currentSchoolLocationIndex].bathroomLocations.map((bathroom) => {
-                            return <Room key={bathroom} currentUser={currentUser} currentTheme={currentTheme} room={bathroom} 
-                            schoolLocationID={schoolLocations[currentSchoolLocationIndex]} syncWithDatabase={syncWithDatabase} isBathroom={true} /> 
-                        })
-                    } */}
-                    <div className="divider" style={{backgroundColor: currentTheme.text}}></div>
+                    {/* <div className="divider" style={{backgroundColor: currentTheme.text}}></div> */}
                     {
                         schoolLocations[currentSchoolLocationIndex].roomLocations.map((room) => {
-                            return <Room key={room} currentUser={currentUser} currentTheme={currentTheme} room={room} 
-                            schoolLocationID={schoolLocations[currentSchoolLocationIndex]} syncWithDatabase={syncWithDatabase} isBathroom={false} /> 
+                            return <Room key={room.roomLocation} currentUser={currentUser} currentTheme={currentTheme} room={room} 
+                            schoolLocationID={schoolLocations[currentSchoolLocationIndex]} syncWithDatabase={syncWithDatabase} /> 
                         })
                     }
                 </ul>

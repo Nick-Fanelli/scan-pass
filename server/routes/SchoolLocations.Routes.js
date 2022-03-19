@@ -55,9 +55,9 @@ router.route('/add-room').post(authorize(AuthLevel.DistrictAdmin), async (req, r
 router.route('/delete-room').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
     // Get the params
     const schoolLocationID = req.body.schoolLocationID;
-    const roomLocation = req.body.roomLocation;
+    const room = req.body.room;
 
-    if(!schoolLocationID || !roomLocation) {
+    if(!schoolLocationID || !room) {
         res.status(400).send("Missing Body Args"); // Bad request
         return;
     }
@@ -69,7 +69,15 @@ router.route('/delete-room').post(authorize(AuthLevel.DistrictAdmin), async (req
         return;
     }
 
-    const index = schoolLocation.roomLocations.indexOf(roomLocation);
+    let index = -1;
+    const roomStringified = JSON.stringify(room);
+
+    schoolLocation.roomLocations.forEach((room, i) => {
+        if(JSON.stringify(room) === roomStringified) {
+            index = i;
+            return;
+        }
+    });
 
     if(index <= -1) {
         res.status(400).send("Could not find room location with requested ID!"); // Bad Request

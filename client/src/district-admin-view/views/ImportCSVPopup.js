@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import '../../Popup.css'
 import './ImportCSVPopup.css'
 
-export default function ImportCSVPopup({ currentTheme, currentUser, importFormat, setShouldShowImportCSVPopup, enterCallback }) {
+export default function ImportCSVPopup({ currentTheme, importFormat, setShouldShowImportCSVPopup, enterCallback }) {
 
     const textArea = useRef();
 
