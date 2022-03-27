@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRestroom, faDoorOpen } from "@fortawesome/free-solid-svg-icons"
+import { faPlus, faClock } from "@fortawesome/free-solid-svg-icons"
 
 import StudentNav from './StudentNav';
-import CreateBathroomPass from './CreateBathroomPassPopup';
+import CreateBathroomPass from './CreatePassPoup';
 
 import { server } from '../ServerAPI';
 
 import './StudentView.css'
+import MiniPass from './MiniPass';
 
 const PassStatus = {
     Departing: { displayName: "Departing", displayColor: "#0390fc" },
@@ -16,7 +17,7 @@ const PassStatus = {
     Returning: { displayName: "Returning", displayColor: "#ff0000" }
 }
 
-export default function StudentView({ theme, setCurrentTheme, currentUser }) {
+export default function StudentView({ theme: currentTheme, setCurrentTheme, currentUser }) {
 
     const refreshInterval = useRef();
 
@@ -25,12 +26,15 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
     const [isCreateBathroomPassPopupVisible, setIsCreateBathroomPassPopupVisible] = useState(false);
 
     const [currentPass, setCurrentPass] = useState(null);
-    const [passStatus, setPassStatus] = useState(null);
+    const [assignedPasses, setAssignedPasses] = useState([]);
+
+    const assignedPassesStringified = useRef();
 
     const refreshUpdate = useCallback(() => {
         server.get('/users/get-self', {
             headers: { authorization: currentUser.accessToken }
         }).then(res => {
+
             if(res.data.currentPass) {
                 let currentPassId = res.data.currentPass;
                 
@@ -43,14 +47,6 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
                         return;
                     }
                 
-                    if(!pass.arrivalTimestamp) {
-                        if(passStatus !== PassStatus.Departing)
-                            setPassStatus(PassStatus.Departing);
-                    } else {
-                        if(passStatus !== PassStatus.AtLocation)
-                            setPassStatus(PassStatus.AtLocation);
-                    }
-
                     if(!currentPass || currentPass._id !== pass._id)
                         setCurrentPass(pass);
                 }).catch(() => { // If the pass doesn't exist
@@ -66,18 +62,24 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
                         headers: { authorization: currentUser.accessToken }
                     });
 
-                    setPassStatus(null);
                     setCurrentPass(null);
-                })
-
+                });
             } else {
-                if(passStatus !== null) {
-                    setPassStatus(null);
+                if(currentPass !== null)
                     setCurrentPass(null);
-                }
             }
         });
-    }, [currentUser.accessToken, passStatus, setPassStatus, setCurrentPass, currentPass]);
+
+        server.get('/passes/get-self-pertaining', {
+            headers: { authorization: currentUser.accessToken }
+        }).then(res => {
+            const resStringified = JSON.stringify(res.data);
+            if(resStringified !== assignedPassesStringified.current) {
+                assignedPassesStringified.current = resStringified;
+                setAssignedPasses(res.data.sort((a, b) => (a.departureTimestamp > b.departureTimestamp) ? 1 : -1));
+            }
+        })
+    }, [currentUser.accessToken, setCurrentPass, currentPass, assignedPassesStringified, setAssignedPasses]);
 
     useEffect(() => {
         
@@ -101,10 +103,6 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
         setIsCreateBathroomPassPopupVisible(true);
     }
 
-    function handleCreateRoomPass() {
-        // Reset timer
-    }
-
     // On Component Unmount
     useLayoutEffect(() => {
         return () => {
@@ -118,53 +116,51 @@ export default function StudentView({ theme, setCurrentTheme, currentUser }) {
     if(calculatedMinutes < 10) calculatedMinutes = "0" + calculatedMinutes;
     if(calculatedSeconds < 10) calculatedSeconds = "0" + calculatedSeconds;
 
+    const currentPassStatus = (currentPass && currentPass.arrivalTimestamp) ? PassStatus.AtLocation : PassStatus.Departing;
+
     return (
         <>
             {
-                isCreateBathroomPassPopupVisible ?
-                <CreateBathroomPass currentTheme={theme} currentUser={currentUser} setIsCreateBathroomPassPopupVisible={setIsCreateBathroomPassPopupVisible} refreshUpdate={refreshUpdate} />
+                currentPass !== null ?
+                <section id="current-pass">
+                    <div className="pass" style={{backgroundColor: currentPassStatus.displayColor}}>
+                        <span className="close-icon" style={{backgroundColor: currentPassStatus.displayColor, color: '#ffffff'}}>x</span>
+                        <h1>{currentPassStatus.displayName}</h1>
+                        <div className="end-pass-btn">
+                            <h2>End Pass</h2>
+                        </div>
+                    </div>
+                </section>
+                : null   
+            }
+            {
+                isCreateBathroomPassPopupVisible && currentPass === null ?
+                <CreateBathroomPass currentTheme={currentTheme} currentUser={currentUser} setIsCreateBathroomPassPopupVisible={setIsCreateBathroomPassPopupVisible} refreshUpdate={refreshUpdate} />
                 : null
             }
-            <StudentNav theme={theme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} />
-            <div id="student-view-content"  className="col">
-                <div id="current-pass" style={{backgroundColor: passStatus ? passStatus.displayColor : theme.offset}}>
-                    {
-                        currentPass != null && passStatus !== PassStatus.Returning ?
-                        <div id="close-pass-button" style={{backgroundColor: passStatus ? passStatus.displayColor : theme.offset}}
-                        onClick={(e) => handleEndPass()}>
-                            x
-                        </div>
-                        : 
-                        null
-                    }
-                    
-                    <div id="arrival-location-header" className={currentPass ? "box-shadow" : null}>
-                        <h1 id="arrival-location">{currentPass ? currentPass.arrivalLocation : null}</h1>
-                    </div>
-                    <div className="pass-info">
+            <StudentNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} />
+            <section id="student-view-context">
+                <div className="col" id="left-col">
+                    <h1 style={{color: currentTheme.text}}>Your Passes</h1>
+                    <div id="your-passes-container" style={{backgroundColor: currentTheme.offset}}>
                         {
-                            currentPass !== null ?
-                            <h1>{calculatedMinutes}:{calculatedSeconds}</h1>
-                            : null
+                            assignedPasses.map(pass => {
+                                return <MiniPass currentTheme={currentTheme} pass={pass} key={pass._id} />
+                            })
                         }
                     </div>
-                    <div id="movement-status" className={(currentPass ? "box-shadow" : "") + " " + (passStatus === PassStatus.Returning ? "returning-status" : "")}>
-                        <h1 className={passStatus === PassStatus.Returning ? "transform-up" : null}>{passStatus ? passStatus.displayName : null}</h1>
-                        <h2 className={passStatus === PassStatus.Returning ? "transform-up" : null}>END PASS</h2>
+                </div>
+                <div className="col" id="right-col">
+                    <div id="create-pass-now-btn" style={{backgroundColor: currentTheme.offset}} onClick={handleCreateBathroomPass}>
+                        <FontAwesomeIcon icon={faPlus} className="icon" style={{color: currentTheme.text}} />
+                        <h2 style={{color: currentTheme.text}}>Now</h2>
+                    </div>
+                    <div id="create-pass-future-btn" style={{backgroundColor: currentTheme.offset}}>
+                        <FontAwesomeIcon icon={faClock} className="icon" style={{color: currentTheme.text}} />
+                        <h2 style={{color: currentTheme.text}}>Future</h2>
                     </div>
                 </div>
-                <div id="create-pass"  className="col">
-                    <div className="new-pass-btn" style={{backgroundColor: theme.offset}} onClick={handleCreateBathroomPass}>
-                        <FontAwesomeIcon style={{color: theme.text}} icon={faRestroom} />
-                    </div>
-                    <div className="new-pass-btn" style={{backgroundColor: theme.offset}} onClick={handleCreateRoomPass}>
-                        <FontAwesomeIcon style={{color: theme.text}} icon={faDoorOpen} />
-                    </div>
-                </div>
-                <div id="past-requests" className="col">
-                    
-                </div>
-            </div>
+            </section>
         </>
     );
 

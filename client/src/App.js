@@ -16,7 +16,7 @@ function App() {
     // Load Theme
     useEffect(() => {
         const theme = JSON.parse(localStorage.getItem(THEME_LOCAL_STORAGE_KEY));
-        if(theme) setCurrentTheme(theme);
+        if(theme) setCurrentTheme(JSON.stringify(theme) === JSON.stringify(Theme.LightTheme) ? Theme.LightTheme : Theme.DarkTheme);
     }, []); 
 
     // Save Theme
@@ -49,7 +49,6 @@ function App() {
     }
 
     return (
-
         <>
             <section id="background" style={{backgroundColor: currentTheme.backgroundColor}}></section>
             <section id="content-wrapper">

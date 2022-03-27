@@ -1,79 +1,141 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
-#student-view-content {
+#student-view-context {
     display: flex;
     height: calc(100vh - 4em);
     width: 100vw;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
 }
 
-#student-view-content .col {
-    width: 33vw;
+#student-view-context .col {
+    width: 50%;
+    height: 100%;
 }
 
-#student-view-content #current-pass {
-    width: 23em;
-    height: 30em;
+#student-view-context .col {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#student-view-context .col h1 {
+    font-family: "Roboto";
+    font-size: 2rem;
+    margin: 0 0 0.5em 0;
+    font-weight: 100;
+}
+
+#student-view-context #left-col #your-passes-container {
+    width: 90%;
+    min-width: 20em;
+    height: 75%;
     border-radius: 10px;
-    margin: 0 0 0 3em;
+}
+
+#student-view-context #right-col div {
+    width: 14em;
+    height: 14em;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 1em 0;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.201);
+}
+
+#student-view-context #right-col div:hover {
+    filter: brightness(90%);
+}
+
+#student-view-context #right-col div h2 {
+    font-size: 2rem;
+    font-weight: 100;
+    font-family: "Roboto";
+    margin: 0.25em 0 0 0;
+}
+
+#student-view-context #right-col div .icon {
+    width: 50%;
+    height: 50%;
+}
+
+#student-view-context #your-passes-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 1em 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.201);
+}
+
+#student-view-context #your-passes-container .mini-pass {
+    width: 12em;
+    height: 10em;
+    margin: 1em 0;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
+    border-radius: 10px;
+    text-align: center;
+    padding: 2em 0;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.201);
+}
+
+#student-view-context #your-passes-container .mini-pass:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.601);
+    filter: brightness(105%);
+}
+
+#student-view-context #your-passes-container .mini-pass h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 100;
+    color: #ffffff;
+}
+
+#student-view-context #your-passes-container .mini-pass p {
+    margin: 0;
+    font-family: "Roboto";
+    font-weight: 100;
+    font-size: 1.25rem;
+    color: #ffffff;
+}
+
+#current-pass {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #00000075;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#current-pass .pass {
+    width: 26em;
+    height: 75vh;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.301);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
     position: relative;
 }
 
-#student-view-content #current-pass .box-shadow {
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.401);
-}
-
-#student-view-content #current-pass .pass-info h1 {
-    font-size: 3rem;
-}
-
-#student-view-content #current-pass #arrival-location-header {
-    background-color: rgba(0, 0, 0, 0.15);
-    border-radius: 10px 10px 0 0;
-    height: 91.5px;
-}
-
-#student-view-content #current-pass #movement-status {
-    background-color: rgba(0, 0, 0, 0.15);
-    height: 70px;
-}
-
-#student-view-content #current-pass #movement-status h1.transform-up {
-    transform: translateY(-60px);
-}
-
-#student-view-content #current-pass #movement-status h2 {
-    display: none;
-}
-
-#student-view-content #current-pass #movement-status.returning-status {
+#current-pass .pass .close-icon {
+    content: 'x';
     cursor: pointer;
-}
-
-#student-view-content #current-pass #movement-status.returning-status:hover {
-    background-color: rgba(0, 0, 0, 0.25);
-}
-
-#student-view-content #current-pass #movement-status h2.transform-up {
-    display: block;
-    transform: translateY(-50px);
-    text-align: center;
-    color: #ffffff;
-    font-family: "Roboto";
-}
-
-#student-view-content #current-pass h1 {
-    font-family: "Roboto";
-    font-weight: bold;
-    text-align: center;
-    color: #ffffff;
-}
-
-#student-view-content #current-pass #close-pass-button {
     position: absolute;
     right: -10px;
     top: -10px;
@@ -81,50 +143,35 @@
     height: 35px;
     border-radius: 50%;
     line-height: 30px;
+    text-align: center;
     font-size: 30px;
-    text-align: center;
     font-family: "Roboto";
-    background-color: #ffffff;
-    cursor: pointer;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.401);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.501);
 }
 
-#student-view-content #current-pass p {
+
+#current-pass .pass h1 {
+    font-family: "Roboto";
+    font-weight: bold;
+    font-size: 2.5rem;
     color: #ffffff;
-    font-family: "Roboto";
-    font-weight: 100;
-    text-align: center;
+    margin: 7.5% 0 0 0;
 }
 
-#student-view-content #current-pass h1#arrival-location {
-    font-size: 2rem;
-}
-
-#student-view-content #create-pass {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 100%;
-    align-items: center;
-}
-
-#student-view-content #create-pass .new-pass-btn {
-    width: 14em;
-    height: 14em;
-    margin: 1em 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+#current-pass .pass .end-pass-btn {
+    height: 5em;
+    background-color: #00000027;
+    width: 85%;
     border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Roboto";
+    color: #ffffff;
     cursor: pointer;
+    margin: 0 0 7.5% 0;
 }
 
-#student-view-content #create-pass .new-pass-btn:hover * {
-    opacity: 100%;
-}
-
-#student-view-content #create-pass .new-pass-btn * {
-    width: 50%;
-    height: 50%;
-    opacity: 80%;
+#current-pass .pass .end-pass-btn:hover {
+    background-color: #00000040;
 }

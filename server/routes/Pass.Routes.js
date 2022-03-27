@@ -5,7 +5,7 @@ const { AuthLevel, authorize } = require('../middleware/AuthorizationMiddleware'
 
 const { archivePass } = require('../HistoricPass');
 
-router.route('/create-bathroom-pass').post(authorize(AuthLevel.Student), async (req, res) => {
+router.route('/create-pass').post(authorize(AuthLevel.Student), async (req, res) => {
 
     const currentUser = req.user;
 
@@ -22,9 +22,9 @@ router.route('/create-bathroom-pass').post(authorize(AuthLevel.Student), async (
         schoolLocation: currentUser.schoolLocation,
         issuerID: currentUser._id,
         studentID: finalStudentID,
-        departureLocation: departureLocation,
+        departureLocation: departureLocation.roomLocation,
         departureTimestamp: departureTimestamp,
-        arrivalLocation: arrivalLocation,
+        arrivalLocation: arrivalLocation.roomLocation,
         arrivalTimestamp: null
     });
 
