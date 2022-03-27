@@ -44,17 +44,20 @@ export default function Student({ currentUser, theme, pass, processData }) {
         displayableTimestamp = "N/A";
     }
 
-    const colorStyle = {backgroundColor: (passStatus === "Arriving" ? "#ff000070" : "#00ff0070")};
+    const colorStyle = {
+        backgroundColor: (passStatus === "Arriving" ? "#ff000060" : "transparent"),
+    };
 
     return (
-        <tr style={colorStyle} className="student-row">
+        <tr className="student-row">
             <td>{userData.userName}</td>
             <td>{passStatus}</td>
-            <td className="id">{userData.studentID}</td>
+            <td className="id">{pass.departureLocation}</td>
             <td>{displayableTimestamp}</td>
             <td className="remove-user-btn" onClick={() => { processData(userData.studentID, Date.now()) }}>
                 <FontAwesomeIcon style={{color: theme.text}} icon={passStatus === "Arriving" ? faArrowAltCircleDown : faTimesCircle} id="change-location-button" />
             </td>
+            <div className="background-color" style={colorStyle}></div>
         </tr> 
     );
 }

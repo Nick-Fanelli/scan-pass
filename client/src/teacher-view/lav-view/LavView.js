@@ -233,7 +233,7 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
                 lavLocation != null ?
 
                 <>
-                <LavNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} studentCount={activePasses.length} lavLocation={lavLocation.roomLocation} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} handleGoHome={handleGoHome} />
+                <LavNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} studentCount={activePasses.filter(pass => pass.arrivalTimestamp).length} lavLocation={lavLocation.roomLocation} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} handleGoHome={handleGoHome} />
                 <Lav theme={currentTheme} currentUser={currentUser} students={students} processData={processData} activePasses={activePasses} />
                 <div id="button-controls">
                     <div className="button-wrapper">

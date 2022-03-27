@@ -20,6 +20,20 @@
     text-align: left;
 }
 
+.styled-table tbody tr {
+    position: relative;
+}
+
+.styled-table .background-color:last-of-type {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0 0 10px 10px;
+    z-index: -1;
+}
+
 .styled-table th:first-of-type {
     border-radius: 10px 0 0 0;
 }
