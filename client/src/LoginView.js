@@ -20,10 +20,9 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
                 accessToken,
                 result.data.userType,
                 result.data.userName,
-                SchoolLocations.WHS
+                result.data.schoolLocation
             ));
 
-            
             // Save to session storage
             sessionStorage.setItem(USER_ACCESS_TOKEN_SESSION_STORAGE_ID, JSON.stringify(accessToken));
         }).catch(() => {

@@ -25,7 +25,7 @@ export default function ExchangeLocationPopup({ theme, setIsExchangeLocationPopu
                                     return <li style={{
                                         color: theme.text, 
                                         backgroundColor: theme.backgroundColor
-                                    }} key={location} location={lavLocations.indexOf(location)} onClick={(e) => handleLavChange(e)}>{location}</li>
+                                    }} key={JSON.stringify(location)} location={lavLocations.indexOf(location)} onClick={(e) => handleLavChange(e)}>{location.roomLocation}</li>
                                 })
                             }
                         </ul>

@@ -157,6 +157,24 @@ router.route('/set-current-pass').post(authorize(AuthLevel.Student), async (req,
     res.sendStatus(200);
 });
 
+router.route('/set-current-pass/:studentID').post(authorize(AuthLevel.Teacher), async (req, res) => {
+
+    const { studentID } = req.params;    
+    const { passID } = req.body;
+
+    const student = await User.findById(studentID);
+    
+    if(!student || !passID) {
+        return res.sendStatus(400); // Client Error
+    }
+
+    student.currentPass = passID;
+    student.save();
+
+    res.sendStatus(200);
+});
+
+
 router.route('/purge-bathroom-passes').post(authorize(AuthLevel.Student), async (req, res) => {
     
     const user = req.user;

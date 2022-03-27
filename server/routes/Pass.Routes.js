@@ -45,6 +45,29 @@ router.route('/get-self-pertaining').get(authorize(AuthLevel.Student), async (re
 
 });
 
+router.route('/get-all-to-room/:schoolLocation/:roomLocation').get(authorize(AuthLevel.Teacher), async (req, res) => {
+
+    const currentUser = req.user;
+
+    const { schoolLocation, roomLocation } = req.params;
+
+    // Check to see if the user has access to this school's location
+    if(currentUser.userType !== AuthLevel.DistrictAdmin) {
+        if(currentUser.schoolLocation !== schoolLocation) {
+            return res.sendStatus(403); // Forbidden
+        }
+    }
+
+    // Get all the passes from that school locations with the arrivalLocation == roomLocation param
+    const passes = await Pass.find({
+        schoolLocation: schoolLocation,
+        arrivalLocation: roomLocation
+    });
+
+    // Send the found passes
+    res.status(200).send(passes);
+});
+
 router.route('/get/:id').get(authorize(AuthLevel.Student), async (req, res) => {
 
     const { id } = req.params;

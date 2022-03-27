@@ -1,23 +1,3 @@
-export const SchoolLocations = {
-    WMS: {
-        displayName: "Williamstown Middle School",
-        lavLocations: [
-            "F"
-        ]
-    },
-    WHS: {
-        displayName: "Williamstown High School",
-        lavLocations: [
-            "A100 Lav",
-            "A200 Lav",
-            "C100 Lav",
-            "C200 Lav",
-            "Cafe A Lav",
-            "Cafe B Lav"
-        ]
-    }
-}
-
 export const UserType = {
     DistrictAdmin: "DistrictAdmin",
     Admin: "Admin",
@@ -27,11 +7,11 @@ export const UserType = {
 
 export class User {
 
-    constructor(accessToken, userType, name, userLocation) {
+    constructor(accessToken, userType, name, schoolLocation) {
         this.accessToken = accessToken;
         this.userType = userType;
         this.name = name;
-        this.userLocation = userLocation;
+        this.schoolLocation = schoolLocation;
     }
 
 }

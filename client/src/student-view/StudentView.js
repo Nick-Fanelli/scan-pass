@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faClock } from "@fortawesome/free-solid-svg-icons"
+import { faPlus, faClock, faArrowDown } from "@fortawesome/free-solid-svg-icons"
 
 import StudentNav from './StudentNav';
-import CreateBathroomPass from './CreatePassPoup';
+import CreateBathroomPass from './CreatePassPopup';
 
 import { server } from '../ServerAPI';
 
@@ -90,8 +90,6 @@ export default function StudentView({ theme: currentTheme, setCurrentTheme, curr
     }, [refreshUpdate, seconds, refreshInterval]);
 
     function handleEndPass() {
-        // const passCopy = currentPass;
-        
         server.post('/passes/end-pass/' + currentPass._id, {}, {
             headers: { authorization: currentUser.accessToken }
         }).then(() => {
@@ -124,9 +122,15 @@ export default function StudentView({ theme: currentTheme, setCurrentTheme, curr
                 currentPass !== null ?
                 <section id="current-pass">
                     <div className="pass" style={{backgroundColor: currentPassStatus.displayColor}}>
-                        <span className="close-icon" style={{backgroundColor: currentPassStatus.displayColor, color: '#ffffff'}}>x</span>
                         <h1>{currentPassStatus.displayName}</h1>
-                        <div className="end-pass-btn">
+
+                        <div className="locations">
+                            <h2>{currentPass.departureLocation}</h2>
+                            <FontAwesomeIcon icon={faArrowDown} className="icon" />
+                            <h2>{currentPass.arrivalLocation}</h2>
+                        </div>
+
+                        <div className="end-pass-btn" onClick={handleEndPass}>
                             <h2>End Pass</h2>
                         </div>
                     </div>

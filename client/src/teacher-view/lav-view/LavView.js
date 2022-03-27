@@ -47,20 +47,20 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
         async function run() {
             if(!lavLocation) return;
 
-            server.get('/school-locations/get-bathroom-passes/' + lavLocation, {
+            server.get(`/passes/get-all-to-room/${currentUser.schoolLocation}/${lavLocation.roomLocation}`, {
                 headers: { authorization: currentUser.accessToken }
             }).then(res => {
                 let newActivePasses = res.data;
 
                 if(JSON.stringify(newActivePasses) !== prevActivePasses.current) {
-                    console.log("Update Passes From Database...");
+                    console.log("Update Passes from Database...");
                     setActivePasses(newActivePasses);
                 }
             });
         }
 
         return run();
-    }, [lavLocation, currentUser.accessToken, prevActivePasses]);
+    }, [lavLocation, currentUser.accessToken, prevActivePasses, currentUser.schoolLocation]);
  
     // Update Prev Active Passes
     useEffect(() => {
@@ -75,7 +75,17 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
                     'authorization': currentUser.accessToken
                 }
             }).then((result) => {
-                setLavLocations(result.data.bathroomLocations);
+                if(!result.data || !result.data.roomLocations) {
+                    console.error("Could not load room data from database!");
+                    return;
+                }
+
+                // Get all the bathrooms
+                const bathrooms = result.data.roomLocations.filter(room => {
+                    return room.isBathroom;
+                });
+
+                setLavLocations(bathrooms);
 
                 clearInterval(refreshInterval.current); // Clear the current interval
                 refreshInterval.current = setInterval(refreshUpdate, 2000); // Set new refresh interval of 2000ms
@@ -143,11 +153,28 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
                 refreshUpdate();
             });
         } else {
-            server.post('/passes/end-pass/' + targetPass._id, {
-
-            }, {
+            server.post('/passes/end-pass/' + targetPass._id, {}, {
                 headers: { authorization: currentUser.accessToken }
             }).then(() => {
+
+                // Create New Reversal Pass
+                server.post('passes/create-pass/', {
+                    studentID: targetPass.studentID,
+                    departureLocation: { roomLocation: targetPass.arrivalLocation },
+                    departureTimestamp: Date.now(),
+                    arrivalLocation: { roomLocation: targetPass.departureLocation }
+                }, {
+                    headers: { authorization: currentUser.accessToken }
+                }).then(res => {
+                    server.post(`users/set-current-pass/${targetPass.studentID}`, {
+                        passID: res.data._id
+                    }, {
+                        headers: { authorization: currentUser.accessToken }
+                    }).then(res => {
+                        console.log(res);
+                    });
+                });
+
                 refreshUpdate();
             });
         }
@@ -206,7 +233,7 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
                 lavLocation != null ?
 
                 <>
-                <LavNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} studentCount={activePasses.length} lavLocation={lavLocation} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} handleGoHome={handleGoHome} />
+                <LavNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} studentCount={activePasses.length} lavLocation={lavLocation.roomLocation} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} handleGoHome={handleGoHome} />
                 <Lav theme={currentTheme} currentUser={currentUser} students={students} processData={processData} activePasses={activePasses} />
                 <div id="button-controls">
                     <div className="button-wrapper">
