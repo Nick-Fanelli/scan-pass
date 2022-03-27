@@ -6,12 +6,26 @@ const jwt = require('jsonwebtoken');
 
 const { AuthLevel, authorize, googleAuthClient } = require('../middleware/AuthorizationMiddleware');
 
-// Login
+/**
+ * Login
+ * Location: /users/login
+ * Method: POST
+ * Authorization: None
+ * 
+ * Required Body
+ *  - tokenId
+ * 
+ * @returns users's access token and user data
+ */
 router.route('/login').post((req, res) => {
-   const { tokenId } = req.body;
+   
+    const { tokenId } = req.body;
 
-   googleAuthClient.verifyIdToken({idToken: tokenId, audience: process.env.GOOGLE_CLIENT_ID}).then(response => {
-        const { email_verified, name, email } = response.payload;
+    if(!tokenId)
+        res.sendStatus(400); // Bad Client Error
+
+    googleAuthClient.verifyIdToken({idToken: tokenId, audience: process.env.GOOGLE_CLIENT_ID}).then(response => {
+        const { email_verified, email } = response.payload;
         
         const workspaceUserID = email.split("@")[0];
         
@@ -35,9 +49,17 @@ router.route('/login').post((req, res) => {
                 }
             })
         }
-   });
+    });
 });
 
+/**
+ * Get Self
+ * Location: /users/get-self
+ * Method: GET
+ * Authorization: None
+ * 
+ * @returns user data
+ */
 router.route('/get-self').get(async(req, res) => {
     const authToken = req.headers['authorization'];
 
@@ -52,14 +74,36 @@ router.route('/get-self').get(async(req, res) => {
     });
 });
 
+/**
+ * Get All
+ * Location: /users/get-all
+ * Method: GET
+ * Authorization: DistrictAdmin
+ * 
+ * @returns all users from the database
+ */
 router.route('/get-all').get(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
     const userData = await User.find();
     res.send(userData);
 });
 
+/**
+ * Delete User
+ * Location: /users/delete-user
+ * Method: POST
+ * Authorization: DistrictAdmin
+ * 
+ * Required Body
+ *  - userID
+ * 
+ * @returns status code only (success = 200 OK)
+ */
 router.route('/delete-user').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
 
     const userID = req.body.userID;
+
+    if(!userID)
+        return res.sendStatus(400);
 
     const targetUser = await User.findById(userID);
 
@@ -71,9 +115,25 @@ router.route('/delete-user').post(authorize(AuthLevel.DistrictAdmin), async (req
     }
 });
 
-// Add User
+/**
+ * Add
+ * Location: /users/add
+ * Method: POST
+ * Authorization: DistrictAdmin
+ * 
+ * Required Body:
+ *  - userName
+ *  - userID
+ *  - userType
+ *  - userLocation
+ * 
+ * @returns status code only (success = 200 OK)
+ */
 router.route('/add').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
     const { userName, userID, userType, userLocation } = req.body;
+
+    if(!userName || !userID || !userType || !userLocation)
+        return res.sendStatus(400); // Bad Client Error
 
     if(userType === AuthLevel.DistrictAdmin)
         return res.sendStatus(403); // Forbidden
@@ -90,13 +150,27 @@ router.route('/add').post(authorize(AuthLevel.DistrictAdmin), async (req, res) =
     res.sendStatus(200);
 });
 
-// Lookup User
+/**
+ * Lookup Student
+ * Location: /users/lookup-student/:userID
+ * Method: GET
+ * Authorization: Teacher
+ * 
+ * Required Params
+ *  - targetUserDbID
+ * 
+ * @returns target student
+ */
 router.route('/lookup-student/:userID').get(authorize(AuthLevel.Teacher), async (req, res) => {
 
     const user = req.user;
     const requesterLocation = user.schoolLocation;
     
     const targetUserDbID = req.params.userID;
+
+    if(!targetUserDbID)
+        return res.sendStatus(400);
+
     const targetUser = await User.findById(targetUserDbID);
 
     if(targetUser === null)
@@ -108,28 +182,55 @@ router.route('/lookup-student/:userID').get(authorize(AuthLevel.Teacher), async 
     res.send(targetUser);
 });
 
-// Lookup Student by Student ID
+/** 
+ * Lookup Student by Student ID
+ * Location: /users/lookup-student-by-student-id/:userID
+ * Method: GET
+ * Authorization: Teacher
+ * 
+ * Required Params
+ *  - userID
+ * 
+ * @returns student
+ */
 router.route('/lookup-student-by-student-id/:userID').get(authorize(AuthLevel.Teacher), async (req, res) => {
-    // const user = req.user;
-    // const requesterLocation = user.schoolLocation;
-
     const targetStudentID = req.params.userID;
-    const targetStudent = await User.find({ userID: targetStudentID });
+
+    if(!targetStudentID)
+        return res.sendStatus(400);
+
+    const targetStudent = await User.findOne({ userID: targetStudentID });
 
     if(targetStudent === null)
         return res.sendStatus(400); // Bad Client Request
 
-    if(targetStudent.length > 1)
-        return res.status(500).send(`Internal Server Error: Multiple Users Point To The Same User ID of: '${targetStudentID}'`);
-
     res.send(targetStudent[0]);
 });
 
-// Edit User
+/**
+ * Edit User
+ * Location: /users/edit/:dbID
+ * Method: POST
+ * Authorization: DistrictAdmin
+ * 
+ * Required Params
+ *  - dbID
+ * 
+ * Required Body
+ *  - userName
+ *  - userID
+ *  - userType
+ *  - userLocation
+ * 
+ * @returns status code only (success = 200 OK)
+ */
 router.route('/edit/:dbID').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
 
     const { dbID } = req.params;
     const { userName, userID, userType, userLocation } = req.body;
+
+    if(!dbID || !userName || !userID || !userType || !userLocation)
+        return res.sendStatus(400); // Bad client error
 
     if(userType === AuthLevel.DistrictAdmin)
         return res.sendStatus(403); // Forbidden
@@ -145,11 +246,24 @@ router.route('/edit/:dbID').post(authorize(AuthLevel.DistrictAdmin), async (req,
     res.sendStatus(200);
 });
 
-// Set Current Pass
+/**
+ * Set Current Pass
+ * Location: /users/set-current-pas
+ * Method: POST
+ * Authorization: Student
+ * 
+ * Required Body
+ *  - passID 
+ * 
+ * @returns status code only (success = 200 OK)
+ */
 router.route('/set-current-pass').post(authorize(AuthLevel.Student), async (req, res) => {
     const user = req.user;
 
     const { passID } = req.body;
+
+    if(!passID)
+        return res.sendStatus(400);
 
     user.currentPass = passID;
     user.save();
@@ -157,6 +271,20 @@ router.route('/set-current-pass').post(authorize(AuthLevel.Student), async (req,
     res.sendStatus(200);
 });
 
+/**
+ * Set Current Pass
+ * Location: users/set-current-pass/:studentID
+ * Method: POST
+ * Authorization: Teacher
+ * 
+ * Required Params
+ *  - studentID
+ * 
+ * Required Body
+ *   - passID
+ * 
+ * @returns status code only (success = 200 OK)
+ */
 router.route('/set-current-pass/:studentID').post(authorize(AuthLevel.Teacher), async (req, res) => {
 
     const { studentID } = req.params;    
@@ -174,7 +302,14 @@ router.route('/set-current-pass/:studentID').post(authorize(AuthLevel.Teacher), 
     res.sendStatus(200);
 });
 
-
+/**
+ * Purge Bathroom Passes
+ * Location: /users/purge-bathroom-passes
+ * Method: POST
+ * Authorization: Student
+ * 
+ * @returns student code only (success = 200 OK)
+ */
 router.route('/purge-bathroom-passes').post(authorize(AuthLevel.Student), async (req, res) => {
     
     const user = req.user;

@@ -1,8 +1,15 @@
 const router = require('express').Router();
 const SchoolLocation = require('../models/SchoolLocation.Model');
-const Pass = require('../models/Pass.Model');
 const { AuthLevel, authorize } = require('../middleware/AuthorizationMiddleware'); 
 
+/**
+ * Get
+ * Location: /school-locations/get
+ * Method: GET
+ * Authorization: Student
+ * 
+ * @returns school location data
+ */
 router.route('/get').get(authorize(AuthLevel.Student), async (req, res) => {
     const userLocation = req.user.schoolLocation;
 
@@ -20,11 +27,31 @@ router.route('/get').get(authorize(AuthLevel.Student), async (req, res) => {
     res.send(schoolLocationData);
 });
 
+/**
+ * Get All
+ * Location /school-locations/get-all
+ * Method: GET
+ * Authorization: DistrictAdmin
+ * 
+ * @returns all school location data
+ */
 router.route('/get-all').get(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
     const schoolLocationData = await SchoolLocation.find();
     res.send(schoolLocationData);
 });
 
+/**
+ * Add Room
+ * Location: /school-locations/add-room
+ * Method: POST
+ * Authorization: DistrictAdmin
+ * 
+ * Required Body
+ *  - schoolLocationID
+ *  - roomLocation
+ * 
+ * @returns status code only (success = 200 OK)
+ */
 router.route('/add-room').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
     // Get the params
     const schoolLocationID = req.body.schoolLocationID;
@@ -52,6 +79,17 @@ router.route('/add-room').post(authorize(AuthLevel.DistrictAdmin), async (req, r
     res.status(200).send();
 });
 
+/**
+ * Delete Room
+ * Location: /school-locations/delete-room
+ * Method: POST
+ * Authorization: DistrictAdmin
+ * 
+ * Required Body
+ *  - room
+ * 
+ * @returns status code only (success = 200 OK)
+ */
 router.route('/delete-room').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
     // Get the params
     const schoolLocationID = req.body.schoolLocationID;
