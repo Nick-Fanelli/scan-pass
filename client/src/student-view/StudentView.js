@@ -14,7 +14,7 @@ import MiniPass from './MiniPass';
 const PassStatus = {
     Departing: { displayName: "Departing", displayColor: "#0390fc" },
     AtLocation: { displayName: "At Location", displayColor: "#90ee90" },
-    Returning: { displayName: "Returning", displayColor: "#ff0000" }
+    Returning: { displayName: "Returning", displayColor: "#eb4034" }
 }
 
 export default function StudentView({ theme: currentTheme, setCurrentTheme, currentUser }) {
@@ -29,6 +29,7 @@ export default function StudentView({ theme: currentTheme, setCurrentTheme, curr
     const [assignedPasses, setAssignedPasses] = useState([]);
 
     const assignedPassesStringified = useRef();
+    const bathroomLocations = useRef();
 
     const refreshUpdate = useCallback(() => {
         server.get('/users/get-self', {
@@ -82,12 +83,25 @@ export default function StudentView({ theme: currentTheme, setCurrentTheme, curr
     }, [currentUser.accessToken, setCurrentPass, currentPass, assignedPassesStringified, setAssignedPasses]);
 
     useEffect(() => {
+
+        // Get all the bathroom locations
+        server.get('/school-locations/get', {
+            headers: { authorization: currentUser.accessToken }
+        }).then(res => {
+            let rawBathroomLocations = res.data.roomLocations.filter(room => room.isBathroom);
+
+            bathroomLocations.current = [];
+
+            rawBathroomLocations.forEach(bathroom => {
+                bathroomLocations.current.push(bathroom.roomLocation);
+            });
+        });
         
         clearInterval(refreshInterval.current); // Clear refresh interval
         refreshInterval.current = setInterval(refreshUpdate, 2000); // Set refresh interval to 2000ms
 
         refreshUpdate();
-    }, [refreshUpdate, seconds, refreshInterval]);
+    }, [refreshUpdate, seconds, refreshInterval, currentUser.accessToken]);
 
     function handleEndPass() {
         server.post('/passes/end-pass/' + currentPass._id, {}, {
@@ -114,7 +128,20 @@ export default function StudentView({ theme: currentTheme, setCurrentTheme, curr
     if(calculatedMinutes < 10) calculatedMinutes = "0" + calculatedMinutes;
     if(calculatedSeconds < 10) calculatedSeconds = "0" + calculatedSeconds;
 
-    const currentPassStatus = (currentPass && currentPass.arrivalTimestamp) ? PassStatus.AtLocation : PassStatus.Departing;
+    const calculateCurrentPassStatus = () => {
+        if(!currentPass) return null;
+
+        console.log(bathroomLocations.current);
+
+        if(bathroomLocations.current.includes(currentPass.departureLocation))
+            return PassStatus.Returning;
+        if(!currentPass.arrivalTimestamp)
+            return PassStatus.Departing;
+        else
+            return PassStatus.AtLocation;
+    }
+
+    const currentPassStatus = calculateCurrentPassStatus();
 
     return (
         <>
