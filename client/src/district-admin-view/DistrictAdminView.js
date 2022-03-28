@@ -11,7 +11,7 @@ import ManageRoomsView from './views/ManageRoomsView'
 import ManageUsersView from './views/ManageUsersView';
 
 const View = {
-    Overview: "Overview",
+    Dashboard: "Dashboard",
     HallMonitor: "Hall Monitor",
     Rooms: "Rooms",
     Users: "Users"
@@ -46,8 +46,8 @@ export default function DistrictAdminView({ currentUser, currentTheme, setCurren
                         onClick={() => setCurrentTheme(currentTheme === Theme.LightTheme ? Theme.DarkTheme : Theme.LightTheme)}/>
                     </div>
                     <div className="divider" style={{backgroundColor: currentTheme.text}}></div>
-                    <li style={{backgroundColor: currentTheme.offset}} className={currentView === View.Overview ? "active" : null} onClick={() => setCurrentView(View.Overview)}>
-                        <p>Overview<FontAwesomeIcon className="icon" icon={faChartLine} /></p>
+                    <li style={{backgroundColor: currentTheme.offset}} className={currentView === View.Dashboard ? "active" : null} onClick={() => setCurrentView(View.Dashboard)}>
+                        <p>Dashboard<FontAwesomeIcon className="icon" icon={faChartLine} /></p>
                     </li>
                     <li style={{backgroundColor: currentTheme.offset}} className={currentView === View.HallMonitor ? "active" : null} onClick={() => setCurrentView(View.HallMonitor)}>
                         <p>Hall Monitor<FontAwesomeIcon className="icon" icon={faIdBadge} /></p>
