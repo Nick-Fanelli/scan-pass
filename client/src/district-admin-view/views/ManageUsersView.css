@@ -93,6 +93,37 @@
     width: 33%;
 }
 
+#manage-users-view #users-list #users li#page-controls {
+    height: 2em;
+    display: flex;
+    justify-content: center;
+    border-top: 1px solid rgb(0, 0, 0, 0.5);
+}
+
+#manage-users-view #users-list #users li#page-controls div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+}
+
+#manage-users-view #users-list #users li#page-controls div * {
+    margin: 0;
+}
+
+#manage-users-view #users-list #users li#page-controls div .icon {
+    width: auto;
+    font-size: 1.3rem;
+    margin: 0 0.75em;
+    cursor: pointer;
+}
+
+#manage-users-view #users-list #users li#page-controls div p {
+    width: auto;
+    font-family: "Roboto";
+    font-size: 1.25rem;
+}
+
 #manage-users-view #users-list #users li .user-type {
     text-align: center;
 }

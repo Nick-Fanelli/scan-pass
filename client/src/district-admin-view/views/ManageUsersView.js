@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import './ManageUsersView.css'
 
 import { server } from '../../ServerAPI';
@@ -7,21 +7,66 @@ import EditUserPopup from './EditUserPopup';
 import UserItem from './UserItem'
 
 import { UserType } from '../../User';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+
+const PageAmount = 100;
 
 export default function ManageUsersView({ currentUser, currentTheme }) {
     
+    const maxPageCount = useRef();
+
     const [usersList, setUsersList] = useState(null);
     const [searchText, setSearchText] = useState("");
 
     const [isEditUserPopupVisible, setIsEditUserPopupVisible] = useState(false);
     const [currentEditableUser, setCurrentEditableUser] = useState(null);
 
+    const [currentPage, setCurrentPage] = useState(0);
+
     const syncWithDatabase = useCallback(() => {
         // Load all users from database
         server.get('/users/get-all', {
             headers: { authorization: currentUser.accessToken }
         }).then((result) => {
-            setUsersList(result.data);
+
+            // Get Users List
+            const usersList = result.data;
+
+            // Sort Users
+            usersList.sort((a, b) => a.userName > b.userName ? 1 : -1);
+
+            // Create the separate arrays
+            let districtAdminUsers = [];
+            let adminUsers = [];
+            let teacherUsers = [];
+            let studentUsers = [];
+
+            // Assign each user to their respected arrays
+            usersList.forEach(user => {
+                switch(user.userType) {
+                case UserType.DistrictAdmin:
+                    districtAdminUsers.push(user);
+                    break;
+                case UserType.Admin:
+                    adminUsers.push(user);
+                    break;
+                case UserType.Teacher:
+                    teacherUsers.push(user);
+                    break;
+                case UserType.Student:
+                default:
+                    studentUsers.push(user);
+                    break;
+                }
+            });
+
+            // Sort users by type
+            const sortedUsers = [...districtAdminUsers, ...adminUsers, ...teacherUsers, ...studentUsers];
+
+            maxPageCount.current = Math.ceil(sortedUsers.length / PageAmount);
+
+            setUsersList(sortedUsers);
         });
     }, [currentUser.accessToken]);
 
@@ -40,41 +85,40 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
     function handleEditUser(user) {
         setCurrentEditableUser(user);
         setIsEditUserPopupVisible(true);
-    }  
+    }
 
-    let districtAdminUserElements = [];
-    let adminUserElements = [];
-    let teacherUserElements = [];
-    let studentUserElements = [];
+    const incrementCurrentPageCount = () => {
+        if(currentPage + 1 < maxPageCount.current)
+            setCurrentPage(currentPage + 1);
+    }
 
+    const decrementCurrentPageCount = () => {
+        if(currentPage - 1 >= 0)
+            setCurrentPage(currentPage - 1);
+    }
+
+    let usersListElements = [];
+
+    // TODO: Run Loading Animation
     if(usersList) {
-        usersList.forEach((user) => {
-            if(searchText !== "") {
-                const transformedUserName = user.userName.toLowerCase();
-                if(!transformedUserName.includes(searchText)) {
-                    return;
+
+        let skippedUserCount = 0;
+        
+        for(let i = (currentPage * PageAmount); i < (currentPage * PageAmount) + PageAmount + skippedUserCount; i++) {
+            if(i > usersList.length - 1)
+                break;
+
+            const user = usersList[i];
+
+            if(searchText && searchText.length > 0) {
+                if(!user.userName.toLowerCase().includes(searchText)) {
+                    skippedUserCount++;
+                    continue;
                 }
             }
 
-            const userElement = <UserItem key={user._id} currentTheme={currentTheme} currentUser={currentUser} user={user} syncWithDatabase={syncWithDatabase} handleEditUser={handleEditUser} />;
-
-            switch(user.userType) {
-                case UserType.DistrictAdmin:
-                    districtAdminUserElements.push(userElement);
-                    break;
-                case UserType.Admin:
-                    adminUserElements.push(userElement);
-                    break;
-                case UserType.Teacher:
-                    teacherUserElements.push(userElement);
-                    break;
-                case UserType.Student:
-                default:
-                    studentUserElements.push(userElement);
-                    break;
-            }
-
-        });
+            usersListElements.push(<UserItem key={user._id} currentTheme={currentTheme} currentUser={currentUser} user={user} syncWithDatabase={syncWithDatabase} handleEditUser={handleEditUser} />);
+        }
     }
 
     return (
@@ -95,13 +139,14 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
                     </div>
                 </div>
                 <ul id="users">
-                    {districtAdminUserElements}
-                    <div className="divider" style={{backgroundColor: currentTheme.text}}></div>
-                    {adminUserElements}
-                    <div className="divider" style={{backgroundColor: currentTheme.text}}></div>
-                    {teacherUserElements}
-                    <div className="divider" style={{backgroundColor: currentTheme.text}}></div>
-                    {studentUserElements}
+                    {usersListElements}
+                    <li id="page-controls">
+                        <div>
+                            <FontAwesomeIcon className="icon" icon={faArrowLeft} onClick={decrementCurrentPageCount} />
+                            <p>{currentPage + 1} of {maxPageCount.current}</p>
+                            <FontAwesomeIcon className="icon" icon={faArrowRight} onClick={incrementCurrentPageCount} />
+                        </div>
+                    </li>
                 </ul>
             </div>
         </section>
