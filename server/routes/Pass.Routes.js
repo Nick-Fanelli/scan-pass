@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Pass = require('../models/Pass.Model');
 const User = require('../models/User.Model');
+const SchoolLocation = require('../models/SchoolLocation.Model');
 const { AuthLevel, authorize } = require('../middleware/AuthorizationMiddleware');
 
 const { archivePass } = require('../HistoricPass');
@@ -39,14 +40,40 @@ router.route('/create-pass').post(authorize(AuthLevel.Student), async (req, res)
         finalStudentID = currentUser._id;
     }
 
+    // Get the target user
+    const targetUserDBObject = await User.findById(finalStudentID);
+    if(!targetUserDBObject)
+        return res.status(500).send("Could not find student with id of " + studentID);
+    
+    // Get the target users school locations
+    const targetUserSchoolLocation = await SchoolLocation.findById(targetUserDBObject.schoolLocation);
+    if(!targetUserSchoolLocation)
+        return res.status(500).send("Could not find the school location...");
+
+    // Verify the departure location
+    const verifiedArrivalLocation = targetUserSchoolLocation.roomLocations.find(room => room.roomLocation === arrivalLocation.roomLocation);
+    const verifiedDepartureLocation = targetUserSchoolLocation.roomLocations.find(room => room.roomLocation === departureLocation.roomLocation);
+
+    // Verify the arrival location and departure location actually exist
+    if(!verifiedArrivalLocation || !verifiedDepartureLocation) {
+        return res.status(400).send("Unverifiable room location (departure or arrival)!");
+    }
+
+    // Verify the arrival location is student accessible
+    if(!verifiedArrivalLocation.isStudentAccessible) {
+        if(currentUser.userType === AuthLevel.Student) { // Student's are not allowed to create unaccessible passes
+            return res.status(403).send("Unaccessible Room Location"); // Forbidden
+        }
+    }
+
     // Create Pass
     const pass = new Pass({
         schoolLocation: currentUser.schoolLocation,
         issuerID: currentUser._id,
         studentID: finalStudentID,
-        departureLocation: departureLocation.roomLocation,
+        departureLocation: verifiedDepartureLocation.roomLocation,
         departureTimestamp: departureTimestamp,
-        arrivalLocation: arrivalLocation.roomLocation,
+        arrivalLocation: verifiedArrivalLocation.roomLocation,
         arrivalTimestamp: null
     });
 
