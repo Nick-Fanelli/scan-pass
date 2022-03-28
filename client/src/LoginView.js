@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react'
 
 import GoogleLogin from 'react-google-login'
 
-import { SchoolLocations, User } from './User';
+import { User } from './User';
 
 import { server } from './ServerAPI';
 

@@ -49,15 +49,17 @@ router.route('/get-all').get(authorize(AuthLevel.DistrictAdmin), async (req, res
  * Required Body
  *  - schoolLocationID
  *  - roomLocation
+ *  - isBathroom
+ *  - isStudentAccessible
  * 
  * @returns status code only (success = 200 OK)
  */
 router.route('/add-room').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
     // Get the params
     const schoolLocationID = req.body.schoolLocationID;
-    const { roomLocation, isBathroom } = req.body;
+    const { roomLocation, isBathroom, isStudentAccessible } = req.body;
 
-    if(!schoolLocationID || !roomLocation) {
+    if(!schoolLocationID || !roomLocation || isBathroom == undefined || isStudentAccessible == undefined) {
         res.status(400).send("Missing Body Args"); // Bad request
         return;
     }
@@ -69,12 +71,72 @@ router.route('/add-room').post(authorize(AuthLevel.DistrictAdmin), async (req, r
         return;
     }
 
-    if(schoolLocation.roomLocations.includes(roomLocation)) {
-        res.status(400).send("Naming Collision"); // Bad Request
+    let isNamingCollision = false;
+
+    // Check for naming collision
+    schoolLocation.roomLocations.forEach(room => {
+        if(room.roomLocation == roomLocation) {
+            isNamingCollision = true;
+            return res.status(400).send("Naming Collision"); // Bad Request
+        }
+    });
+
+    if(isNamingCollision)
+        return;
+
+    schoolLocation.roomLocations.push({roomLocation, isBathroom, isStudentAccessible});
+    schoolLocation.save();
+    res.status(200).send();
+});
+
+/**
+ * Edit Room
+ * Location: /school-locations/edit-room/:roomLocation
+ * Method: POST
+ * Authorization: DistrictAdmin
+ * 
+ * Required Params
+ *  - roomLocation
+ * 
+ * Required Body
+ *  - schoolLocationID
+ *  - newRoomLocation
+ *  - isBathroom
+ *  - isStudentAccessible
+ * 
+ * @returns status code only (success = 200 OK)
+ */
+router.route('/edit-room/:roomLocation').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
+    // Get the params
+    const { roomLocation } = req.params;
+    const { schoolLocationID, newRoomLocation, isBathroom, isStudentAccessible } = req.body;
+
+    if(!schoolLocationID || !roomLocation || !newRoomLocation || isBathroom == undefined || isStudentAccessible == undefined) {
+        res.status(400).send("Missing Body Args"); // Bad request
         return;
     }
 
-    schoolLocation.roomLocations.push({roomLocation: roomLocation, isBathroom: isBathroom});
+    const schoolLocation = await SchoolLocation.findById(schoolLocationID);
+
+    if(!schoolLocation) {
+        res.status(400).send("Could not find school location with requested ID!"); // Bad Request
+        return;
+    }
+
+    let index = -1;
+
+    // Check for naming collision
+    schoolLocation.roomLocations.forEach((room, i) => {
+        if(room.roomLocation == roomLocation) {
+            index = i;
+            return;
+        }
+    });
+
+    if(index == -1)
+        return res.status(400).send("Couldn't Identify It!!!!");
+
+    schoolLocation.roomLocations[index] = { roomLocation: newRoomLocation, isBathroom, isStudentAccessible };
     schoolLocation.save();
     res.status(200).send();
 });

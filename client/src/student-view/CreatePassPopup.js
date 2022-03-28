@@ -10,7 +10,6 @@ export default function CreateBathroomPass({ currentTheme, currentUser, setIsCre
     const [isLoading, setIsLoading] = useState(true);
 
     const [roomLocations, setRoomLocations] = useState([]);
-    const [bathroomLocations, setBathroomLocations] = useState([]);
 
     const [selectedDepartureLocation, setSelectedDepartureLocation] = useState(null);
 
@@ -20,10 +19,20 @@ export default function CreateBathroomPass({ currentTheme, currentUser, setIsCre
         server.get('/school-locations/get', {
             headers: { authorization: currentUser.accessToken }
         }).then(res => {
-            setRoomLocations(res.data.roomLocations.sort());
+            let bathrooms = [];
+            let rooms = [];
+
+            res.data.roomLocations.forEach(room => {
+                room.isBathroom ? bathrooms.push(room) : rooms.push(room);
+            });
+
+            bathrooms.sort((a, b) => (a.roomLocation > b.roomLocation) ? 1 : -1);
+            rooms.sort((a, b) => (a.roomLocation > b.roomLocation) ? 1 : -1);
+
+            setRoomLocations([...bathrooms.concat(rooms)]);
             setIsLoading(false);
         });
-    }, [currentUser.accessToken, setRoomLocations, setBathroomLocations]);
+    }, [currentUser.accessToken, setRoomLocations]);
 
     function handleClose() {
         setSelectedDepartureLocation(null);
@@ -82,6 +91,13 @@ export default function CreateBathroomPass({ currentTheme, currentUser, setIsCre
                                             if(!room.roomLocation.toLowerCase().includes(searchContent)) {
                                                 return null;
                                             }
+                                        }
+
+                                        // Don't show where your departing from
+                                        if(selectedDepartureLocation && (
+                                            room.roomLocation === selectedDepartureLocation.roomLocation || 
+                                            !room.isStudentAccessible)) {
+                                            return null;
                                         }
 
                                         return <li style={{backgroundColor: currentTheme.backgroundColor, color: currentTheme.text}} key={JSON.stringify(room)}

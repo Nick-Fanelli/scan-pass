@@ -20,6 +20,7 @@ const PassStatus = {
 export default function StudentView({ theme: currentTheme, setCurrentTheme, currentUser }) {
 
     const refreshInterval = useRef();
+    const setSecondRefreshInterval = useRef();
 
     const [seconds, setSeconds] = useState(0);
 
@@ -103,6 +104,27 @@ export default function StudentView({ theme: currentTheme, setCurrentTheme, curr
         refreshUpdate();
     }, [refreshUpdate, seconds, refreshInterval, currentUser.accessToken]);
 
+    const updateSeconds = useCallback(() => {
+        if(!currentPass.arrivalTimestamp) {
+
+            // const passTime = new Date(Number.parseInt(currentPass.departureTimestamp)).getTime();
+            const difference = (Date.now() - currentPass.departureTimestamp) / 1000;
+
+            setSeconds(difference);
+        } else {
+            setSeconds((Date.now() - currentPass.arrivalTimestamp) / 1000);
+        }
+    }, [currentPass, setSeconds]);
+
+    useEffect(() => {
+        clearInterval(setSecondRefreshInterval.current);
+
+        if(currentPass != null) {
+            setSeconds(0);
+            setSecondRefreshInterval.current = setInterval(updateSeconds, 1000); // 900ms
+        }
+    }, [currentPass, updateSeconds])
+
     function handleEndPass() {
         server.post('/passes/end-pass/' + currentPass._id, {}, {
             headers: { authorization: currentUser.accessToken }
@@ -123,15 +145,13 @@ export default function StudentView({ theme: currentTheme, setCurrentTheme, curr
     }, [refreshInterval])
 
     let calculatedMinutes = Math.floor(seconds / 60);
-    let calculatedSeconds = seconds - calculatedMinutes * 60;
+    let calculatedSeconds = Number.parseInt(seconds - calculatedMinutes * 60);
 
     if(calculatedMinutes < 10) calculatedMinutes = "0" + calculatedMinutes;
     if(calculatedSeconds < 10) calculatedSeconds = "0" + calculatedSeconds;
 
     const calculateCurrentPassStatus = () => {
         if(!currentPass) return null;
-
-        console.log(bathroomLocations.current);
 
         if(bathroomLocations.current.includes(currentPass.departureLocation))
             return PassStatus.Returning;
@@ -158,7 +178,7 @@ export default function StudentView({ theme: currentTheme, setCurrentTheme, curr
                         </div>
 
                         <div className="end-pass-btn" onClick={handleEndPass}>
-                            <h2>End Pass</h2>
+                            <h2>{calculatedMinutes}:{calculatedSeconds} - End Pass</h2>
                         </div>
                     </div>
                 </section>

@@ -40,7 +40,7 @@
     background-color: transparent;
 }
 
-#add-room-popup .input input#is-bathroom-checkbox {
+#add-room-popup .input input.checkbox {
     height: 1.75em;
     width: 1.75em;
     border-radius: 10px;

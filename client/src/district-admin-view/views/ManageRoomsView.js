@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 
 import { server } from '../../ServerAPI';
 
-import AddRoomPopup from './AddRoomPopup';
+import EditRoomPopup from './EditRoomPopup';
 import ImportCSVPopup from './ImportCSVPopup';
 import Room from './Room'
 
@@ -15,6 +15,8 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
 
     const [shouldShowAddRoomPopup, setShouldShowAddRoomPopup] = useState(false);
     const [shouldShowImportCSVPopup, setShouldShowImportCSVPopup] = useState(false);
+
+    const [targetRoom, setTargetRoom] = useState(null);
 
     const schoolSelectRef = useRef(null);
 
@@ -58,6 +60,12 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
     }
 
     function handleAddRoom() {
+        setTargetRoom(null);
+        setShouldShowAddRoomPopup(true);
+    }
+
+    function handleEditRoom(room) {
+        setTargetRoom(room);
         setShouldShowAddRoomPopup(true);
     }
 
@@ -73,11 +81,13 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
 
             const roomName = entry[0];
             const isBathroom = entry[1] === "true" ? true : false;
+            const isStudentAccessible = entry[2] === "true" ? true : false;
 
             server.post('/school-locations/add-room', {
                 schoolLocationID: currentSchoolLocation,
                 roomLocation: roomName,
-                isBathroom: isBathroom
+                isBathroom: isBathroom,
+                isStudentAccessible: isStudentAccessible
             }, {
                 headers: { authorization: currentUser.accessToken }
             });
@@ -100,12 +110,12 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
         <>
         {
             shouldShowImportCSVPopup ?
-            <ImportCSVPopup currentTheme={currentTheme} importFormat={"Room Location (String), Is Bathroom (boolean)"} setShouldShowImportCSVPopup={setShouldShowImportCSVPopup} enterCallback={handleImportCSVData} />
+            <ImportCSVPopup currentTheme={currentTheme} importFormat={"Room Location (String), Is Bathroom (boolean), Is Student Accessible (boolean)"} setShouldShowImportCSVPopup={setShouldShowImportCSVPopup} enterCallback={handleImportCSVData} />
             : null
         }
         {
             shouldShowAddRoomPopup ?
-            <AddRoomPopup currentTheme={currentTheme} currentUser={currentUser} setShouldShowAddRoomPopup={setShouldShowAddRoomPopup} schoolLocationID={schoolLocations[currentSchoolLocationIndex]._id} syncWithDatabase={syncWithDatabase} />
+            <EditRoomPopup currentTheme={currentTheme} currentUser={currentUser} setShouldShowAddRoomPopup={setShouldShowAddRoomPopup} schoolLocationID={schoolLocations[currentSchoolLocationIndex]._id} syncWithDatabase={syncWithDatabase} targetRoom={targetRoom} />
             : null
         }
         <section id="manage-rooms-view">
@@ -128,7 +138,7 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
                     {
                         schoolLocations[currentSchoolLocationIndex].roomLocations.map((room) => {
                             return <Room key={room.roomLocation} currentUser={currentUser} currentTheme={currentTheme} room={room} 
-                            schoolLocationID={schoolLocations[currentSchoolLocationIndex]} syncWithDatabase={syncWithDatabase} /> 
+                            schoolLocationID={schoolLocations[currentSchoolLocationIndex]} syncWithDatabase={syncWithDatabase} handleEditRoom={handleEditRoom} /> 
                         })
                     }
                 </ul>
