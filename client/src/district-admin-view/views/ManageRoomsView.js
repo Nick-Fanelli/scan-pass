@@ -139,7 +139,11 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
                     }
                     {
                         !schoolLocations ?
-                        <LoadingSpinner currentTheme={currentTheme} size={50} />
+                        <>
+                            <br />
+                            <LoadingSpinner currentTheme={currentTheme} size={50} />
+                            <br />
+                        </>
                         : null
                     }
                 </ul>

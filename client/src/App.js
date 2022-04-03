@@ -9,6 +9,8 @@ import DistrictAdminView from './district-admin-view/DistrictAdminView';
 import StudentView from './student-view/StudentView';
 import TeacherView from './teacher-view/TeacherView';
 
+import './Defaults.css'
+
 function App() {
     const [currentTheme, setCurrentTheme] = useState(Theme.LightTheme);
     const [currentUser, setCurrentUser] = useState(null);

@@ -28,20 +28,23 @@ export default function UserItem({ currentTheme, currentUser, user, syncWithData
     }
 
     return (
-        <li>
-            <h1 style={{color: currentTheme.text}}>{user.userName}</h1>
-            <h1 className="user-type" style={{color: currentTheme.text}}>{userTypeDisplayName}</h1>
-            <div className="icons">
-            {
-                user.userType !== UserType.DistrictAdmin ?
-                <>
-                    <FontAwesomeIcon className="icon" icon={faPencilAlt} style={{color: currentTheme.text}} onClick={() => handleEditUser(user)} />
-                    <FontAwesomeIcon className="icon" icon={faTrash} style={{color: currentTheme.text}} onClick={handleDeleteUser} />                
-                </>
-                :null
-            }
-            </div>
-        </li>
+        <tr>
+            <td>{user.userName}</td>
+            <td>{user.userID}</td>
+            <td>{userTypeDisplayName}</td>
+            <td>
+                <div className="icons">
+                {
+                    user.userType !== UserType.DistrictAdmin ?
+                    <>
+                        <FontAwesomeIcon className="icon" icon={faPencilAlt} style={{color: currentTheme.text}} onClick={() => handleEditUser(user)} />
+                        <FontAwesomeIcon className="icon" icon={faTrash} style={{color: currentTheme.text, marginLeft: "1em"}} onClick={handleDeleteUser} />                
+                    </>
+                    :null
+                }
+                </div>
+            </td>
+        </tr>
     );
 
 }

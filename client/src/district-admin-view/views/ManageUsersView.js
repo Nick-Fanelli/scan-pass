@@ -1,28 +1,23 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import './ManageUsersView.css'
 
 import { server } from '../../ServerAPI';
 
 import EditUserPopup from './EditUserPopup';
 import UserItem from './UserItem'
+import LoadingSpinner from '../../loading-spinner/LoadingSpinner';
 
 import { UserType } from '../../User';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
-
-const PageAmount = 100;
 
 export default function ManageUsersView({ currentUser, currentTheme }) {
     
-    const maxPageCount = useRef();
-
     const [usersList, setUsersList] = useState(null);
     const [searchText, setSearchText] = useState("");
 
     const [isEditUserPopupVisible, setIsEditUserPopupVisible] = useState(false);
     const [currentEditableUser, setCurrentEditableUser] = useState(null);
 
-    const [currentPage, setCurrentPage] = useState(0);
+    const [currentDisplayedUserType, setCurrentDisplayedUserType] = useState(UserType.Student);
 
     const syncWithDatabase = useCallback(() => {
         // Load all users from database
@@ -36,37 +31,7 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
             // Sort Users
             usersList.sort((a, b) => a.userName > b.userName ? 1 : -1);
 
-            // Create the separate arrays
-            let districtAdminUsers = [];
-            let adminUsers = [];
-            let teacherUsers = [];
-            let studentUsers = [];
-
-            // Assign each user to their respected arrays
-            usersList.forEach(user => {
-                switch(user.userType) {
-                case UserType.DistrictAdmin:
-                    districtAdminUsers.push(user);
-                    break;
-                case UserType.Admin:
-                    adminUsers.push(user);
-                    break;
-                case UserType.Teacher:
-                    teacherUsers.push(user);
-                    break;
-                case UserType.Student:
-                default:
-                    studentUsers.push(user);
-                    break;
-                }
-            });
-
-            // Sort users by type
-            const sortedUsers = [...districtAdminUsers, ...adminUsers, ...teacherUsers, ...studentUsers];
-
-            maxPageCount.current = Math.ceil(sortedUsers.length / PageAmount);
-
-            setUsersList(sortedUsers);
+            setUsersList(usersList);
         });
     }, [currentUser.accessToken]);
 
@@ -87,38 +52,29 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
         setIsEditUserPopupVisible(true);
     }
 
-    const incrementCurrentPageCount = () => {
-        if(currentPage + 1 < maxPageCount.current)
-            setCurrentPage(currentPage + 1);
-    }
-
-    const decrementCurrentPageCount = () => {
-        if(currentPage - 1 >= 0)
-            setCurrentPage(currentPage - 1);
-    }
-
     let usersListElements = [];
 
     // TODO: Run Loading Animation
     if(usersList) {
-
-        let skippedUserCount = 0;
-        
-        for(let i = (currentPage * PageAmount); i < (currentPage * PageAmount) + PageAmount + skippedUserCount; i++) {
-            if(i > usersList.length - 1)
-                break;
-
-            const user = usersList[i];
+        usersList.forEach(user => {
+            if(user.userType !== currentDisplayedUserType)
+                return;
 
             if(searchText && searchText.length > 0) {
                 if(!user.userName.toLowerCase().includes(searchText)) {
-                    skippedUserCount++;
-                    continue;
+                    return;
                 }
             }
 
             usersListElements.push(<UserItem key={user._id} currentTheme={currentTheme} currentUser={currentUser} user={user} syncWithDatabase={syncWithDatabase} handleEditUser={handleEditUser} />);
-        }
+        });
+    } else {
+        return (
+            <>
+                <br />
+                <LoadingSpinner currentTheme={currentTheme} size={50} />
+            </>
+        )
     }
 
     return (
@@ -129,26 +85,46 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
             : null
         }
         <section id="manage-users-view">
-            <div id="users-list">
-                <div id="header" style={{backgroundColor: currentTheme.offset}}>
-                    <h1 style={{color: currentTheme.text}}>Users</h1>
-                    <div>
-                        <input type="text" name="SearchInput" id="search" placeholder='Search...' style={{color: currentTheme.text}} onChange={(e) => setSearchText(e.target.value.toLowerCase())} />
-                        <button id="add-btn"style={{color: currentTheme.text, backgroundColor: currentTheme.offset}} onClick={handleAddUser}>Add</button>
-                        <button id="import-btn" style={{color: currentTheme.text, backgroundColor: currentTheme.offset}} onClick={handleImportUserData}>Import</button>
+            <div id="control-panel" style={{backgroundColor: currentTheme.backgroundColor, color: currentTheme.text}}>
+                <div className="horizontal">
+                    <div className="left">
+                        <h1>Accounts</h1>
+                    </div>
+                    <div className="right">
+                        <input type="text" placeholder='Search...' id="search" />
+                        <button onClick={handleAddUser} id="add-user-btn">Add</button>
                     </div>
                 </div>
-                <ul id="users">
-                    {usersListElements}
-                    <li id="page-controls">
-                        <div>
-                            <FontAwesomeIcon className="icon" icon={faArrowLeft} onClick={decrementCurrentPageCount} />
-                            <p>{currentPage + 1} of {maxPageCount.current}</p>
-                            <FontAwesomeIcon className="icon" icon={faArrowRight} onClick={incrementCurrentPageCount} />
-                        </div>
-                    </li>
-                </ul>
+                <div className="divider" style={{backgroundColor: `${currentTheme.text}30`}}></div>
+                <div className="horizontal">
+                    <div className="left">
+                        <ul>
+                            <li className={currentDisplayedUserType === UserType.Student ? `selected` : ''} onClick={() => setCurrentDisplayedUserType(UserType.Student)}>Students</li>
+                            <li className={currentDisplayedUserType === UserType.Teacher ? `selected` : ''} onClick={() => setCurrentDisplayedUserType(UserType.Teacher)}>Teachers</li>
+                            <li className={currentDisplayedUserType === UserType.Admin ? `selected` : ''} onClick={() => setCurrentDisplayedUserType(UserType.Admin)}>Admins</li>
+                            <li className={currentDisplayedUserType === UserType.DistrictAdmin ? `selected` : ''} onClick={() => setCurrentDisplayedUserType(UserType.DistrictAdmin)}>District Admins</li>
+                        </ul>
+                    </div>
+                    <div className="right">
+
+                    </div>
+                </div>
             </div>
+            <section id="table">
+                <table className="styled-table">
+                    <thead>
+                        <tr style={{backgroundColor: currentTheme.offset}}>
+                            <th style={{color: currentTheme.text}}>Name</th>
+                            <th style={{color: currentTheme.text}}>User ID</th>
+                            <th style={{color: currentTheme.text}}>Type</th>
+                            <th style={{color: currentTheme.text}}></th>
+                        </tr>
+                    </thead>
+                    <tbody style={{color: currentTheme.text}}>
+                        {usersListElements}
+                    </tbody>
+                </table>
+            </section>
         </section>
         </>
     );

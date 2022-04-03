@@ -9,6 +9,7 @@
     position: fixed;
     top: 0;
     left: -16em;
+    z-index: 10;
 }
 
 #district-admin-view #sidebar:hover {
