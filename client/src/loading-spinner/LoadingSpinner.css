@@ -1,0 +1,25 @@
+.loading-spinner-wrapper {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+}
+
+.loading-spinner-wrapper .loading-spinner {
+	border-radius: 50%;
+	animation: spin 2s linear infinite;
+}
+
+.loading-spinner-wrapper h1 {
+	font-family: "Roboto";
+	font-weight: 100;
+	font-size: 1.5rem;
+	margin: 1em 0 0 0;
+	padding: 0;
+	transform: translateX(4px);
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}

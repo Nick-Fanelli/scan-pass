@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartLine, faIdBadge, faDoorClosed, faCog, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -9,6 +9,7 @@ import './DistrictAdminView.css'
 
 import ManageRoomsView from './views/ManageRoomsView'
 import ManageUsersView from './views/ManageUsersView';
+import HallMonitorView from './hall-monitor-view/HallMonitorView';
 
 const View = {
     Dashboard: "Dashboard",
@@ -19,13 +20,17 @@ const View = {
 
 export default function DistrictAdminView({ currentUser, currentTheme, setCurrentTheme }) {
 
-    const [currentView, setCurrentView] = useState(View.Users);
+    const [currentView, setCurrentView] = useState(View.HallMonitor);
 
+    const hallMonitorView = <HallMonitorView currentUser={currentUser} currentTheme={currentTheme} />
     const manageRoomsView = <ManageRoomsView currentUser={currentUser} currentTheme={currentTheme} />
     const manageUsersView = <ManageUsersView currentUser={currentUser} currentTheme={currentTheme} />
 
     let contentView = null;
     switch(currentView) {
+        case View.HallMonitor:
+            contentView = hallMonitorView;
+            break;
         case View.Rooms:
             contentView = manageRoomsView;
             break; 

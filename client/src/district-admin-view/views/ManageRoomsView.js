@@ -7,6 +7,7 @@ import ImportCSVPopup from './ImportCSVPopup';
 import Room from './Room'
 
 import './ManageRoomsView.css'
+import LoadingSpinner from '../../loading-spinner/LoadingSpinner';
 
 export default function DAManageRoomsView({ currentUser, currentTheme }) {
 
@@ -102,10 +103,6 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
         setShouldShowImportCSVPopup(false);
     }
 
-    // Make sure we have school locations
-    if(schoolLocations == null)
-        return null;
-
     return (
         <>
         {
@@ -123,7 +120,7 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
                 <div id="header" style={{backgroundColor: currentTheme.offset}}>
                     <select ref={schoolSelectRef} style={{color: currentTheme.text}} onChange={handleUpdateRooms}>
                         {
-                            schoolLocations.map(schoolLocation => {
+                            schoolLocations && schoolLocations.map(schoolLocation => {
                                 return <option key={schoolLocation._id} value={schoolLocation._id} style={{backgroundColor: currentTheme.backgroundColor, border: "none"}}>{schoolLocation.name}</option>
                             })
                         }
@@ -134,12 +131,16 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
                     </div>
                 </div>
                 <ul id="rooms">
-                    {/* <div className="divider" style={{backgroundColor: currentTheme.text}}></div> */}
                     {
-                        schoolLocations[currentSchoolLocationIndex].roomLocations.map((room) => {
+                        schoolLocations && schoolLocations[currentSchoolLocationIndex].roomLocations.map((room) => {
                             return <Room key={room.roomLocation} currentUser={currentUser} currentTheme={currentTheme} room={room} 
                             schoolLocationID={schoolLocations[currentSchoolLocationIndex]} syncWithDatabase={syncWithDatabase} handleEditRoom={handleEditRoom} /> 
                         })
+                    }
+                    {
+                        !schoolLocations ?
+                        <LoadingSpinner currentTheme={currentTheme} size={50} />
+                        : null
                     }
                 </ul>
                 
