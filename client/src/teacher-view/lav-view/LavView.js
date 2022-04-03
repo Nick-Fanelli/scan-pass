@@ -142,6 +142,11 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
         }
 
         let targetPass = result[0];
+
+        if(!targetPass) {
+            console.error("Student does not have a pass to this location...");
+            return;
+        }
     
         if(targetPass.arrivalTimestamp === null) {
             // Set Arrival Location
@@ -182,23 +187,6 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
         }
     }
 
-    function handleClearAllStudents() {
-        
-        let result = window.confirm("Are you sure you want to end all the current bathroom passes?");
-
-        if(result) {
-            setStudents([]);
-            // TODO: Update in database by ending all passes
-        }
-    }
-
-    function handleManuallyAddStudent() {
-        const idPrompt = window.prompt("Enter Student ID");
-
-        if(idPrompt)
-            processData(idPrompt, Date.now());
-    }
-
     // Key Press Handler
     const handler = ({ key }) => {
         if(key.match(ValidInputRegex)) {
@@ -237,12 +225,6 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
                 <>
                 <LavNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} studentCount={activePasses.filter(pass => pass.arrivalTimestamp).length} lavLocation={lavLocation.roomLocation} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} handleGoHome={handleGoHome} />
                 <Lav theme={currentTheme} currentUser={currentUser} students={students} processData={processData} activePasses={activePasses} />
-                <div id="button-controls">
-                    <div className="button-wrapper">
-                        <button style={{backgroundColor: currentTheme.offset, color: currentTheme.text}} onClick={handleManuallyAddStudent}>Manually Add Student</button>
-                        <button style={{backgroundColor: currentTheme.offset, color: currentTheme.text}} onClick={handleClearAllStudents}>Clear All Students</button>
-                    </div>
-                </div>
                 </>
 
                 : null
