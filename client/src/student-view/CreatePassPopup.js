@@ -80,7 +80,9 @@ export default function CreateBathroomPass({ currentTheme, currentUser, setIsCre
                 {
                     !isLoading ? 
                     <>
-                    <h1 style={{color: currentTheme.text}}>{selectedDepartureLocation === null ? "Where Are You Now?" : "Where are you going?"}</h1>
+                    <div className="top">
+                        <h1 style={{color: currentTheme.text}}>{selectedDepartureLocation === null ? "Where Are You Now?" : "Where are you going?"}</h1>
+                    </div>
                     <div className="center-wrapper">
                         <input style={{color: currentTheme.text}} type="text" placeholder='Search...' id="search" onChange={(e) => setSearchContent(e.target.value.toLowerCase())}/>
                         <div id="bathrooms-list-wrapper">

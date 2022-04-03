@@ -4,39 +4,21 @@
     align-items: center;
 }
 
+#lav-view table {
+    width: 85%; 
+}
+
 #exchange-location-popup {
     position: fixed;
     background-color: #00000050;
     width: 100%;
     height: 100%;
     top: 0;
-    left: 0;   
+    left: 0;
 }
 
 #exchange-location-popup .box {
-    position: relative;
-    width: 50%;
-    margin: 0 auto;
-    height: 70vh;
-    max-height: 70vh;
-    margin-top: calc(100vh - 85vh - 20px);
-    border-radius: 10px;
-    overflow: auto;
-}
-
-#exchange-location-popup .close-icon {
-    content: 'x';
-    cursor: pointer;
-    position: fixed;
-    right: calc(26% - 30px);
-    top: calc(100vh - 85vh - 33px);
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    line-height: 30px;
-    text-align: center;
-    font-size: 30px;
-    font-family: "Roboto";
+    min-width: 40em;
 }
 
 #exchange-location-popup .header {
@@ -48,24 +30,25 @@
     align-items: center;
     flex-direction: column;
     padding: 20px 0;
+    justify-content: center;
 }
 
 #exchange-location-popup .header h1 {
     margin: 0;
     padding: 20px;
     text-align: center;
-    font-family: "Roboto";
+    font-family: sans-serif;
     font-weight: bold;
 }
 
 #exchange-location-popup .selections {
     width: 50%;
-    margin: 2em 0 0 0;
+    margin: 1em 0;
     background-color: transparent;
 }
 
 #exchange-location-popup .selections ul {
-    font-family: "Roboto";
+    font-family: sans-serif;
     list-style: none;
     font-size: 1.2rem;
     padding: 0;

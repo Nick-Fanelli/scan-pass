@@ -1,5 +1,5 @@
 #edit-user-popup {
-    font-family: "Roboto";
+    font-family: sans-serif;
 }
 
 #edit-user-popup .input {
@@ -36,7 +36,7 @@
     float: right;
     margin: 1em 2em;
     font-size: 1.2rem;
-    font-family: "Roboto";
+    font-family: sans-serif;
     font-weight: 100;
     border: none;
     border-radius: 10px;

@@ -24,18 +24,18 @@
 #manage-rooms-view #room-list #header select {
     background-color: transparent;
     border: none;
-    font-family: "Roboto";
+    font-family: sans-serif;
     font-size: 1.4rem;
 }
 
 #manage-rooms-view #room-list #header h2 {
-    font-family: "Roboto";
+    font-family: sans-serif;
     font-weight: 100;
 }
 
 #manage-rooms-view #header button {
     margin: 0 0.25em;
-    font-family: "Roboto";
+    font-family: sans-serif;
     font-size: 1.25rem;
     cursor: pointer;
     border: none;
@@ -89,7 +89,7 @@
 }
 
 #manage-rooms-view #room-list #rooms li h3 {
-    font-family: "Roboto";
+    font-family: sans-serif;
     font-size: 1.2rem;
     font-weight: 100;
     margin: 0 0 0 2em;

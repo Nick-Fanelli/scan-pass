@@ -2,7 +2,7 @@
     float: right;
     margin: 1em 2em;
     font-size: 1.2rem;
-    font-family: "Roboto";
+    font-family: sans-serif;
     font-weight: 100;
     border: none;
     border-radius: 10px;
@@ -25,7 +25,7 @@
 }
 
 #add-room-popup .input label {
-    font-family: "Roboto";
+    font-family: sans-serif;
     font-size: 1.2rem;
     font-weight: 100;
     margin: 0 2em 0 0;

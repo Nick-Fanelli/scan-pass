@@ -8,7 +8,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 20;
+    z-index: 6 !important;
 }
 
 .popup .box {
@@ -32,13 +32,13 @@
     line-height: 30px;
     text-align: center;
     font-size: 30px;
-    font-family: "Roboto";
+    font-family: sans-serif;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.501);
 }
 
 .popup .box h1 {
     text-align: center;
-    font-family: "Roboto";
+    font-family: sans-serif;
     font-weight: 100;
     font-size: 2rem;
     margin: 1em 0 1.25em 0;

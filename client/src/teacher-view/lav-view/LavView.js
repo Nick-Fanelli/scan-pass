@@ -85,6 +85,8 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
                     return room.isBathroom;
                 });
 
+                bathrooms.sort((a, b) => (a.roomLocation > b.roomLocation) ? 1 : -1);
+
                 setLavLocations(bathrooms);
 
                 clearInterval(refreshInterval.current); // Clear the current interval

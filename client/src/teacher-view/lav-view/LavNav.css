@@ -27,7 +27,7 @@
 
 #lav-nav h2 {
     margin: 0;
-    font-family: "Roboto";
+    font-family: sans-serif;
     font-weight: 200;
 }
 
@@ -40,7 +40,7 @@
 }
 
 #lav-nav #current-student-count {
-    font-family: "Roboto";
+    font-family: sans-serif;
     width: 30px;
     height: 30px;
     text-align: center;

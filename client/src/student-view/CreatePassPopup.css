@@ -1,3 +1,8 @@
+#create-bathroom-pass-popup .box {
+    min-width: 40em !important;
+    width: 40em;
+}
+
 #create-bathroom-pass-popup #bathrooms-list-wrapper {
     height: 60vh;
     overflow-x: hidden;
@@ -21,9 +26,10 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.401);
     border: none;
     outline: none;
-    border-radius: 10px;
+    border-radius: 20px;
     padding: 0.5em;
     height: 1.25em;
+    transform: translateX(10px);
 }
 
 #create-bathroom-pass-popup ul {
@@ -38,15 +44,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border-top: 1px solid grey;
+    border-top: 1px solid rgba(128, 128, 128, 0.5);
     cursor: pointer;
     font-size: 1.15rem;
-    font-family: "Roboto";
+    font-family: sans-serif;
     font-weight: 100;
 }
 
 #create-bathroom-pass-popup ul li:last-of-type {
-    border-bottom: 1px solid grey;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.5);
 }
 
 #create-bathroom-pass-popup ul li:hover {
