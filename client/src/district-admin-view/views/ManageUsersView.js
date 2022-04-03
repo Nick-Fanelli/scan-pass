@@ -8,6 +8,8 @@ import UserItem from './UserItem'
 import LoadingSpinner from '../../loading-spinner/LoadingSpinner';
 
 import { UserType } from '../../User';
+import { faSync } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function ManageUsersView({ currentUser, currentTheme }) {
     
@@ -38,9 +40,6 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
     useEffect(() => {
         syncWithDatabase(); // Sync with Database
     }, [syncWithDatabase]);
-
-    function handleImportUserData() {
-    }
     
     function handleAddUser() {
         setCurrentEditableUser(null);
@@ -89,9 +88,10 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
                 <div className="horizontal">
                     <div className="left">
                         <h1>Accounts</h1>
+                        <FontAwesomeIcon icon={faSync} className="icon" onClick={syncWithDatabase} />
                     </div>
                     <div className="right">
-                        <input type="text" placeholder='Search...' id="search" />
+                        <input type="text" placeholder='Search...' id="search" onChange={(e) => setSearchText(e.target.value.toLowerCase())}/>
                         <button onClick={handleAddUser} id="add-user-btn">Add</button>
                     </div>
                 </div>

@@ -23,9 +23,14 @@
     margin: 0 1em 0 0;
 }
 
-#manage-users-view #control-panel .right {
+#manage-users-view #control-panel .right,  #manage-users-view #control-panel .left {
     display: flex;
     align-items: center;
+}
+
+#manage-users-view #control-panel .left .icon {
+    margin: 0.25em 0 0 0.75em;
+    cursor: pointer;
 }
 
 #manage-users-view #control-panel #add-user-btn {
