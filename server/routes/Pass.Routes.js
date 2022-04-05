@@ -255,15 +255,9 @@ router.route('/end-pass/:passID').post(authorize(AuthLevel.Student), async (req,
     if(result !== 200) {
         return res.sendStatus(result);
     }
-    
-    // Remove from user's current pass if applicable
-    if(user.currentPass === pass._id) {
-        user.currentPass = null;
-        user.save();
-    }
 
     // Unassign as current pass if applicable
-    if(user.currentPass.toString() === passID.toString()) {
+    if(user.currentPass && user.currentPass.toString() === passID.toString()) {
         user.currentPass = null;
         await user.save();
     }
