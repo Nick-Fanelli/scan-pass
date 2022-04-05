@@ -48,8 +48,9 @@ export default function StudentView({ theme: currentTheme, setCurrentTheme, curr
                         console.error("Huh, weird error with retrieving the pass from the database...");
                         return;
                     }
-                
-                    if(!currentPass || currentPass._id !== pass._id)
+
+                    // Compare JSON to notice any change in the pass not just a new pass
+                    if(!currentPass || JSON.stringify(currentPass) !== JSON.stringify(pass))
                         setCurrentPass(pass);
                 }).catch(() => { // If the pass doesn't exist
                     console.error("Users Current Pass Doesn't Exist");
