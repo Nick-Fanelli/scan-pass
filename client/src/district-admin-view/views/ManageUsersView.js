@@ -84,7 +84,7 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
             : null
         }
         <section id="manage-users-view">
-            <div id="control-panel" style={{backgroundColor: currentTheme.backgroundColor, color: currentTheme.text}}>
+            <div className="control-panel" style={{backgroundColor: currentTheme.backgroundColor, color: currentTheme.text}}>
                 <div className="horizontal">
                     <div className="left">
                         <h1>Accounts</h1>

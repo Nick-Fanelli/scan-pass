@@ -5,3 +5,66 @@
     justify-content: center;
     align-items: center;
 }
+
+#hall-monitor-view {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#hall-monitor-view .control-panel ul li {
+    width: 15em;
+}
+
+#hall-monitor-view .content-container {
+    width: 80%;
+    margin: 2em 0 0 0;
+}
+
+#hall-monitor-view .content-container .pass {
+    background-color: #0390fc;
+    width: 15em;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    min-height: 9em;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.301);
+    cursor: pointer;
+}
+
+#hall-monitor-view .content-container .pass.at-location {
+    background-color: #90ee90;
+}
+
+#hall-monitor-view .content-container .pass:hover {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.601);
+}
+
+#hall-monitor-view .content-container .pass h1 {
+    margin: 0.5em 0 0 0;
+    font-family: sans-serif;
+    font-weight: 900;
+    font-size: 1.25rem;
+    color: #ffffff;
+}
+
+#hall-monitor-view .content-container .pass h2 {
+    margin: 0;
+    font-family: sans-serif;
+    font-weight: 100;
+    font-size: 1.1rem;
+    color: #ffffff;
+}
+
+#hall-monitor-view .content-container .pass .pass-bottom {
+    width: 100%;
+    background-color: #ffffff60;
+    border-radius: 0 0 10px 10px;
+}
+
+#hall-monitor-view .content-container .pass .pass-bottom h2.student-name {
+    text-align: center;
+    padding: 1em 0;
+}

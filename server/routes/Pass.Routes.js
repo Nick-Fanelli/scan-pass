@@ -268,4 +268,37 @@ router.route('/end-pass/:passID').post(authorize(AuthLevel.Student), async (req,
     res.sendStatus(200); // OK
 });
 
+/**
+ * Get All From School Location
+ * Location: /passes/get-all-from-school-location/:schoolLocationID
+ * Method: GET
+ * Authorization: Teacher
+ * 
+ * Required Params
+ *  - schoolLocationID
+ * 
+ * @returns all the passes from a specific school location
+ */
+router.route('/get-all-from-school-location/:schoolLocationID').get(authorize(AuthLevel.Teacher), async (req, res) => {
+
+    const user = req.user;
+    const { schoolLocationID } = req.params;
+
+    if(!schoolLocationID)
+        return res.status(400).send("Missing Req.params"); // Bad Client Request
+
+    // Verify User has Access to School Location
+    if(user.userType != AuthLevel.DistrictAdmin) { // If not district admin compare school location with requested
+        if(user.schoolLocation !== schoolLocationID) {
+            return res.status(403).send("Forbidden to this school location"); // Forbidden
+        }
+    }
+
+    const passes = await Pass.find({
+        schoolLocation: schoolLocationID
+    });
+
+    res.send(passes);
+});
+
 module.exports = router;
