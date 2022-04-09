@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import LoadingSpinner from '../../loading-spinner/LoadingSpinner';
 import { server } from '../../ServerAPI';
 import { UserType } from '../../User';
@@ -7,9 +7,11 @@ import './HallMonitorView.css';
 
 export default function HallMonitorView({ currentUser, currentTheme }) {
 
+    const refreshInterval = useRef(null);
+    const previousPassData = useRef(null);
+
     const [isLoading, setIsLoading] = useState(true);
     const [isLoadingSchoolData, setIsLoadingSchoolData] = useState(false);
-    const [verifiedUser, setVerifiedUser] = useState(null);
     const [schoolLocations, setSchoolLocations] = useState(null);
     const [selectedSchoolLocation, setSelectedSchoolLocation] = useState(null);
     const [selectedSchoolLocationPasses, setSelectedSchoolLocationPasses] = useState(null);
@@ -20,8 +22,6 @@ export default function HallMonitorView({ currentUser, currentTheme }) {
             const verifiedUserData = await server.get('/users/get-self', {
                 headers: { authorization: currentUser.accessToken }
             });
-
-            setVerifiedUser(verifiedUserData.data);
 
             let rawSchoolLocationData = null;
 
@@ -48,7 +48,7 @@ export default function HallMonitorView({ currentUser, currentTheme }) {
         }
 
         call();
-    }, [currentUser.accessToken, setVerifiedUser, setIsLoading, setSchoolLocations]);
+    }, [currentUser.accessToken, setIsLoading, setSchoolLocations]);
     
     // When selected school location is changed
     useEffect(() => {
@@ -57,14 +57,23 @@ export default function HallMonitorView({ currentUser, currentTheme }) {
             if(selectedSchoolLocation == null)
                 return;
 
-            setIsLoadingSchoolData(true);
-
             // Get the passes
             const res = await server.get(`/passes/get-all-from-school-location/${selectedSchoolLocation}`, {
                 headers: { authorization: currentUser.accessToken }
             });
             
-            // Compare the pass data
+            const stringifiedPassData = JSON.stringify(res.data);
+
+            if(stringifiedPassData === previousPassData.current) {
+                setIsLoadingSchoolData(false);
+                return;
+            }
+
+            setIsLoadingSchoolData(true);
+            
+            previousPassData.current = stringifiedPassData;
+
+            console.log("Updating From Database...");
 
             // Add to the passes data
             for(let i in res.data) {
@@ -85,11 +94,21 @@ export default function HallMonitorView({ currentUser, currentTheme }) {
 
             setSelectedSchoolLocationPasses(res.data);
             setIsLoadingSchoolData(false);
-        } 
+        }
 
+        // Set the refresh interval
+        clearInterval(refreshInterval.current);
+        refreshInterval.current = setInterval(call, 1000);
         call();
 
     }, [selectedSchoolLocation, setIsLoadingSchoolData, currentUser.accessToken, setSelectedSchoolLocationPasses]);
+
+    // On Detach
+    useLayoutEffect(() => {
+
+        clearInterval(refreshInterval);
+
+    }, [refreshInterval])
 
     if(isLoading) {
         return (
@@ -132,7 +151,7 @@ export default function HallMonitorView({ currentUser, currentTheme }) {
 
             <div className="content-container">
                 {
-                    !isLoadingSchoolData ?
+                    !isLoadingSchoolData && selectedSchoolLocationPasses ?
                     selectedSchoolLocationPasses.map(pass => {
                         return <div className={`pass ${!pass.isInHallway ? "at-location"  : null}`} key={pass._id}>
                             <h1>{pass.arrivalLocation}</h1>
