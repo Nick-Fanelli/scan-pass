@@ -1,5 +1,4 @@
 const express = require('express');
-const cors = require('cors');
 const mongoose = require('mongoose');
 
 require('dotenv').config();
@@ -8,9 +7,15 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(express.json());
-app.use(cors({
-    origin: 'https://scan-pass-frontend.herokuapp.com/'
-}));
+
+const cors = require("cors");
+const corsOptions = {
+   origin: '*', 
+   credentials: true,            //access-control-allow-credentials:true
+   optionSuccessStatus: 200,
+}
+
+app.use(cors(corsOptions));
 
 // Get Route Routers
 const UserRoutes = require('./routes/User.Routes');
