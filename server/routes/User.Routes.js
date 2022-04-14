@@ -6,10 +6,6 @@ const jwt = require('jsonwebtoken');
 
 const { AuthLevel, authorize, googleAuthClient } = require('../middleware/AuthorizationMiddleware');
 
-router.route('/test').get((req, res) => {
-    res.send("Test!");
-});
-
 /**
  * Login
  * Location: /users/login

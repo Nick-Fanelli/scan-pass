@@ -8,19 +8,16 @@ const port = process.env.PORT || 5000;
 
 app.use(express.json());
 
-const cors = require("cors");
-const corsOptions = {
-   origin: '*', 
-   credentials: true,            //access-control-allow-credentials:true
-   optionSuccessStatus: 200,
-}
-
-app.use(cors(corsOptions));
+app.use(cors());
 
 // Get Route Routers
 const UserRoutes = require('./routes/User.Routes');
 const SchoolLocationRoutes = require('./routes/SchoolLocations.Routes');
 const PassRoutes = require('./routes/Pass.Routes');
+
+app.get('/test', (req, res) => {
+    res.send("This is a test!");
+});
 
 // Bind Routes Middleware
 app.use('/api/users', UserRoutes);
