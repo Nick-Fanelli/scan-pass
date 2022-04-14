@@ -24,5 +24,7 @@ echo/
 echo Pushing to client...
 echo/
 git subtree push --prefix client\ heroku-frontend master
+echo Pushing to server...
+echo/
 git subtree push --prefix server\ heroku-backend master
 endlocal
