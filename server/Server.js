@@ -16,6 +16,10 @@ const UserRoutes = require('./routes/User.Routes');
 const SchoolLocationRoutes = require('./routes/SchoolLocations.Routes');
 const PassRoutes = require('./routes/Pass.Routes');
 
+app.get('/heartbeat', (req, res) => {
+    res.send("Bump, Bump!");
+});
+
 // Bind Routes Middleware
 app.use('/api/users', UserRoutes);
 app.use('/api/school-locations', SchoolLocationRoutes);
