@@ -39,7 +39,6 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
     const [activePasses, setActivePasses] = useState([]);
     const prevActivePasses = useRef();
 
-    const [students, setStudents] = useState([]);
     const [lavLocation, setLavLocation] = useState(null);
     const [isExchangeLocationPopupOpen, setIsExchangeLocationPopupOpen] = useState(true);
 
@@ -224,7 +223,7 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
 
                 <>
                 <LavNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} studentCount={activePasses.filter(pass => pass.arrivalTimestamp).length} lavLocation={lavLocation.roomLocation} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} handleGoHome={handleGoHome} />
-                <Lav theme={currentTheme} currentUser={currentUser} students={students} processData={processData} activePasses={activePasses} />
+                <Lav theme={currentTheme} currentUser={currentUser} processData={processData} activePasses={activePasses} />
                 </>
 
                 : null
