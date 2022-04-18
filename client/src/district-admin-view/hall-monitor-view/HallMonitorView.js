@@ -151,7 +151,7 @@ export default function HallMonitorView({ currentUser, currentTheme }) {
 
             <div className="content-container">
                 {
-                    !isLoadingSchoolData && selectedSchoolLocationPasses ?
+                    !isLoadingSchoolData && selectedSchoolLocationPasses && selectedSchoolLocationPasses.length > 0 ?
                     selectedSchoolLocationPasses.map(pass => {
                         return <div className={`pass ${!pass.isInHallway ? "at-location"  : null}`} key={pass._id}>
                             <h1>{pass.arrivalLocation}</h1>
@@ -161,7 +161,7 @@ export default function HallMonitorView({ currentUser, currentTheme }) {
                             </div>
                         </div>
                     })
-                    : null
+                    : <h1 style={{color: currentTheme.text, textAlign: "center", fontSize: "2rem", fontWeight: "100"}}>No Passes to Display</h1>
                 }
             </div>
 
