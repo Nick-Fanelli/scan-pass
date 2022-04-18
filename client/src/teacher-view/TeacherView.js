@@ -10,8 +10,8 @@ import { Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom'
 import './TeacherView.css'
 
 const View = {
-    HomePage: "/teacher-view",
-    LavView: "/teacher-view/lav-view"
+    HomePage: "/teacher",
+    LavView: "/teacher/lav-view"
 }
 
 export default function TeacherView({ currentUser, currentTheme: theme, setCurrentTheme }) {

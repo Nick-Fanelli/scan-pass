@@ -12,10 +12,10 @@ import ManageUsersView from './views/ManageUsersView';
 import HallMonitorView from './hall-monitor-view/HallMonitorView';
 
 const View = {
-    Dashboard: "/dashboard",
-    HallMonitor: "/hall-monitor",
-    Rooms: "/rooms",
-    Users: "/users"
+    Dashboard: "/district-admin/dashboard",
+    HallMonitor: "/district-admin/hall-monitor",
+    Rooms: "/district-admin/rooms",
+    Users: "/district-admin/users"
 }
 
 export default function DistrictAdminView({ currentUser, currentTheme, setCurrentTheme }) {
@@ -58,12 +58,12 @@ export default function DistrictAdminView({ currentUser, currentTheme, setCurren
             <div id="sidebar-offset"></div>
             <div className="content">
                 <Routes>
-                    <Route path="/" element={<Navigate to="/dashboard" />}></Route>
+                    <Route path="/" element={<Navigate to={View.Dashboard} />}></Route>
                     <Route path={View.Dashboard} element={null} />
                     <Route path={View.HallMonitor} element={<HallMonitorView currentUser={currentUser} currentTheme={currentTheme} />} />
                     <Route path={View.Rooms} element={<ManageRoomsView currentUser={currentUser} currentTheme={currentTheme} />} />
                     <Route path={View.Users} element={<ManageUsersView currentUser={currentUser} currentTheme={currentTheme} />} />
-                    <Route path="*" element={<Navigate to="/" />} />
+                    <Route path="*" element={<Navigate to={View.Dashboard} />} />
                 </Routes>
             </div>
         </section>
