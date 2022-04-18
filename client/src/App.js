@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { UserType } from "./User";
 import { Theme, THEME_LOCAL_STORAGE_KEY } from "./Theme"
 
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+
 import LoginView from './LoginView'
 
 import DistrictAdminView from './district-admin-view/DistrictAdminView';
@@ -27,23 +29,25 @@ function App() {
     }, [currentTheme]);
 
     // Set View
+    const loginView = <LoginView currentTheme={currentTheme} setCurrentUser={setCurrentUser} />;
     const districtAdminView = <DistrictAdminView currentUser={currentUser} currentTheme={currentTheme} setCurrentTheme={setCurrentTheme} />
     const teacherView = <TeacherView currentUser={currentUser} currentTheme={currentTheme} setCurrentTheme={setCurrentTheme} />
     const studentView = <StudentView theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} />    
 
-    let currentView = <LoginView currentTheme={currentTheme} setCurrentUser={setCurrentUser} />;
+    let appView = loginView;
+
     if(currentUser) {
         switch(currentUser.userType) {
             case UserType.Admin:
                 break;
             case UserType.DistrictAdmin:
-                currentView = districtAdminView;
+                appView = districtAdminView;
                 break;
             case UserType.Student:
-                currentView = studentView;
+                appView = studentView;
                 break;
             case UserType.Teacher:
-                currentView = teacherView;
+                appView = teacherView;
                 break;
             default:
                 break;
@@ -51,12 +55,12 @@ function App() {
     }
 
     return (
-        <>
+        <Router>
             <section id="background" style={{backgroundColor: currentTheme.backgroundColor}}></section>
             <section id="content-wrapper">
-                {currentView}
+                {appView}
             </section>
-        </>
+        </Router>
     );
 }
 

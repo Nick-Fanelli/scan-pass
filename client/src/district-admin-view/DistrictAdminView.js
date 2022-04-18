@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartLine, faIdBadge, faDoorClosed, faCog, faUser } from '@fortawesome/free-solid-svg-icons';
 
+import { Routes, Route, Navigate, Link } from "react-router-dom"
+
 import { Theme } from '../Theme';
 
 import './DistrictAdminView.css'
@@ -26,21 +28,6 @@ export default function DistrictAdminView({ currentUser, currentTheme, setCurren
     const manageRoomsView = <ManageRoomsView currentUser={currentUser} currentTheme={currentTheme} />
     const manageUsersView = <ManageUsersView currentUser={currentUser} currentTheme={currentTheme} />
 
-    let contentView = null;
-    switch(currentView) {
-        case View.HallMonitor:
-            contentView = hallMonitorView;
-            break;
-        case View.Rooms:
-            contentView = manageRoomsView;
-            break; 
-        case View.Users:
-            contentView = manageUsersView;
-            break;
-        default:
-            break;
-    }
-
     return (
         <section id="district-admin-view">
             <div id="sidebar" style={{backgroundColor: currentTheme.offset}}>
@@ -51,24 +38,38 @@ export default function DistrictAdminView({ currentUser, currentTheme, setCurren
                         onClick={() => setCurrentTheme(currentTheme === Theme.LightTheme ? Theme.DarkTheme : Theme.LightTheme)}/>
                     </div>
                     <div className="divider" style={{backgroundColor: currentTheme.text}}></div>
-                    <li style={{backgroundColor: currentTheme.offset}} className={currentView === View.Dashboard ? "active" : null} onClick={() => setCurrentView(View.Dashboard)}>
-                        <p>Dashboard<FontAwesomeIcon className="icon" icon={faChartLine} /></p>
-                    </li>
-                    <li style={{backgroundColor: currentTheme.offset}} className={currentView === View.HallMonitor ? "active" : null} onClick={() => setCurrentView(View.HallMonitor)}>
-                        <p>Hall Monitor<FontAwesomeIcon className="icon" icon={faIdBadge} /></p>
-                    </li>
+                    <Link to="/dashboard" style={{textDecoration: 'none', color: currentTheme.text}}>
+                        <li style={{backgroundColor: currentTheme.offset}} className={currentView === View.Dashboard ? "active" : null} onClick={() => setCurrentView(View.Dashboard)}>
+                            <p>Dashboard<FontAwesomeIcon className="icon" icon={faChartLine} /></p>
+                        </li>
+                    </Link>
+                    <Link to="/hall-monitor" style={{textDecoration: 'none', color: currentTheme.text}}>
+                        <li style={{backgroundColor: currentTheme.offset}} className={currentView === View.HallMonitor ? "active" : null} onClick={() => setCurrentView(View.HallMonitor)}>
+                            <p>Hall Monitor<FontAwesomeIcon className="icon" icon={faIdBadge} /></p>
+                        </li>
+                    </Link>
                     <div className="divider" style={{backgroundColor: currentTheme.text}}></div>
-                    <li style={{backgroundColor: currentTheme.offset}} className={currentView === View.Rooms ? "active" : null} onClick={() => setCurrentView(View.Rooms)}>
-                        <p>Rooms<FontAwesomeIcon className="icon" icon={faDoorClosed} /></p>
-                    </li>
-                    <li style={{backgroundColor: currentTheme.offset}} className={currentView === View.Users ? "active" : null} onClick={() => setCurrentView(View.Users)}>
-                        <p>Users<FontAwesomeIcon className="icon" icon={faUser} /></p>
-                    </li>
+                    <Link to="/rooms" style={{textDecoration: 'none', color: currentTheme.text}}>
+                        <li style={{backgroundColor: currentTheme.offset}} className={currentView === View.Rooms ? "active" : null} onClick={() => setCurrentView(View.Rooms)}>
+                            <p>Rooms<FontAwesomeIcon className="icon" icon={faDoorClosed} /></p>
+                        </li>
+                    </Link>
+                    <Link to="/users" style={{textDecoration: 'none', color: currentTheme.text}}>
+                        <li style={{backgroundColor: currentTheme.offset, color: currentTheme.text}} className={currentView === View.Users ? "active" : null} onClick={() => setCurrentView(View.Users)}>
+                            <p>Users<FontAwesomeIcon className="icon" icon={faUser} /></p>
+                        </li>
+                    </Link>
                 </ul>
             </div>
             <div id="sidebar-offset"></div>
             <div className="content">
-                {contentView}
+                <Routes>
+                    <Route path="/" element={<Navigate to="/dashboard" />}></Route>
+                    <Route path="/dashboard" element={null} />
+                    <Route path="/hall-monitor" element={hallMonitorView} />
+                    <Route path="/rooms" element={manageRoomsView} />
+                    <Route path="/users" element={manageUsersView} />
+                </Routes>
             </div>
         </section>
     );

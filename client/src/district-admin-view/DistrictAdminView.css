@@ -67,6 +67,7 @@
 #district-admin-view #sidebar ul li p {
     filter: brightness(120%);
     margin: 0;
+    text-decoration: none;
 }
 
 #district-admin-view #sidebar ul li.active {
