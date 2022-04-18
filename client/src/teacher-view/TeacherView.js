@@ -1,5 +1,3 @@
-import React, { useState } from 'react'
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog, faPlus, faRestroom } from "@fortawesome/free-solid-svg-icons"
 
@@ -7,19 +5,21 @@ import LavView from './lav-view/LavView'
 
 import { Theme } from '../Theme';
 
+import { Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom'
+
 import './TeacherView.css'
 
-const TeacherViewState = {
-    HomePage: "Home Page",
-    LavView: "Lav View"
+const View = {
+    HomePage: "/teacher-view",
+    LavView: "/teacher-view/lav-view"
 }
 
 export default function TeacherView({ currentUser, currentTheme: theme, setCurrentTheme }) {
 
-    const [currentState, setCurrentState] = useState(TeacherViewState.HomePage);
+    const navigate = useNavigate();
 
     function handleGoHome() {
-        setCurrentState(TeacherViewState.HomePage);
+        navigate(View.HomePage);
     }
 
     const lavView = <LavView currentUser={currentUser} currentTheme={theme} setCurrentTheme={setCurrentTheme} handleGoHome={handleGoHome} />
@@ -41,10 +41,12 @@ export default function TeacherView({ currentUser, currentTheme: theme, setCurre
                         <FontAwesomeIcon icon={faPlus} className="fa-icon" style={{color: theme.text}} />
                         <h2 style={{color: theme.text}}>Create Pass</h2>
                     </div>
-                    <div className="button-control" style={{backgroundColor: theme.offset}} onClick={() => setCurrentState(TeacherViewState.LavView)}>
-                        <FontAwesomeIcon icon={faRestroom} className="fa-icon" style={{color: theme.text}} />
-                        <h2 style={{color: theme.text}}>Lav Duty</h2>
-                    </div>
+                    <Link to={View.LavView} style={{color: theme.text, textDecoration: 'none'}}>
+                        <div className="button-control" style={{backgroundColor: theme.offset}}>
+                            <FontAwesomeIcon icon={faRestroom} className="fa-icon" style={{color: theme.text}} />
+                            <h2 style={{color: theme.text}}>Lav Duty</h2>
+                        </div>
+                    </Link>
                 </div>
                 <div id="your-passes" className="col">
                     <div className="pass-container" style={{backgroundColor: theme.offset}}>
@@ -58,18 +60,11 @@ export default function TeacherView({ currentUser, currentTheme: theme, setCurre
         </section>
     );
 
-    let returnState = null;
-    switch(currentState) {
-        case TeacherViewState.HomePage:
-            returnState = teacherHomePageView;
-            break;
-        case TeacherViewState.LavView:
-            returnState = lavView;
-            break;
-        default:
-            returnState = teacherHomePageView;
-            break;
-    }
-
-    return returnState;
+    return (
+        <Routes>
+            <Route path={View.HomePage} element={teacherHomePageView} />
+            <Route path={View.LavView} element={lavView} />
+            <Route path="*" element={<Navigate to={View.HomePage} />} />
+        </Routes>
+    );
 }

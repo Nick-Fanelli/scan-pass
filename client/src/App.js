@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { UserType } from "./User";
 import { Theme, THEME_LOCAL_STORAGE_KEY } from "./Theme"
 
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
 
 import LoginView from './LoginView'
 
