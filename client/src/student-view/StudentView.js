@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react'
 
+import { Routes, Route, Navigate } from 'react-router-dom';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faClock, faArrowDown } from "@fortawesome/free-solid-svg-icons"
 
@@ -165,7 +167,9 @@ export default function StudentView({ theme: currentTheme, setCurrentTheme, curr
     const currentPassStatus = calculateCurrentPassStatus();
 
     return (
-        <>
+        <Routes>
+            <Route path="/" element= {
+            <>
             {
                 currentPass !== null ?
                 <section id="current-pass">
@@ -213,7 +217,9 @@ export default function StudentView({ theme: currentTheme, setCurrentTheme, curr
                     </div>
                 </div>
             </section>
-        </>
+            </> } />
+            <Route path="*" element={<Navigate to='/' />} />
+        </Routes> 
     );
 
 }

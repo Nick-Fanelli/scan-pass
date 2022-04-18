@@ -58,6 +58,6 @@ export default function Student({ currentUser, theme, pass, processData }) {
                 <FontAwesomeIcon style={{color: theme.text}} icon={passStatus === "Arriving" ? faArrowAltCircleDown : faTimesCircle} id="change-location-button" />
             </td>
             <div className="background-color" style={colorStyle}></div>
-        </tr> 
+        </tr>  
     );
 }
