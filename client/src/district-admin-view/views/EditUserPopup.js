@@ -2,11 +2,16 @@ import { useEffect, useRef, useState } from 'react';
 import '../../Popup.css'
 import { server } from '../../ServerAPI';
 import './EditUserPopup.css'
+import { UserType } from '../../User';
+
+import { Multiselect } from 'multiselect-react-dropdown';
 
 export default function EditUserPopup({ currentTheme, currentUser, setIsEditUserPopupVisible, targetUser, syncWithDatabase }) {
 
     const [schoolLocations, setSchoolLocations] = useState(null);
-
+    const [selectedSchoolLocationRooms, setSelectedSchoolLocationRooms] = useState(null);
+    const [defaultSelectedSchoolLocations, setDefaultSelectedSchoolLocations] = useState(null);
+    
     const [isLoaded, setIsLoaded] = useState(false);
     const [isButtonDisabled, setIsButtonDisabled] = useState(targetUser === null ? true : false);
 
@@ -14,15 +19,21 @@ export default function EditUserPopup({ currentTheme, currentUser, setIsEditUser
     const userIDRef = useRef();
     const userTypeRef = useRef();
     const userLocationRef = useRef();
+    const selectAssignedRoomsRef = useRef();
 
     useEffect(() => {
         server.get('/school-locations/get-all', {
             headers: { authorization: currentUser.accessToken }
         }).then(res => {
             setSchoolLocations(res.data);
+            updateAssignedRooms();
             setIsLoaded(true); // Finished Loading
         });
     }, [setSchoolLocations, currentUser.accessToken, userNameRef]);
+
+    useEffect(() => {
+        updateAssignedRooms();
+    }, [schoolLocations]);
 
     function handleClose() {
         userNameRef.current.value = "";
@@ -46,6 +57,19 @@ export default function EditUserPopup({ currentTheme, currentUser, setIsEditUser
             return;
         }
 
+        const updateAssignedRooms = async () => {
+            if(targetUser.userType !== UserType.Teacher) // Ensure we are a teacher
+                return;
+
+            const selectedRooms = selectAssignedRoomsRef.current.state.selectedValues;
+
+            await server.post(`/users/set-assigned-rooms/${targetUser._id}`, {
+                roomsArray: selectedRooms
+            }, {
+                headers: { authorization: currentUser.accessToken }
+            });
+        }
+
         if(targetUser == null) { // Add User
             server.post('/users/add', {
                 userName: userName,
@@ -55,6 +79,7 @@ export default function EditUserPopup({ currentTheme, currentUser, setIsEditUser
             }, {
                 headers: { authorization: currentUser.accessToken }
             }).then(() => {
+                updateAssignedRooms();
                 handleClose();
                 syncWithDatabase();
             });
@@ -67,9 +92,46 @@ export default function EditUserPopup({ currentTheme, currentUser, setIsEditUser
             }, {
                 headers: { authorization: currentUser.accessToken }
             }).then(() => {
+                updateAssignedRooms();
                 handleClose();
                 syncWithDatabase();
             });
+        }
+    }
+
+    const updateAssignedRooms = () => {
+        if(targetUser.userType !== UserType.Teacher) // Only update teachers
+            return;
+
+        if(schoolLocations == null) // Make sure the data has loaded from the db
+            return;
+
+        // Get the target school location
+        const targetSchoolLocation = (userLocationRef.current) ? userLocationRef.current.value : targetUser.schoolLocation;
+        const result = schoolLocations.find(schoolLocation => schoolLocation._id === targetSchoolLocation);
+        const rooms = result ? result.roomLocations : null;
+
+        setSelectedSchoolLocationRooms(rooms);
+
+        if(!userLocationRef || !userLocationRef.current || userLocationRef.current.value === targetUser.schoolLocation) {
+            // Set Preset Rooms
+            if(targetUser.assignedRooms) {                
+                let fullRoomData = [];
+
+                targetUser.assignedRooms.forEach(assignedRoom => {
+                    for(let i in rooms) {
+                        const room = rooms[i];
+                        if(room.roomLocation === assignedRoom) {
+                            fullRoomData.push(room);
+                            break;
+                        }
+                    }
+                });
+
+                setDefaultSelectedSchoolLocations(fullRoomData);
+            }
+        } else {
+            setDefaultSelectedSchoolLocations(null);
         }
     }
 
@@ -104,7 +166,7 @@ export default function EditUserPopup({ currentTheme, currentUser, setIsEditUser
 
                     <div className="input">
                         <label htmlFor="" style={{color: currentTheme.text}}>School Location</label>
-                        <select style={{color: currentTheme.text}} name="" id="" ref={userLocationRef} defaultValue={targetUser === null ? "null" : targetUser.schoolLocation} >
+                        <select style={{color: currentTheme.text}} name="" id="" ref={userLocationRef} defaultValue={targetUser === null ? "null" : targetUser.schoolLocation} onChange={updateAssignedRooms} >
                             <option value="null" style={{backgroundColor: currentTheme.backgroundColor}}>None</option>
                             {
                                 schoolLocations.map((schoolLocation) => {
@@ -113,6 +175,15 @@ export default function EditUserPopup({ currentTheme, currentUser, setIsEditUser
                             }
                         </select>
                     </div>
+
+                    {
+                        targetUser.userType === UserType.Teacher && selectedSchoolLocationRooms != null ?
+                        <div className="input" id="assigned-rooms-input">
+                            <label htmlFor="" style={{color: currentTheme.text}}>Assigned Rooms</label>
+                            <Multiselect ref={selectAssignedRoomsRef} options={selectedSchoolLocationRooms} displayValue="roomLocation" selectedValues={defaultSelectedSchoolLocations} />
+                        </div>
+                        : null
+                    }
                 </div>
                 <button style={{color: currentTheme.text}} disabled={isButtonDisabled} onClick={handleSubmit}>{targetUser == null ? "Add" : "Update"}</button>
             </div>

@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const User = require('../models/User.Model');
 const Pass = require('../models/Pass.Model');
+const SchoolLocation = require('../models/SchoolLocation.Model');
 
 const jwt = require('jsonwebtoken');
 
@@ -269,6 +270,59 @@ router.route('/set-current-pass').post(authorize(AuthLevel.Student), async (req,
     user.save();
 
     res.sendStatus(200);
+});
+
+/**
+ * Set Assigned Rooms
+ * Location: /users/set-assigned-rooms
+ * Method: POST
+ * Authorization: DistrictAdmin
+ * 
+ * Required Params
+ *  - userID
+ * 
+ * Required Body
+ *  - roomsArray
+ */
+router.route('/set-assigned-rooms/:userID').post(authorize(AuthLevel.DistrictAdmin), async (req, res) => {
+    const user = req.user;
+
+    const { userID } = req.params;
+    const { roomsArray } = req.body;
+
+    if(!userID || !roomsArray)
+        return res.sendStatus(400);
+
+    let targetUser = await User.findById(userID);
+
+    if(!targetUser)
+        return res.sendStatus(400);
+
+    const targetSchoolLocation = await SchoolLocation.findById(targetUser.schoolLocation);
+
+    if(!targetSchoolLocation)
+        return res.sendStatus(500);
+
+    // Verify Rooms
+    let verifiedRooms = [];
+
+    // Verify the room locations -> verifiedRooms
+    roomsArray.forEach(room => {
+        const roomLocation = room.roomLocation; 
+
+        for(let i in targetSchoolLocation.roomLocations) {
+            const lookupRoom = targetSchoolLocation.roomLocations[i];
+            if(lookupRoom.roomLocation === roomLocation) {
+                verifiedRooms.push(roomLocation);
+                break;
+            }
+        }
+    });
+
+    targetUser.assignedRooms = verifiedRooms;
+    await targetUser.save();
+
+    res.send(targetUser);
 });
 
 /**

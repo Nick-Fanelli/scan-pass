@@ -22,7 +22,11 @@ const userSchema = new Schema({
     },
     currentPass: {
         type: Schema.Types.ObjectId,
-        require: false
+        required: false
+    },
+    assignedRooms: {
+        type: [String],
+        required: false
     }
 }, { timestamps: true }); // Auto assign timestamps
 
