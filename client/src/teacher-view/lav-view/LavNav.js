@@ -1,8 +1,9 @@
 import './LavNav.css'
 
+import ThemeToggleButton from '../../ThemeToggleButton'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExchangeAlt, faCog } from "@fortawesome/free-solid-svg-icons"
-import { Theme } from '../../Theme'
+import { faExchangeAlt } from "@fortawesome/free-solid-svg-icons"
 
 export default function LavNav({ theme, setCurrentTheme, currentUser, studentCount, lavLocation, setIsExchangeLocationPopupOpen }) {
 
@@ -18,8 +19,7 @@ export default function LavNav({ theme, setCurrentTheme, currentUser, studentCou
             </div>
             <div>
                 <h2 id="user-name" style={{color: theme.text}}>{currentUser.name}</h2>
-                <FontAwesomeIcon id="settings-button" style={{color: theme.text}} icon={faCog} 
-                onClick={() => setCurrentTheme(theme === Theme.LightTheme ? Theme.DarkTheme : Theme.LightTheme)} />
+                <ThemeToggleButton currentTheme={theme} setCurrentTheme={setCurrentTheme} />
             </div>
         </nav>
     )

@@ -1,15 +1,15 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartLine, faIdBadge, faDoorClosed, faCog, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faChartLine, faIdBadge, faDoorClosed, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import { Routes, Route, Navigate, Link, useLocation } from "react-router-dom"
-
-import { Theme } from '../Theme';
 
 import './DistrictAdminView.css'
 
 import ManageRoomsView from './views/ManageRoomsView'
 import ManageUsersView from './views/ManageUsersView';
 import HallMonitorView from '../hall-monitor-view/HallMonitorView';
+
+import ThemeToggleButton from '../ThemeToggleButton';
 
 const View = {
     Dashboard: "dashboard",
@@ -28,8 +28,7 @@ export default function DistrictAdminView({ currentUser, currentTheme, setCurren
                 <ul style={{color: currentTheme.text}}>
                     <div className="controls">
                         <h1>{currentUser.name}</h1>
-                        <FontAwesomeIcon id="settings-button" icon={faCog} style={{color: currentTheme.text}} 
-                        onClick={() => setCurrentTheme(currentTheme === Theme.LightTheme ? Theme.DarkTheme : Theme.LightTheme)}/>
+                        <ThemeToggleButton currentTheme={currentTheme} setCurrentTheme={setCurrentTheme} />
                     </div>
                     <div className="divider" style={{backgroundColor: currentTheme.text}}></div>
                     <Link to={View.Dashboard} style={{textDecoration: 'none', color: currentTheme.text}}>

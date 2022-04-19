@@ -1,10 +1,9 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCog, faDoorOpen, faIdBadge, faPassport, faRestroom } from "@fortawesome/free-solid-svg-icons"
+import { faDoorOpen, faIdBadge, faPassport, faRestroom } from "@fortawesome/free-solid-svg-icons"
 
 import LavView from './lav-view/LavView'
 import HallMonitorView from '../hall-monitor-view/HallMonitorView';
-
-import { Theme } from '../Theme';
+import ThemeToggleButton from '../ThemeToggleButton';
 
 import { Routes, Route, Link, Navigate, useLocation } from 'react-router-dom'
 
@@ -27,8 +26,7 @@ export default function TeacherView({ currentUser, currentTheme, setCurrentTheme
                 <ul style={{color: currentTheme.text}}>
                     <div className="controls">
                         <h1>{currentUser.name}</h1>
-                        <FontAwesomeIcon id="settings-button" icon={faCog} style={{color: currentTheme.text}} 
-                        onClick={() => setCurrentTheme(currentTheme === Theme.LightTheme ? Theme.DarkTheme : Theme.LightTheme)}/>
+                        <ThemeToggleButton currentTheme={currentTheme} setCurrentTheme={setCurrentTheme} />
                     </div>
                     <div className="divider" style={{backgroundColor: currentTheme.text}}></div>
                     <Link to={View.MyRoom} style={{textDecoration: 'none', color: currentTheme.text}}>

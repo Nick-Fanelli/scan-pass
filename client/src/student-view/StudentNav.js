@@ -1,8 +1,6 @@
 import './StudentNav.css'
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCog } from "@fortawesome/free-solid-svg-icons"
-import { Theme } from '../Theme'
+import ThemeToggleButton from '../ThemeToggleButton';
 
 export default function StudentNav({ theme, setCurrentTheme, currentUser }) {
 
@@ -15,8 +13,7 @@ export default function StudentNav({ theme, setCurrentTheme, currentUser }) {
             <div></div>
             <div>
                 <h2 id="user-name" style={{color: theme.text}}>{currentUser.name}</h2>
-                <FontAwesomeIcon id="settings-button" style={{color: theme.text}} icon={faCog} 
-                onClick={() => setCurrentTheme(theme === Theme.LightTheme ? Theme.DarkTheme : Theme.LightTheme)} />
+                <ThemeToggleButton currentTheme={theme} setCurrentTheme={setCurrentTheme} />
             </div>
         </nav>
 
