@@ -34,7 +34,7 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
         }).catch(() => {
             sessionStorage.removeItem(USER_ACCESS_TOKEN_SESSION_STORAGE_ID);
         });
-    }, [setCurrentUser]);
+    }, [setCurrentUser, navigation]);
 
     const handleOnLoginSuccess = useCallback((response) => {
         server.post('/users/login', {

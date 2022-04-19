@@ -5,7 +5,7 @@ import LavView from './lav-view/LavView'
 
 import { Theme } from '../Theme';
 
-import { Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom'
+import { Routes, Route, Link, useNavigate } from 'react-router-dom'
 
 import './TeacherView.css'
 
