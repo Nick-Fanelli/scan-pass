@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import '../../Popup.css'
 import { server } from '../../ServerAPI';
 import './EditUserPopup.css'
@@ -21,6 +21,42 @@ export default function EditUserPopup({ currentTheme, currentUser, setIsEditUser
     const userLocationRef = useRef();
     const selectAssignedRoomsRef = useRef();
 
+    const updateAssignedRooms = useCallback(() => {
+        if(targetUser.userType !== UserType.Teacher) // Only update teachers
+            return;
+
+        if(schoolLocations == null) // Make sure the data has loaded from the db
+            return;
+
+        // Get the target school location
+        const targetSchoolLocation = (userLocationRef.current) ? userLocationRef.current.value : targetUser.schoolLocation;
+        const result = schoolLocations.find(schoolLocation => schoolLocation._id === targetSchoolLocation);
+        const rooms = result ? result.roomLocations : null;
+
+        setSelectedSchoolLocationRooms(rooms);
+
+        if(!userLocationRef || !userLocationRef.current || userLocationRef.current.value === targetUser.schoolLocation) {
+            // Set Preset Rooms
+            if(targetUser.assignedRooms) {                
+                let fullRoomData = [];
+
+                targetUser.assignedRooms.forEach(assignedRoom => {
+                    for(let i in rooms) {
+                        const room = rooms[i];
+                        if(room.roomLocation === assignedRoom) {
+                            fullRoomData.push(room);
+                            break;
+                        }
+                    }
+                });
+
+                setDefaultSelectedSchoolLocations(fullRoomData);
+            }
+        } else {
+            setDefaultSelectedSchoolLocations(null);
+        }
+    }, [schoolLocations, targetUser.assignedRooms, targetUser.schoolLocation, targetUser.userType]);
+
     useEffect(() => {
         server.get('/school-locations/get-all', {
             headers: { authorization: currentUser.accessToken }
@@ -29,11 +65,11 @@ export default function EditUserPopup({ currentTheme, currentUser, setIsEditUser
             updateAssignedRooms();
             setIsLoaded(true); // Finished Loading
         });
-    }, [setSchoolLocations, currentUser.accessToken, userNameRef]);
+    }, [setSchoolLocations, currentUser.accessToken, userNameRef, updateAssignedRooms]);
 
     useEffect(() => {
         updateAssignedRooms();
-    }, [schoolLocations]);
+    }, [schoolLocations, updateAssignedRooms]);
 
     function handleClose() {
         userNameRef.current.value = "";
@@ -96,42 +132,6 @@ export default function EditUserPopup({ currentTheme, currentUser, setIsEditUser
                 handleClose();
                 syncWithDatabase();
             });
-        }
-    }
-
-    const updateAssignedRooms = () => {
-        if(targetUser.userType !== UserType.Teacher) // Only update teachers
-            return;
-
-        if(schoolLocations == null) // Make sure the data has loaded from the db
-            return;
-
-        // Get the target school location
-        const targetSchoolLocation = (userLocationRef.current) ? userLocationRef.current.value : targetUser.schoolLocation;
-        const result = schoolLocations.find(schoolLocation => schoolLocation._id === targetSchoolLocation);
-        const rooms = result ? result.roomLocations : null;
-
-        setSelectedSchoolLocationRooms(rooms);
-
-        if(!userLocationRef || !userLocationRef.current || userLocationRef.current.value === targetUser.schoolLocation) {
-            // Set Preset Rooms
-            if(targetUser.assignedRooms) {                
-                let fullRoomData = [];
-
-                targetUser.assignedRooms.forEach(assignedRoom => {
-                    for(let i in rooms) {
-                        const room = rooms[i];
-                        if(room.roomLocation === assignedRoom) {
-                            fullRoomData.push(room);
-                            break;
-                        }
-                    }
-                });
-
-                setDefaultSelectedSchoolLocations(fullRoomData);
-            }
-        } else {
-            setDefaultSelectedSchoolLocations(null);
         }
     }
 
