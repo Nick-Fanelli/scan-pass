@@ -22,9 +22,14 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
     const schoolSelectRef = useRef(null);
 
     const syncWithDatabase = useCallback(() => {
+        let shouldCancel = false;
+
         server.get('/school-locations/get-all', {
             headers: { authorization: currentUser.accessToken }
         }).then((result) => {
+            if(shouldCancel)
+                return;
+
             if(!result) {
                 console.error("Load School Locations: Fail");
                 return;
@@ -49,11 +54,13 @@ export default function DAManageRoomsView({ currentUser, currentTheme }) {
 
             setSchoolLocations([...schoolLocationsCopy]);
         });
+
+        return () => { shouldCancel = true; }
     }, [currentUser.accessToken]);
 
     // Load School Locations
     useEffect(() => {
-        syncWithDatabase();
+        return syncWithDatabase();
     }, [currentUser.databaseAuth, syncWithDatabase]);
 
     function handleUpdateRooms() {

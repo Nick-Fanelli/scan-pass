@@ -58,13 +58,20 @@ export default function EditUserPopup({ currentTheme, currentUser, setIsEditUser
     }, [schoolLocations, targetUser.assignedRooms, targetUser.schoolLocation, targetUser.userType]);
 
     useEffect(() => {
+        let shouldCancel = false;
+
         server.get('/school-locations/get-all', {
             headers: { authorization: currentUser.accessToken }
         }).then(res => {
+            if(shouldCancel)
+                return;
+
             setSchoolLocations(res.data);
             updateAssignedRooms();
             setIsLoaded(true); // Finished Loading
         });
+
+        return () => { shouldCancel = true; }
     }, [setSchoolLocations, currentUser.accessToken, userNameRef, updateAssignedRooms]);
 
     useEffect(() => {

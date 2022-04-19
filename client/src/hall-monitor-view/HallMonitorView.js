@@ -18,10 +18,15 @@ export default function HallMonitorView({ currentUser, currentTheme }) {
 
     // Authorize User
     useEffect(() => {
+        let shouldCancel = false;
+
         const call = async () => {
             const verifiedUserData = await server.get('/users/get-self', {
                 headers: { authorization: currentUser.accessToken }
             });
+
+            if(shouldCancel)
+                return;
 
             let rawSchoolLocationData = null;
 
@@ -31,11 +36,17 @@ export default function HallMonitorView({ currentUser, currentTheme }) {
                     headers: { authorization: currentUser.accessToken }
                 });
 
+                if(shouldCancel)
+                    return;
+
                 rawSchoolLocationData = res.data;
             } else {
                 let res = await server.get('/school-locations/get', {
                     headers: { authorization: currentUser.accessToken }
                 });
+
+                if(shouldCancel)
+                    return;
 
                 rawSchoolLocationData = [];
                 rawSchoolLocationData.push(res.data);
@@ -48,10 +59,16 @@ export default function HallMonitorView({ currentUser, currentTheme }) {
         }
 
         call();
+
+        return () => {
+            shouldCancel = true;
+        }
     }, [currentUser.accessToken, setIsLoading, setSchoolLocations]);
     
     // When selected school location is changed
     useEffect(() => {
+
+        let shouldCancel = false;
 
         const call = async () => {
             if(selectedSchoolLocation == null)
@@ -61,6 +78,9 @@ export default function HallMonitorView({ currentUser, currentTheme }) {
             const res = await server.get(`/passes/get-all-from-school-location/${selectedSchoolLocation}`, {
                 headers: { authorization: currentUser.accessToken }
             });
+
+            if(shouldCancel)
+                return;
             
             const stringifiedPassData = JSON.stringify(res.data);
 
@@ -85,6 +105,9 @@ export default function HallMonitorView({ currentUser, currentTheme }) {
                     headers: { authorization: currentUser.accessToken }
                 });
 
+                if(shouldCancel)    
+                    return;
+
                 if(!studentData.data)
                     continue;
 
@@ -101,13 +124,16 @@ export default function HallMonitorView({ currentUser, currentTheme }) {
         refreshInterval.current = setInterval(call, 1000);
         call();
 
+        return () => {
+            clearInterval(refreshInterval.current);
+            shouldCancel = true;
+        }
+
     }, [selectedSchoolLocation, setIsLoadingSchoolData, currentUser.accessToken, setSelectedSchoolLocationPasses]);
 
     // On Detach
     useLayoutEffect(() => {
-
-        clearInterval(refreshInterval);
-
+        clearInterval(refreshInterval.current);
     }, [refreshInterval])
 
     if(isLoading) {

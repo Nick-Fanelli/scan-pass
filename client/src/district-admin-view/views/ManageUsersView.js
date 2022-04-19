@@ -22,10 +22,14 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
     const [currentDisplayedUserType, setCurrentDisplayedUserType] = useState(UserType.Student);
 
     const syncWithDatabase = useCallback(() => {
+        let shouldCancel = false;
+        
         // Load all users from database
         server.get('/users/get-all', {
             headers: { authorization: currentUser.accessToken }
         }).then((result) => {
+            if(shouldCancel)
+                return;
 
             // Get Users List
             const usersList = result.data;
@@ -35,10 +39,12 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
 
             setUsersList(usersList);
         });
+
+        return () => { shouldCancel = true };
     }, [currentUser.accessToken]);
 
     useEffect(() => {
-        syncWithDatabase(); // Sync with Database
+        return syncWithDatabase(); // Sync with Database
     }, [syncWithDatabase]);
     
     function handleAddUser() {
