@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { UserType } from "./User";
 import { Theme, THEME_LOCAL_STORAGE_KEY } from "./Theme"
 
-import { BrowserRouter as Router } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 
 import LoginView from './LoginView'
 
@@ -58,7 +58,11 @@ function App() {
         <Router>
             <section id="background" style={{backgroundColor: currentTheme.backgroundColor}}></section>
             <section id="content-wrapper">
-                {appView}
+                <Routes>
+                    <Route path="/" element={loginView} />
+                    <Route path="/app/*" element={appView} />
+                    <Route path="*" element={<Navigate to="/" />} />
+                </Routes>
             </section>
         </Router>
     );

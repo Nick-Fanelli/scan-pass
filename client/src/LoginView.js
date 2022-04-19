@@ -2,6 +2,8 @@ import React, { useCallback, useEffect } from 'react'
 
 import GoogleLogin from 'react-google-login'
 
+import { useNavigate } from 'react-router-dom'
+
 import { User } from './User';
 
 import { server } from './ServerAPI';
@@ -11,6 +13,8 @@ import './LoginView.css'
 const USER_ACCESS_TOKEN_SESSION_STORAGE_ID = "monroetwp-pass-system.sessionstorage.accessToken";
 
 export default function LoginView({ currentTheme, setCurrentUser }) {
+
+    const navigation = useNavigate();
 
     const loadUser = useCallback((accessToken) => {
         server.get('/users/get-self', {
@@ -22,6 +26,8 @@ export default function LoginView({ currentTheme, setCurrentUser }) {
                 result.data.userName,
                 result.data.schoolLocation
             ));
+
+            navigation("/app");
 
             // Save to session storage
             sessionStorage.setItem(USER_ACCESS_TOKEN_SESSION_STORAGE_ID, JSON.stringify(accessToken));

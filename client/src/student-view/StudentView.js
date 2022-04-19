@@ -167,59 +167,55 @@ export default function StudentView({ theme: currentTheme, setCurrentTheme, curr
     const currentPassStatus = calculateCurrentPassStatus();
 
     return (
-        <Routes>
-            <Route path="/" element= {
-            <>
-            {
-                currentPass !== null ?
-                <section id="current-pass">
-                    <div className="pass" style={{backgroundColor: currentPassStatus.displayColor}}>
-                        <h1>{currentPassStatus.displayName}</h1>
+        <>
+        {
+            currentPass !== null ?
+            <section id="current-pass">
+                <div className="pass" style={{backgroundColor: currentPassStatus.displayColor}}>
+                    <h1>{currentPassStatus.displayName}</h1>
 
-                        <div className="locations">
-                            <h2>{currentPass.departureLocation}</h2>
-                            <FontAwesomeIcon icon={faArrowDown} className="icon" />
-                            <h2>{currentPass.arrivalLocation}</h2>
-                        </div>
+                    <div className="locations">
+                        <h2>{currentPass.departureLocation}</h2>
+                        <FontAwesomeIcon icon={faArrowDown} className="icon" />
+                        <h2>{currentPass.arrivalLocation}</h2>
+                    </div>
 
-                        <div className="end-pass-btn" onClick={handleEndPass}>
-                            <h2>{calculatedMinutes}:{calculatedSeconds} - End Pass</h2>
-                        </div>
-                    </div>
-                </section>
-                : null   
-            }
-            {
-                isCreateBathroomPassPopupVisible && currentPass === null ?
-                <CreateBathroomPass currentTheme={currentTheme} currentUser={currentUser} setIsCreateBathroomPassPopupVisible={setIsCreateBathroomPassPopupVisible} refreshUpdate={refreshUpdate} />
-                : null
-            }
-            <StudentNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} />
-            <section id="student-view-context">
-                <div className="col" id="left-col">
-                    <h1 style={{color: currentTheme.text}}>Your Passes</h1>
-                    <div id="your-passes-container" style={{backgroundColor: currentTheme.offset}}>
-                        {
-                            assignedPasses.map(pass => {
-                                return <MiniPass currentTheme={currentTheme} pass={pass} key={pass._id} />
-                            })
-                        }
-                    </div>
-                </div>
-                <div className="col" id="right-col">
-                    <div id="create-pass-now-btn" style={{backgroundColor: currentTheme.offset}} onClick={handleCreateBathroomPass}>
-                        <FontAwesomeIcon icon={faPlus} className="icon" style={{color: currentTheme.text}} />
-                        <h2 style={{color: currentTheme.text}}>Now</h2>
-                    </div>
-                    <div id="create-pass-future-btn" style={{backgroundColor: currentTheme.offset}}>
-                        <FontAwesomeIcon icon={faClock} className="icon" style={{color: currentTheme.text}} />
-                        <h2 style={{color: currentTheme.text}}>Future</h2>
+                    <div className="end-pass-btn" onClick={handleEndPass}>
+                        <h2>{calculatedMinutes}:{calculatedSeconds} - End Pass</h2>
                     </div>
                 </div>
             </section>
-            </> } />
-            <Route path="*" element={<Navigate to='/' />} />
-        </Routes> 
+            : null   
+        }
+        {
+            isCreateBathroomPassPopupVisible && currentPass === null ?
+            <CreateBathroomPass currentTheme={currentTheme} currentUser={currentUser} setIsCreateBathroomPassPopupVisible={setIsCreateBathroomPassPopupVisible} refreshUpdate={refreshUpdate} />
+            : null
+        }
+        <StudentNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} />
+        <section id="student-view-context">
+            <div className="col" id="left-col">
+                <h1 style={{color: currentTheme.text}}>Your Passes</h1>
+                <div id="your-passes-container" style={{backgroundColor: currentTheme.offset}}>
+                    {
+                        assignedPasses.map(pass => {
+                            return <MiniPass currentTheme={currentTheme} pass={pass} key={pass._id} />
+                        })
+                    }
+                </div>
+            </div>
+            <div className="col" id="right-col">
+                <div id="create-pass-now-btn" style={{backgroundColor: currentTheme.offset}} onClick={handleCreateBathroomPass}>
+                    <FontAwesomeIcon icon={faPlus} className="icon" style={{color: currentTheme.text}} />
+                    <h2 style={{color: currentTheme.text}}>Now</h2>
+                </div>
+                <div id="create-pass-future-btn" style={{backgroundColor: currentTheme.offset}}>
+                    <FontAwesomeIcon icon={faClock} className="icon" style={{color: currentTheme.text}} />
+                    <h2 style={{color: currentTheme.text}}>Future</h2>
+                </div>
+            </div>
+        </section>
+        </>
     );
 
 }

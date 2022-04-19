@@ -12,15 +12,15 @@ import ManageUsersView from './views/ManageUsersView';
 import HallMonitorView from './hall-monitor-view/HallMonitorView';
 
 const View = {
-    Dashboard: "/district-admin/dashboard",
-    HallMonitor: "/district-admin/hall-monitor",
-    Rooms: "/district-admin/rooms",
-    Users: "/district-admin/users"
+    Dashboard: "dashboard",
+    HallMonitor: "hall-monitor",
+    Rooms: "rooms",
+    Users: "users"
 }
 
 export default function DistrictAdminView({ currentUser, currentTheme, setCurrentTheme }) {
 
-    const currentView = useLocation().pathname;
+    const currentView = useLocation().pathname.split('/').slice(-1)[0]; // Get the last section of url
 
     return (
         <section id="district-admin-view">
@@ -63,7 +63,6 @@ export default function DistrictAdminView({ currentUser, currentTheme, setCurren
                     <Route path={View.HallMonitor} element={<HallMonitorView currentUser={currentUser} currentTheme={currentTheme} />} />
                     <Route path={View.Rooms} element={<ManageRoomsView currentUser={currentUser} currentTheme={currentTheme} />} />
                     <Route path={View.Users} element={<ManageUsersView currentUser={currentUser} currentTheme={currentTheme} />} />
-                    <Route path="*" element={<Navigate to={View.Dashboard} />} />
                 </Routes>
             </div>
         </section>
