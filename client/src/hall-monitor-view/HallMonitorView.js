@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import LoadingSpinner from '../../loading-spinner/LoadingSpinner';
-import { server } from '../../ServerAPI';
-import { UserType } from '../../User';
+import LoadingSpinner from '../loading-spinner/LoadingSpinner';
+import { server } from '../ServerAPI';
+import { UserType } from '../User';
 
 import './HallMonitorView.css';
 

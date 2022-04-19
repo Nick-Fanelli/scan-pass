@@ -29,7 +29,7 @@ const useEventListener = (eventName, handler, element = window) => {
     }, [eventName, element]);
 };
 
-export default function LavView({ currentUser, currentTheme, setCurrentTheme, handleGoHome }) {
+export default function LavView({ currentUser, currentTheme, setCurrentTheme }) {
 
     const refreshInterval = useRef();
 
@@ -104,13 +104,6 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
         if(lavLocations)
             setIsLoaded(true);
     }, [lavLocations]);
-
-    // Check for exit
-    useEffect(() => {
-        if(!isExchangeLocationPopupOpen && !lavLocation) {
-            handleGoHome();
-        }
-    }, [isExchangeLocationPopupOpen, lavLocation, handleGoHome]);
 
     async function processData(data, timestamp) {
         // Validate Student ID
@@ -222,7 +215,7 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme, ha
                 lavLocation != null ?
 
                 <>
-                <LavNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} studentCount={activePasses.filter(pass => pass.arrivalTimestamp).length} lavLocation={lavLocation.roomLocation} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} handleGoHome={handleGoHome} />
+                <LavNav theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} studentCount={activePasses.filter(pass => pass.arrivalTimestamp).length} lavLocation={lavLocation.roomLocation} setIsExchangeLocationPopupOpen={setIsExchangeLocationPopupOpen} />
                 <Lav theme={currentTheme} currentUser={currentUser} processData={processData} activePasses={activePasses} />
                 </>
 

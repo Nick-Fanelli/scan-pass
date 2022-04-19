@@ -9,7 +9,7 @@ import './DistrictAdminView.css'
 
 import ManageRoomsView from './views/ManageRoomsView'
 import ManageUsersView from './views/ManageUsersView';
-import HallMonitorView from './hall-monitor-view/HallMonitorView';
+import HallMonitorView from '../hall-monitor-view/HallMonitorView';
 
 const View = {
     Dashboard: "dashboard",
