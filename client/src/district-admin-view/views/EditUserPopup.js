@@ -22,6 +22,9 @@ export default function EditUserPopup({ currentTheme, currentUser, setIsEditUser
     const selectAssignedRoomsRef = useRef();
 
     const updateAssignedRooms = useCallback(() => {
+        if(targetUser == null)
+            return;
+
         if(targetUser.userType !== UserType.Teacher) // Only update teachers
             return;
 
@@ -55,7 +58,7 @@ export default function EditUserPopup({ currentTheme, currentUser, setIsEditUser
         } else {
             setDefaultSelectedSchoolLocations(null);
         }
-    }, [schoolLocations, targetUser.assignedRooms, targetUser.schoolLocation, targetUser.userType]);
+    }, [schoolLocations, targetUser]);
 
     useEffect(() => {
         let shouldCancel = false;
@@ -101,7 +104,7 @@ export default function EditUserPopup({ currentTheme, currentUser, setIsEditUser
         }
 
         const updateAssignedRooms = async () => {
-            if(targetUser.userType !== UserType.Teacher) // Ensure we are a teacher
+            if(targetUser == null || targetUser.userType !== UserType.Teacher) // Ensure we are a teacher
                 return;
 
             const selectedRooms = selectAssignedRoomsRef.current.state.selectedValues;
@@ -184,7 +187,7 @@ export default function EditUserPopup({ currentTheme, currentUser, setIsEditUser
                     </div>
 
                     {
-                        targetUser.userType === UserType.Teacher && selectedSchoolLocationRooms != null ?
+                        targetUser != null && targetUser.userType === UserType.Teacher && selectedSchoolLocationRooms != null ?
                         <div className="input" id="assigned-rooms-input">
                             <label htmlFor="" style={{color: currentTheme.text}}>Assigned Rooms</label>
                             <Multiselect ref={selectAssignedRoomsRef} options={selectedSchoolLocationRooms} displayValue="roomLocation" selectedValues={defaultSelectedSchoolLocations} />
