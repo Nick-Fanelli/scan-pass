@@ -86,7 +86,7 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
         <>
         {
             isEditUserPopupVisible ?
-            <EditUserPopup currentTheme={currentTheme} currentUser={currentUser} setIsEditUserPopupVisible={setIsEditUserPopupVisible} targetUser={currentEditableUser} syncWithDatabase={syncWithDatabase} />
+            <EditUserPopup currentTheme={currentTheme} currentUser={currentUser} setIsEditUserPopupVisible={setIsEditUserPopupVisible} targetUser={currentEditableUser} syncWithDatabase={syncWithDatabase} currentDisplayedUserType={currentDisplayedUserType} />
             : null
         }
         <section id="manage-users-view">

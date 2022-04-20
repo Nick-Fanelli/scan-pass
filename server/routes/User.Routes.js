@@ -148,7 +148,7 @@ router.route('/add').post(authorize(AuthLevel.DistrictAdmin), async (req, res) =
 
     newUser.save();
 
-    res.sendStatus(200);
+    res.send(newUser);
 });
 
 /**
