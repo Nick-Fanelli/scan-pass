@@ -12,6 +12,7 @@ import StudentView from './student-view/StudentView';
 import TeacherView from './teacher-view/TeacherView';
 
 import './Defaults.css'
+import AdminView from './admin-view/AdminView';
 
 function App() {
     const [currentTheme, setCurrentTheme] = useState(Theme.LightTheme);
@@ -31,14 +32,16 @@ function App() {
     // Set View
     const loginView = <LoginView currentTheme={currentTheme} setCurrentUser={setCurrentUser} />;
     const districtAdminView = <DistrictAdminView currentUser={currentUser} currentTheme={currentTheme} setCurrentTheme={setCurrentTheme} />
+    const adminView = <AdminView currentUser={currentUser} currentTheme={currentTheme} setCurrentTheme={setCurrentTheme} />
     const teacherView = <TeacherView currentUser={currentUser} currentTheme={currentTheme} setCurrentTheme={setCurrentTheme} />
-    const studentView = <StudentView theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} />    
+    const studentView = <StudentView theme={currentTheme} setCurrentTheme={setCurrentTheme} currentUser={currentUser} />
 
     let appView = loginView;
 
     if(currentUser) {
         switch(currentUser.userType) {
             case UserType.Admin:
+                appView = adminView;
                 break;
             case UserType.DistrictAdmin:
                 appView = districtAdminView;
