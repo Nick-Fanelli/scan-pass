@@ -7,6 +7,7 @@ import './LavView.css'
 import LavNav from "./LavNav"
 import Lav from "./Lav"
 import ExchangeLocationPopup from './ExchangeLocationPopup';
+import LoadingSpinner from '../../loading-spinner/LoadingSpinner';
 
 const ValidInputRegex = /[0-9]|Enter/gi;
 const ValidStudentIDRegex = /^[0-9]{5}$/
@@ -225,6 +226,10 @@ export default function LavView({ currentUser, currentTheme, setCurrentTheme }) 
             </>
         );
     } else {
-        return null; // TODO: Loading Screen
+        return (
+            <div style={{width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
+                <LoadingSpinner currentTheme={currentTheme} />
+            </div>
+        )
     }
 }

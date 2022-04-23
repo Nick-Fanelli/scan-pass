@@ -11,6 +11,7 @@ import { UserType } from '../../User';
 import { faSync } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+// TODO: Rewrite Completely to use Better Callback and Loading System
 export default function ManageUsersView({ currentUser, currentTheme }) {
     
     const [usersList, setUsersList] = useState(null);
@@ -59,7 +60,6 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
 
     let usersListElements = [];
 
-    // TODO: Run Loading Animation
     if(usersList) {
         usersList.forEach(user => {
             if(user.userType !== currentDisplayedUserType)
@@ -73,6 +73,7 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
 
             usersListElements.push(<UserItem key={user._id} currentTheme={currentTheme} currentUser={currentUser} user={user} syncWithDatabase={syncWithDatabase} handleEditUser={handleEditUser} />);
         });
+
     } else {
         return (
             <>
