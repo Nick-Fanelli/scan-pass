@@ -161,10 +161,14 @@ export default function HallMonitorView({ currentUser, currentTheme }) {
                         <ul>
                             {
                                 schoolLocations.map(schoolLocation => {
+                                    const liStyle = (selectedSchoolLocation === schoolLocation._id) ? {borderBottom: `solid ${currentTheme.text} 5px`} : null; 
+
                                     return <li 
                                                 key={schoolLocation._id}
                                                 className={selectedSchoolLocation === schoolLocation._id ? "selected" : null}
-                                                onClick={() => { setSelectedSchoolLocation(schoolLocation._id); }}>{schoolLocation.name}</li>;
+                                                onClick={() => { setSelectedSchoolLocation(schoolLocation._id); }}
+                                                style={liStyle}
+                                                >{schoolLocation.name}</li>;
                                 })
                             }
                         </ul>

@@ -105,10 +105,17 @@ export default function ManageUsersView({ currentUser, currentTheme }) {
                 <div className="horizontal">
                     <div className="left">
                         <ul>
-                            <li className={currentDisplayedUserType === UserType.Student ? `selected` : ''} onClick={() => setCurrentDisplayedUserType(UserType.Student)}>Students</li>
-                            <li className={currentDisplayedUserType === UserType.Teacher ? `selected` : ''} onClick={() => setCurrentDisplayedUserType(UserType.Teacher)}>Teachers</li>
-                            <li className={currentDisplayedUserType === UserType.Admin ? `selected` : ''} onClick={() => setCurrentDisplayedUserType(UserType.Admin)}>Admins</li>
-                            <li className={currentDisplayedUserType === UserType.DistrictAdmin ? `selected` : ''} onClick={() => setCurrentDisplayedUserType(UserType.DistrictAdmin)}>District Admins</li>
+                            <li className={currentDisplayedUserType === UserType.Student ? `selected` : ''} style={currentDisplayedUserType === UserType.Student ? {borderBottom: `solid ${currentTheme.text} 5px`} : null}
+                                onClick={() => setCurrentDisplayedUserType(UserType.Student)}>Students</li>
+
+                            <li className={currentDisplayedUserType === UserType.Teacher ? `selected` : ''} style={currentDisplayedUserType === UserType.Teacher ? {borderBottom: `solid ${currentTheme.text} 5px`} : null}
+                                onClick={() => setCurrentDisplayedUserType(UserType.Teacher)}>Teachers</li>
+
+                            <li className={currentDisplayedUserType === UserType.Admin ? `selected` : ''} style={currentDisplayedUserType === UserType.Admin ? {borderBottom: `solid ${currentTheme.text} 5px`} : null} 
+                                onClick={() => setCurrentDisplayedUserType(UserType.Admin)}>Admins</li>
+
+                            <li className={currentDisplayedUserType === UserType.DistrictAdmin ? `selected` : ''} style={currentDisplayedUserType === UserType.DistrictAdmin ? {borderBottom: `solid ${currentTheme.text} 5px`} : null} 
+                                onClick={() => setCurrentDisplayedUserType(UserType.DistrictAdmin)}>District Admins</li>
                         </ul>
                     </div>
                     <div className="right">
