@@ -8,6 +8,7 @@ import './DistrictAdminView.css'
 import ManageRoomsView from './views/ManageRoomsView'
 import ManageUsersView from './views/ManageUsersView';
 import HallMonitorView from '../hall-monitor-view/HallMonitorView';
+import DashboardView from '../dashboard-view/DashboardView';
 
 import ThemeToggleButton from '../ThemeToggleButton';
 
@@ -58,7 +59,7 @@ export default function DistrictAdminView({ currentUser, currentTheme, setCurren
             <div className="content">
                 <Routes>
                     <Route path="/" element={<Navigate to={View.Dashboard} />}></Route>
-                    <Route path={View.Dashboard} element={null} />
+                    <Route path={View.Dashboard} element={<DashboardView currentUser={currentUser} currentTheme={currentTheme} />} />
                     <Route path={View.HallMonitor} element={<HallMonitorView currentUser={currentUser} currentTheme={currentTheme} />} />
                     <Route path={View.Rooms} element={<ManageRoomsView currentUser={currentUser} currentTheme={currentTheme} />} />
                     <Route path={View.Users} element={<ManageUsersView currentUser={currentUser} currentTheme={currentTheme} />} />

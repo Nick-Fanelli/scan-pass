@@ -1,0 +1,103 @@
+#dashboard-view #selection-bar {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 3.5em;
+}
+
+#dashboard-view #selection-bar ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#dashboard-view #selection-bar ul li {
+    display: inline-block;
+    margin: 0;
+    font-family: sans-serif;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.75em 1.2em;
+    width: 14em;
+    text-align: center;
+}
+
+#dashboard-view #selection-bar ul li.selected {
+    font-weight: bold;
+}
+
+#dashboard-view #cards {
+    display: flex;
+    justify-content: space-evenly;
+    margin: 2em 0 0 0;
+}
+
+#dashboard-view #cards .card {
+    width: 25%;
+    height: 10em;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.401);
+    color: #ffffff;
+    font-family: sans-serif;
+}
+
+#dashboard-view #cards .card {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+}
+
+#dashboard-view #cards .card .bottom {
+    border-radius: 0 0 10px 10px;
+}
+
+#dashboard-view #cards .card > div {
+    width: 100%;
+}
+
+#dashboard-view #cards .card div.wrapper {
+    display: flex;
+    height: 80%;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+}
+
+#dashboard-view #cards .card .wrapper .icon {
+    height: 60%;
+    margin: 0;
+    padding: 0;
+}
+
+#dashboard-view #cards .card p {
+    font-size: 1.25rem;
+    margin: 0;
+}
+
+#dashboard-view #cards .card div .updated-text {
+    text-align: center;
+    margin: 0.25em 0;
+}
+
+#dashboard-view #cards .card .divider {
+    background-color: #ffffffb2;
+    height: 1px;
+    width: 100%;
+}
+
+#dashboard-view #cards .card h1 {
+    font-size: 2.75rem;
+    margin: 0 0 0.25em 0;
+}
+
+/* TODO: CHANGE COLORS */
+#dashboard-view #cards .card:nth-child(1) { background-color: #eb4034; }
+#dashboard-view #cards .card:nth-child(1) > .bottom { background-color: #ff7167; }
+
+#dashboard-view #cards .card:nth-child(2) { background-color: #0390fc; }
+#dashboard-view #cards .card:nth-child(2) > .bottom { background-color: #68beff; }
+
+#dashboard-view #cards .card:nth-child(3) { background-color: #6be975; }
+#dashboard-view #cards .card:nth-child(3) > .bottom { background-color: #74ff74; }

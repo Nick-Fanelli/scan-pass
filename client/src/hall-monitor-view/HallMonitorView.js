@@ -67,10 +67,10 @@ export default function HallMonitorView({ currentUser, currentTheme }) {
     
     // When selected school location is changed
     useEffect(() => {
-
         let shouldCancel = false;
 
         const call = async () => {
+            
             if(selectedSchoolLocation == null)
                 return;
 
