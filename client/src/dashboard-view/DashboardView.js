@@ -11,6 +11,7 @@ import './DashboardView.css'
 export default function DashboardView({ currentTheme, currentUser }) {
 
     const refreshInterval = useRef();
+    const prevPassesData = useRef();
 
     const [isLoading, setIsLoading] = useState(true);
     const [isLoadingData, setIsLoadingData] = useState(true);
@@ -82,11 +83,34 @@ export default function DashboardView({ currentTheme, currentUser }) {
             if(shouldCancel)
                 return;
 
+            const stringifiedPassesData = JSON.stringify(passes.data);
+
+            // Make sure the pass data has changed!
+            if(prevPassesData.current === stringifiedPassesData) {
+                setIsLoadingData(false);
+                return;
+            }
+
+            prevPassesData.current = stringifiedPassesData;
+
+            const currentSchoolLocationData = schoolLocations.filter(schoolLocation => schoolLocation._id === selectedSchoolLocation)[0];
+            const currentSchoolLocationBathroomsData = currentSchoolLocationData.roomLocations.filter(roomLocation => roomLocation.isBathroom);
+
+            let currentSchoolLocationBathrooms = [];
+            currentSchoolLocationBathroomsData.forEach(bathroomData => {
+                currentSchoolLocationBathrooms.push(bathroomData.roomLocation);
+            });
+
             // Calculate Number of Students In Hallway
             let studentsInHallway = 0;
+            let studentsInBathroom = 0;
             passes.data.forEach(pass => {
                 if(!pass.arrivalTimestamp)
                     studentsInHallway++;
+                else {
+                    if(currentSchoolLocationBathrooms.includes(pass.arrivalLocation))
+                        studentsInBathroom++;
+                }
             });
     
             const currentTime = new Date();
@@ -103,6 +127,12 @@ export default function DashboardView({ currentTheme, currentUser }) {
                 data: studentsInHallway
             }));
 
+            setNumStudentsInBathroom(prev => ({
+                timestamp: (prev && (studentsInBathroom === prev.data)) ? prev.timestamp : 
+                (currentTime.getHours() > 12 ? currentTime.getHours() - 12 : currentTime.getHours()) + ":" + currentTime.getMinutes() + (currentTime.getHours() > 12 ? "pm" : "am"),
+                data: studentsInBathroom
+            }))
+
             setIsLoadingData(false);
         }
 
@@ -114,7 +144,7 @@ export default function DashboardView({ currentTheme, currentUser }) {
             clearInterval(refreshInterval.current);
             shouldCancel = true; 
         }
-    }, [setIsLoadingData, selectedSchoolLocation, currentUser.accessToken, setNumActivePasses, refreshInterval]);
+    }, [setIsLoadingData, selectedSchoolLocation, currentUser.accessToken, setNumActivePasses, refreshInterval, schoolLocations]);
 
     useEffect(() => {
 
@@ -194,13 +224,13 @@ export default function DashboardView({ currentTheme, currentUser }) {
                     <div className='wrapper'>
                         <FontAwesomeIcon icon={faRestroom} className="icon" />
                         <div>
-                            <h1>100</h1>
+                            <h1>{numStudentsInBathroom.data}</h1>
                             <p>Students In Bathroom</p>
                         </div>
                     </div>
                     <div className='bottom'>
                         <div className="divider"></div>
-                        <p className='updated-text'>Updated: 12:00pm</p>
+                        <p className='updated-text'>Updated: {numStudentsInBathroom.timestamp}</p>
                     </div>
                 </div>
                 
