@@ -64,27 +64,26 @@
 }
 
 #student-view-context #your-passes-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
     overflow-x: hidden;
     overflow-y: scroll;
     padding: 1em 0;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.201);
+    text-align: center;
 }
 
 #student-view-context #your-passes-container .mini-pass {
-    width: 12em;
-    height: 10em;
-    margin: 1em 0;
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
+    display: inline-block;
+    width: 15em;
     border-radius: 10px;
     text-align: center;
-    padding: 2em 0;
     cursor: pointer;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.201);
+}
+
+#student-view-context #your-passes-container .mini-pass .arrival-location {
+    font-weight: 600;
+    font-size: 1.75rem;
+    margin: 0;
 }
 
 #student-view-context #your-passes-container .mini-pass:hover {
@@ -93,18 +92,25 @@
 }
 
 #student-view-context #your-passes-container .mini-pass h1 {
-    margin: 0;
+    padding: 0.5em 0;
     font-size: 1.5rem;
     font-weight: 100;
     color: #ffffff;
+    margin: 0;
 }
 
 #student-view-context #your-passes-container .mini-pass p {
+    padding: 0.5em 0;
     margin: 0;
     font-family: sans-serif;
     font-weight: 100;
     font-size: 1.25rem;
     color: #ffffff;
+}
+
+#student-view-context #your-passes-container .mini-pass .pass-bottom {
+    background-color: #ffffff57;
+    border-radius: 0 0 10px 10px;
 }
 
 #current-pass {

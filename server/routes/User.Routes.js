@@ -263,9 +263,6 @@ router.route('/set-current-pass').post(authorize(AuthLevel.Student), async (req,
 
     const { passID } = req.body;
 
-    if(!passID)
-        return res.sendStatus(400);
-
     user.currentPass = passID;
     user.save();
 

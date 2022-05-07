@@ -29,63 +29,61 @@ export default function StudentView({ theme: currentTheme, setCurrentTheme, curr
     const [currentPass, setCurrentPass] = useState(null);
     const [assignedPasses, setAssignedPasses] = useState([]);
 
+    const currentPassStringified = useRef();
     const assignedPassesStringified = useRef();
     const bathroomLocations = useRef();
 
     const refreshUpdate = useCallback(() => {
-        server.get('/users/get-self', {
-            headers: { authorization: currentUser.accessToken }
-        }).then(res => {
 
-            if(res.data.currentPass) {
-                let currentPassId = res.data.currentPass;
-                
-                server.get('/passes/get/' + currentPassId, {
-                    headers: { authorization: currentUser.accessToken }
-                }).then(res => {
-                    const pass = res.data;
-                    if(!pass) {
-                        console.error("Huh, weird error with retrieving the pass from the database...");
-                        return;
-                    }
+        let shouldCancel = false;
 
-                    // Compare JSON to notice any change in the pass not just a new pass
-                    if(!currentPass || JSON.stringify(currentPass) !== JSON.stringify(pass))
-                        setCurrentPass(pass);
-                }).catch(() => { // If the pass doesn't exist
-                    console.error("Users Current Pass Doesn't Exist");
+        const call = async () => {
+            // Get self passes
+            const selfPasses = await server.get(`/passes/get-self-pertaining`, {
+                headers: { authorization: currentUser.accessToken }
+            });
+            if(shouldCancel) return;
 
-                    server.post('/users/set-current-pass', {
-                        passID: null
-                    }, {
-                        headers: { authorization: currentUser.accessToken }
-                    });
+            // Get Self
+            const self = await server.get(`/users/get-self`, {
+                headers: { authorization: currentUser.accessToken }
+            });
+            if(shouldCancel) return;
 
-                    server.post('/users/purge-bathroom-passes', {}, {
-                        headers: { authorization: currentUser.accessToken }
-                    });
+            let targetCurrentPass = null;
 
-                    setCurrentPass(null);
-                });
-            } else {
-                if(currentPass !== null)
-                    setCurrentPass(null);
+            selfPasses.data.forEach(pass => {
+                if(pass._id === self.data.currentPass) {
+                    targetCurrentPass = pass;
+                    return;
+                }
+            });
+
+            const stringifiedTempTargetCurrentPass = JSON.stringify(targetCurrentPass);
+
+            if(currentPassStringified.current !== stringifiedTempTargetCurrentPass) {
+                currentPassStringified.current = stringifiedTempTargetCurrentPass;
+
+                setCurrentPass(targetCurrentPass);
             }
-        });
 
-        server.get('/passes/get-self-pertaining', {
-            headers: { authorization: currentUser.accessToken }
-        }).then(res => {
-            const resStringified = JSON.stringify(res.data);
-            if(resStringified !== assignedPassesStringified.current) {
-                assignedPassesStringified.current = resStringified;
-                setAssignedPasses(res.data.sort((a, b) => (a.departureTimestamp > b.departureTimestamp) ? 1 : -1));
+            const stringifiedPasses = JSON.stringify(selfPasses.data);
+
+            if(assignedPassesStringified.current === stringifiedPasses) {
+                return;
             }
-        })
-    }, [currentUser.accessToken, setCurrentPass, currentPass, assignedPassesStringified, setAssignedPasses]);
 
+            assignedPassesStringified.current = stringifiedPasses;
+            setAssignedPasses(selfPasses.data);
+        }
+
+        call();
+        return () => { shouldCancel = true; }
+        
+    }, [currentUser.accessToken, assignedPassesStringified, setAssignedPasses]);
+
+    // On Load
     useEffect(() => {
-
         // Get all the bathroom locations
         server.get('/school-locations/get', {
             headers: { authorization: currentUser.accessToken }
@@ -102,7 +100,7 @@ export default function StudentView({ theme: currentTheme, setCurrentTheme, curr
         clearInterval(refreshInterval.current); // Clear refresh interval
         refreshInterval.current = setInterval(refreshUpdate, 2000); // Set refresh interval to 2000ms
 
-        refreshUpdate();
+        return refreshUpdate();
     }, [refreshUpdate, seconds, refreshInterval, currentUser.accessToken]);
 
     const updateSeconds = useCallback(() => {
@@ -124,13 +122,17 @@ export default function StudentView({ theme: currentTheme, setCurrentTheme, curr
             setSeconds(0);
             setSecondRefreshInterval.current = setInterval(updateSeconds, 1000); // 900ms
         }
-    }, [currentPass, updateSeconds])
+    }, [currentPass, updateSeconds]);
+
+    const startPass = (pass) => {
+        console.log(pass);
+    }
 
     function handleEndPass() {
         server.post('/passes/end-pass/' + currentPass._id, {}, {
             headers: { authorization: currentUser.accessToken }
         }).then(() => {
-            refreshUpdate();
+            return refreshUpdate();
         });
     }
 
@@ -143,7 +145,7 @@ export default function StudentView({ theme: currentTheme, setCurrentTheme, curr
         return () => {
             clearInterval(refreshInterval.current);
         }
-    }, [refreshInterval])
+    }, [refreshInterval]);
 
     let calculatedMinutes = Math.floor(seconds / 60);
     let calculatedSeconds = Number.parseInt(seconds - calculatedMinutes * 60);
@@ -197,7 +199,7 @@ export default function StudentView({ theme: currentTheme, setCurrentTheme, curr
                 <div id="your-passes-container" style={{backgroundColor: currentTheme.offset}}>
                     {
                         assignedPasses.map(pass => {
-                            return <MiniPass currentTheme={currentTheme} pass={pass} key={pass._id} />
+                            return <MiniPass currentTheme={currentTheme} pass={pass} key={pass._id} startPassCallback={startPass} />
                         })
                     }
                 </div>
