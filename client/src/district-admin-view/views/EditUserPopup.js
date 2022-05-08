@@ -71,7 +71,7 @@ export default function EditUserPopup({ currentTheme, currentUser, setIsEditUser
         } 
         
         // Make sure we're expected to be a teacher
-        if(userTypeRef.current.value !== UserType.Teacher) { 
+        if(userTypeRef.current.value !== UserType.Teacher && userTypeRef.current.value !== UserType.Admin) { 
             setSelectAssignedRoomElement(null); 
             return;
         }
